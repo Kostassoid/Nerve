@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve-Core", "main\Nerve-Core\Nerve-Core.csproj", "{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{86D93403-BD8F-49EF-BC0B-66C0B82F4A37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specs", "Specs", "{812C8697-C2E7-423E-AD57-20C008A63AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve-Core-Specs", "specs\Nerve-Core-Specs\Nerve-Core-Specs.csproj", "{EFA61018-1F3E-4F85-A2F4-76F5BB505042}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC} = {86D93403-BD8F-49EF-BC0B-66C0B82F4A37}
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042} = {812C8697-C2E7-423E-AD57-20C008A63AFD}
+	EndGlobalSection
+EndGlobal
