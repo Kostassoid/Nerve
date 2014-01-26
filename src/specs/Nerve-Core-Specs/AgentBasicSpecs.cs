@@ -1,4 +1,17 @@
-﻿namespace Kostassoid.Nerve.Core.Specs
+﻿// Copyright 2014 https://github.com/Kostassoid/Nerve
+//   
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0 
+//  
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+
+namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
 	using System.Threading;
@@ -11,22 +24,44 @@
 	// ReSharper disable UnusedMember.Local
 	public class AgentBasicSpecs
 	{
-		[Subject(typeof (IAgent), "Basic")]
+		[Subject(typeof(IAgent), "Basic")]
 		[Tags("Unit")]
 		public class when_dispatching_a_signal_with_registered_consumer
 		{
 			Establish context = () =>
-								{
-									_agent = new Agent();
+			{
+				_agent = new Agent();
 
-									_agent.OnStream().Of<Ping>().ReactWith(_ => _received = true);
-								};
+				_agent.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+			};
 
 			Cleanup after = () => _agent.Dispose();
 
 			Because of = () => _agent.Dispatch(new Ping());
 
 			It should_be_handled = () => _received.ShouldBeTrue();
+
+			static IAgent _agent;
+			static bool _received;
+		}
+
+		[Subject(typeof(IAgent), "Basic")]
+		[Tags("Unit")]
+		public class when_dispatching_a_signal_with_unregistered_consumer
+		{
+			Establish context = () =>
+			{
+				_agent = new Agent();
+
+				var subscription = _agent.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+				subscription.Dispose();
+			};
+
+			Cleanup after = () => _agent.Dispose();
+
+			Because of = () => _agent.Dispatch(new Ping());
+
+			It should_not_be_handled = () => _received.ShouldBeFalse();
 
 			static IAgent _agent;
 			static bool _received;

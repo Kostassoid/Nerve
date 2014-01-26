@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kostassoid.Nerve.Core</RootNamespace>
-    <AssemblyName>Nerve-Core</AssemblyName>
+    <RootNamespace>PainSimulator</RootNamespace>
+    <AssemblyName>PainSimulator</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,10 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Retlang, Version=1.0.6.0, Culture=neutral, PublicKeyToken=a99b3bce1dc72e93, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\retlang.1.0.6.0\lib\Net40\Retlang.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,36 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IConsumer.cs" />
-    <Compile Include="IProducerOf.cs" />
-    <Compile Include="ProducerOf.cs" />
-    <Compile Include="Scheduling\AbstractScheduler.cs" />
-    <Compile Include="Scheduling\PoolScheduler.cs" />
-    <Compile Include="Scheduling\ImmediateScheduler.cs" />
-    <Compile Include="Scheduling\IScheduler.cs" />
-    <Compile Include="Link.cs" />
-    <Compile Include="Pipeline\IPipelineStep.cs" />
-    <Compile Include="Pipeline\PipelineStep.cs" />
-    <Compile Include="Pipeline\PipelineEx.cs" />
-    <Compile Include="Signal\ISignal.cs" />
-    <Compile Include="Signal\Signal.cs" />
-    <Compile Include="IProducer.cs" />
-    <Compile Include="IAgent.cs" />
-    <Compile Include="LambdaConsumer.cs" />
-    <Compile Include="Agent.cs" />
-    <Compile Include="IConsumerOf.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StackTrace.cs" />
-    <Compile Include="Tools\CodeContracts\Assumes.cs" />
-    <Compile Include="Tools\CodeContracts\Requires.cs" />
-    <Compile Include="Tools\DisposableAction.cs" />
-    <Compile Include="Tools\EnumerableEx.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\..\main\Nerve-Core\Nerve-Core.csproj">
+      <Project>{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}</Project>
+      <Name>Nerve-Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

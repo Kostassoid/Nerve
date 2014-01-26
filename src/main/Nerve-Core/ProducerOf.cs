@@ -13,30 +13,25 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System.Collections.Generic;
+	using Signal;
 
-	public class StackTrace
+	internal class ProducerOf<T> : IProducerOf<T> where T : class
 	{
-		readonly IList<IAgent> _stack = new List<IAgent>();
+		readonly IAgent _agent;
 
-		public StackTrace(IAgent root)
+		public ProducerOf(IAgent agent)
 		{
-			_stack.Add(root);
+			_agent = agent;
 		}
 
-		protected StackTrace(IList<IAgent> stack)
+		public void Dispatch(T body)
 		{
-			_stack = stack;
+			_agent.Dispatch(body);
 		}
 
-		public IAgent Root
+		public void Dispatch(ISignal<T> signal)
 		{
-			get { return _stack[0]; }
-		}
-
-		public void Push(IAgent agent)
-		{
-			_stack.Add(agent);
+			_agent.Dispatch(signal);
 		}
 	}
 }
