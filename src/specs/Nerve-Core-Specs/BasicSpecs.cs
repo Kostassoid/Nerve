@@ -13,16 +13,13 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
-	using System;
-	using System.Threading;
 	using Machine.Specifications;
 	using Model;
 	using Pipeline;
-	using Scheduling;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
-	public class AgentBasicSpecs
+	public class BasicSpecs
 	{
 		[Subject(typeof(IAgent), "Basic")]
 		[Tags("Unit")]
@@ -151,40 +148,6 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Basic")]
-		[Tags("Unit")]
-		public class when_dispatching_using_async_scheduler
-		{
-			Establish context = () =>
-								{
-									_agent = new Agent();
-									_agent.OnStream().Of<Ping>()
-										.Through(new PoolScheduler())
-										.ReactWith(_ =>
-												   {
-													   Thread.Sleep(100);
-													   _waitHandle.Signal();
-												   });
-								};
-
-			Cleanup after = () => _agent.Dispose();
-
-			Because of = () =>
-						 {
-							 _agent.Dispatch(new Ping());
-							 _agent.Dispatch(new Ping());
-							 _agent.Dispatch(new Ping());
-						 };
-
-			It should_receive_in_async_fashion = () =>
-												 {
-													 _waitHandle.Wait(0).ShouldBeFalse();
-													 _waitHandle.Wait(TimeSpan.FromSeconds(3)).ShouldBeTrue();
-												 };
-
-			static Agent _agent;
-			static readonly CountdownEvent _waitHandle = new CountdownEvent(3);
-		}
 	}
 
 	// ReSharper restore InconsistentNaming

@@ -49,6 +49,7 @@
     <Compile Include="IProducerOf.cs" />
     <Compile Include="ProducerOf.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />
+    <Compile Include="Scheduling\ThreadScheduler.cs" />
     <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />

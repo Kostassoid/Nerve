@@ -50,9 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Num.cs" />
+    <Compile Include="SchedullingSpecs.cs" />
     <Compile Include="PerformanceSpecs.cs" />
     <Compile Include="RequestResponseSpecs.cs" />
-    <Compile Include="AgentBasicSpecs.cs" />
+    <Compile Include="BasicSpecs.cs" />
     <Compile Include="Model\Ping.cs" />
     <Compile Include="Model\Pong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
