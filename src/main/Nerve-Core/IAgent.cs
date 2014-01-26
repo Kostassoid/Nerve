@@ -1,8 +1,8 @@
 ﻿namespace Kostassoid.Nerve.Core
 {
-    using System;
+	using System;
 
-    public interface IAgent : IProducer, IConsumerOf<object>, IDisposable
-    {
-    }
+	public interface IAgent : IProducer, IConsumer, IDisposable
+	{
+	}
 }

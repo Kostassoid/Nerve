@@ -1,19 +1,25 @@
 ﻿namespace Kostassoid.Nerve.Core
 {
-    using System;
+	using System;
+	using Signal;
 
-    public class LambdaConsumer<T> : IConsumerOf<T>
-    {
-        private readonly Action<Signal<T>> _handler;
+	public class LambdaConsumer<T> : IConsumerOf<T> where T : class
+	{
+		readonly Action<ISignal<T>> _handler;
 
-        public LambdaConsumer(Action<Signal<T>> handler)
-        {
-            _handler = handler;
-        }
+		public LambdaConsumer(Action<ISignal<T>> handler)
+		{
+			_handler = handler;
+		}
 
-        public void Handle(Signal<T> context)
-        {
-            _handler(context);
-        }
-    }
+		public void Handle(ISignal<T> signal)
+		{
+			_handler(signal);
+		}
+
+		public void Handle(ISignal signal)
+		{
+			_handler(signal.As<T>());
+		}
+	}
 }

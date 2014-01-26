@@ -1,31 +1,29 @@
 ﻿namespace Kostassoid.Nerve.Core
 {
-    using Tools;
+	using System.Collections.Generic;
 
-    public class StackTrace
-    {
-        readonly IStack<IAgent> _stack;
+	public class StackTrace
+	{
+		readonly IList<IAgent> _stack = new List<IAgent>();
 
-        public StackTrace(IAgent root)
-        {
-            _stack = ImmutableStack<IAgent>.Empty.Push(root);
-        }
+		public StackTrace(IAgent root)
+		{
+			_stack.Add(root);
+		}
 
-        protected StackTrace(IStack<IAgent> stack)
-        {
-            _stack = stack;
-        }
+		protected StackTrace(IList<IAgent> stack)
+		{
+			_stack = stack;
+		}
 
-        public IAgent Head { get { return _stack.Peek(); } }
+		public IAgent Root
+		{
+			get { return _stack[0]; }
+		}
 
-        public StackTrace Pop()
-        {
-            return new StackTrace(_stack.Pop());
-        }
-
-        public StackTrace Push(IAgent agent)
-        {
-            return new StackTrace(_stack.Push(agent));
-        }
-    }
+		public void Push(IAgent agent)
+		{
+			_stack.Add(agent);
+		}
+	}
 }

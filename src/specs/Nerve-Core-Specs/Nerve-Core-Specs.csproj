@@ -41,23 +41,8 @@
     <Reference Include="Machine.Specifications.Should">
       <HintPath>..\..\packages\Machine.Specifications.0.6.2\lib\net40\Machine.Specifications.Should.dll</HintPath>
     </Reference>
-    <Reference Include="Retlang">
-      <HintPath>..\..\packages\retlang.1.0.6.0\lib\Net40\Retlang.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Reactive.Core">
-      <HintPath>..\..\packages\Rx-Core.2.2.2\lib\net40\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces">
-      <HintPath>..\..\packages\Rx-Interfaces.2.2.2\lib\net40\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq">
-      <HintPath>..\..\packages\Rx-Linq.2.2.2\lib\net40\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices">
-      <HintPath>..\..\packages\Rx-PlatformServices.2.2.2\lib\net40\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -65,9 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PerformanceSpecs.cs" />
+    <Compile Include="RequestResponseSpecs.cs" />
     <Compile Include="AgentBasicSpecs.cs" />
-    <Compile Include="Ping.cs" />
-    <Compile Include="Pong.cs" />
+    <Compile Include="Model\Ping.cs" />
+    <Compile Include="Model\Pong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,13 +1,17 @@
 ﻿namespace Kostassoid.Nerve.Core
 {
-    using System;
+	using Pipeline;
+	using Signal;
 
-    public interface IProducer
-    {
-        void Dispatch<T>(T signal);
+	public interface IProducer
+	{
+		void Dispatch<T>(T body) where T : class;
 
-        void Dispatch<T>(T signal, StackTrace stackTrace);
+		void Dispatch(ISignal signal);
 
-        ISubscriptionSyntax<object> OnStream();
-    }
+		IPipelineStep OnStream();
+
+		void Subscribe(Link link);
+		void Unsubscribe(Link link);
+	}
 }

@@ -1,7 +1,9 @@
 ﻿namespace Kostassoid.Nerve.Core
 {
-    public interface IConsumerOf<T>
-    {
-        void Handle(Signal<T> context);
-    }
+	using Signal;
+
+	public interface IConsumerOf<in T> : IConsumer where T : class
+	{
+		void Handle(ISignal<T> signal);
+	}
 }
