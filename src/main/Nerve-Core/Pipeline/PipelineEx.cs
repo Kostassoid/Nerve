@@ -20,6 +20,7 @@ namespace Kostassoid.Nerve.Core.Pipeline
 	using System;
 	using Scheduling;
 	using Signal;
+	using Tools.CodeContracts;
 
 	public static class PipelineEx
 	{
@@ -27,6 +28,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			where TOut : class
 			where TIn : class
 		{
+			Requires.NotNull(mapFunc, "mapFunc");
+
 			var next = new PipelineStep<TOut>(step.Synapse);
 			step.Attach(s => next.Process(new Signal<TOut>(mapFunc(s.Body), s.StackTrace)));
 
@@ -50,6 +53,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IPipelineStep<T> Where<T>(this IPipelineStep<T> step, Func<T, bool> predicate)
 			where T : class
 		{
+			Requires.NotNull(predicate, "predicate");
+
 			var next = new PipelineStep<T>(step.Synapse);
 			step.Attach(s =>
 			{
@@ -63,6 +68,9 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IPipelineStep<T> Gate<T>(this IPipelineStep<T> step, long minCount, ulong ms)
 			where T : class
 		{
+			Requires.InRange(minCount >= 0, "minCount");
+			Requires.InRange(ms >= 1, "ms");
+
 			var next = new PipelineStep<T>(step.Synapse);
 			var ticks = new List<UInt64>();
 
@@ -82,6 +90,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 
 		public static IPipelineStep Through(this IPipelineStep step, IScheduler scheduler)
 		{
+			Requires.NotNull(scheduler, "scheduler");
+
 			var next = new PipelineStep<object>(step.Synapse) as IPipelineStep;
 			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Process(s)));
 			return next;
@@ -90,6 +100,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IPipelineStep<T> Through<T>(this IPipelineStep<T> step, IScheduler scheduler)
 			where T : class
 		{
+			Requires.NotNull(scheduler, "scheduler");
+
 			var next = new PipelineStep<T>(step.Synapse);
 			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Process(s)));
 			return next;
@@ -98,6 +110,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, IHandlerOf<T> handler)
 			where T : class
 		{
+			Requires.NotNull(handler, "handler");
+
 			step.Attach(s =>
 			{
 				try
@@ -119,6 +133,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 
 		public static IDisposable ReactWith(this IPipelineStep step, IHandler handler)
 		{
+			Requires.NotNull(handler, "handler");
+
 			step.Attach(s =>
 			{
 				try

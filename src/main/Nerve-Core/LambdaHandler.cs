@@ -15,6 +15,7 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 	using Signal;
+	using Tools.CodeContracts;
 
 	public class LambdaHandler<T> : IHandlerOf<T> where T : class
 	{
@@ -23,6 +24,8 @@ namespace Kostassoid.Nerve.Core
 
 		public LambdaHandler(Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler)
 		{
+			Requires.NotNull(handler, "handler");
+
 			_handler = handler;
 			_failureHandler = failureHandler;
 		}

@@ -14,6 +14,7 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
+	using Tools.CodeContracts;
 
 	public class StackTrace
 	{
@@ -21,11 +22,15 @@ namespace Kostassoid.Nerve.Core
 
 		public StackTrace(ICell root)
 		{
+			Requires.NotNull(root, "root");
+
 			_stack.Add(root);
 		}
 
 		protected StackTrace(IList<ICell> stack)
 		{
+			Requires.NotNullOrEmpty(stack, "stack");
+
 			_stack = stack;
 		}
 
@@ -36,6 +41,8 @@ namespace Kostassoid.Nerve.Core
 
 		public void Push(ICell cell)
 		{
+			Requires.NotNull(cell, "cell");
+
 			_stack.Add(cell);
 		}
 	}

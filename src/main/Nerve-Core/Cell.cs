@@ -20,6 +20,7 @@ namespace Kostassoid.Nerve.Core
 	using Pipeline;
 	using Signal;
 	using Tools;
+	using Tools.CodeContracts;
 
 	public class Cell : ICell
 	{
@@ -42,11 +43,15 @@ namespace Kostassoid.Nerve.Core
 
 		public void Fire<T>(T body) where T : class
 		{
+			Requires.NotNull(body, "body");
+
 			Fire(new Signal<T>(body, new StackTrace(this)) as ISignal);
 		}
 
 		public void Fire(ISignal signal)
 		{
+			Requires.NotNull(signal, "signal");
+
 			_links.ForEach(l => l.Process(signal));
 		}
 
@@ -57,11 +62,15 @@ namespace Kostassoid.Nerve.Core
 
 		internal void Attach(Synapse synapse)
 		{
+			Requires.NotNull(synapse, "synapse");
+
 			_links.Add(synapse);
 		}
 
 		internal void Detach(Synapse synapse)
 		{
+			Requires.NotNull(synapse, "synapse");
+
 			_links.Remove(synapse);
 		}
 
@@ -72,6 +81,8 @@ namespace Kostassoid.Nerve.Core
 
 		public void Handle(ISignal signal)
 		{
+			Requires.NotNull(signal, "signal");
+
 			signal.Trace(this);
 			Fire(signal);
 		}

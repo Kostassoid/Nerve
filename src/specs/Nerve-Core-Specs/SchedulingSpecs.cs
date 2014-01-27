@@ -30,7 +30,7 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
 	#pragma warning disable 0169
-	public class SchedullingSpecs
+	public class SchedulingSpecs
 	{
 		[Subject(typeof(ICell), "Scheduling")]
 		[Tags("Unit")]
