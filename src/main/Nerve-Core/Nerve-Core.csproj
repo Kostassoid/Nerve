@@ -70,6 +70,7 @@
     <Compile Include="Tools\CodeContracts\Requires.cs" />
     <Compile Include="Tools\DisposableAction.cs" />
     <Compile Include="Tools\EnumerableEx.cs" />
+    <Compile Include="Tools\SystemTicks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
