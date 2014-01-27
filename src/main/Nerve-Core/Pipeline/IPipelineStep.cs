@@ -14,7 +14,6 @@
 namespace Kostassoid.Nerve.Core.Pipeline
 {
 	using System;
-	using Scheduling;
 	using Signal;
 
 	public interface IPipelineStep
@@ -29,6 +28,5 @@ namespace Kostassoid.Nerve.Core.Pipeline
 	{
 		void Execute(ISignal<T> item);
 		void Attach(Action<ISignal<T>> action);
-		void ScheduleOn(IScheduler scheduler);
 	}
 }

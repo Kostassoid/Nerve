@@ -37,7 +37,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			It should_be_faster_than_1_million_ops = () =>
 			{
 				var countdown = new CountdownEvent(SignalsCount);
-				Agent.OnStream().Of<Ping>().Through(Scheduler).ReactWith(_ => countdown.Signal());
+				Agent.OnStream().Through(Scheduler).Of<Ping>().ReactWith(_ => countdown.Signal());
 
 				var stopwatch = Stopwatch.StartNew();
 				Enumerable.Range(0, SignalsCount).ForEach(_ => Agent.Dispatch(new Ping()));

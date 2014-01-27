@@ -21,7 +21,15 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		public IFiber Fiber
 		{
-			get { return _fiber ?? (_fiber = BuildFiber()); }
+			get
+			{
+				if (_fiber != null) return _fiber;
+
+				_fiber = BuildFiber();
+				_fiber.Start();
+
+				return _fiber;
+			}
 		}
 
 		protected abstract IFiber BuildFiber();

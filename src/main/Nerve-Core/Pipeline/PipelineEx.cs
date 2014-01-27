@@ -56,11 +56,19 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			return next;
 		}
 
+		public static IPipelineStep Through(this IPipelineStep step, IScheduler scheduler)
+		{
+			var next = new PipelineStep<object>(step.Link) as IPipelineStep;
+			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Execute(s)));
+			return next;
+		}
+
 		public static IPipelineStep<T> Through<T>(this IPipelineStep<T> step, IScheduler scheduler)
 			where T : class
 		{
-			step.ScheduleOn(scheduler);
-			return step;
+			var next = new PipelineStep<T>(step.Link);
+			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Execute(s)));
+			return next;
 		}
 
 		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, IConsumerOf<T> handler)

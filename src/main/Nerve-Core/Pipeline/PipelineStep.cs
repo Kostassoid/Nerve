@@ -14,7 +14,6 @@
 namespace Kostassoid.Nerve.Core.Pipeline
 {
 	using System;
-	using Scheduling;
 	using Signal;
 
 	internal class PipelineStep<T> : IPipelineStep<T> where T : class
@@ -37,11 +36,6 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public void Attach(Action<ISignal<T>> action)
 		{
 			_next = action;
-		}
-
-		public void ScheduleOn(IScheduler scheduler)
-		{
-			Link.Scheduler = scheduler;
 		}
 
 		void IPipelineStep.Execute(ISignal signal)
