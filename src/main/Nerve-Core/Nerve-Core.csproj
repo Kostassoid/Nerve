@@ -45,25 +45,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IConsumer.cs" />
-    <Compile Include="IProducerOf.cs" />
-    <Compile Include="ProducerOf.cs" />
+    <Compile Include="IHandler.cs" />
+    <Compile Include="IEmitterOf.cs" />
+    <Compile Include="EmitterOf.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />
     <Compile Include="Scheduling\ThreadScheduler.cs" />
     <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />
-    <Compile Include="Link.cs" />
+    <Compile Include="Synapse.cs" />
     <Compile Include="Pipeline\IPipelineStep.cs" />
     <Compile Include="Pipeline\PipelineStep.cs" />
     <Compile Include="Pipeline\PipelineEx.cs" />
     <Compile Include="Signal\ISignal.cs" />
     <Compile Include="Signal\Signal.cs" />
-    <Compile Include="IProducer.cs" />
-    <Compile Include="IAgent.cs" />
-    <Compile Include="LambdaConsumer.cs" />
-    <Compile Include="Agent.cs" />
-    <Compile Include="IConsumerOf.cs" />
+    <Compile Include="IEmitter.cs" />
+    <Compile Include="ICell.cs" />
+    <Compile Include="LambdaHandler.cs" />
+    <Compile Include="Cell.cs" />
+    <Compile Include="IHandlerOf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StackTrace.cs" />
     <Compile Include="Tools\CodeContracts\Assumes.cs" />

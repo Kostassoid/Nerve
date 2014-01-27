@@ -21,79 +21,79 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable UnusedMember.Local
 	public class BasicSpecs
 	{
-		[Subject(typeof(IAgent), "Basic")]
+		[Subject(typeof(ICell), "Basic")]
 		[Tags("Unit")]
-		public class when_dispatching_a_signal_with_registered_consumer
+		public class when_firing_a_signal_with_attached_handler
 		{
 			Establish context = () =>
 			{
-				_agent = new Agent();
+				_cell = new Cell();
 
-				_agent.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+				_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 			};
 
-			Cleanup after = () => _agent.Dispose();
+			Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _agent.Dispatch(new Ping());
+			Because of = () => _cell.Fire(new Ping());
 
 			It should_be_handled = () => _received.ShouldBeTrue();
 
-			static IAgent _agent;
+			static ICell _cell;
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Basic")]
+		[Subject(typeof(ICell), "Basic")]
 		[Tags("Unit")]
-		public class when_dispatching_a_signal_with_unregistered_consumer
+		public class when_firing_a_signal_with_detached_handler
 		{
 			Establish context = () =>
 			{
-				_agent = new Agent();
+				_cell = new Cell();
 
-				var subscription = _agent.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+				var subscription = _cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 				subscription.Dispose();
 			};
 
-			Cleanup after = () => _agent.Dispose();
+			Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _agent.Dispatch(new Ping());
+			Because of = () => _cell.Fire(new Ping());
 
 			It should_not_be_handled = () => _received.ShouldBeFalse();
 
-			static IAgent _agent;
+			static ICell _cell;
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Basic")]
+		[Subject(typeof(ICell), "Basic")]
 		[Tags("Unit")]
-		public class when_dispatching_a_signal_without_registered_consumer
+		public class when_firing_a_signal_without_attached_consumer
 		{
 			Establish context = () =>
 								{
-									_agent = new Agent();
+									_cell = new Cell();
 
-									_agent.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+									_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 								};
 
-			Cleanup after = () => _agent.Dispose();
+			Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _agent.Dispatch(new Pong());
+			Because of = () => _cell.Fire(new Pong());
 
 			It should_not_be_handled = () => _received.ShouldBeFalse();
 
-			static IAgent _agent;
+			static ICell _cell;
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Basic")]
+		[Subject(typeof(ICell), "Basic")]
 		[Tags("Unit")]
-		public class when_dispatching_a_signal_with_intermediate_registered_agents
+		public class when_firing_a_signal_with_intermediate_attached_cells
 		{
 			Establish context = () =>
 								{
-									_a = new Agent();
-									_b = new Agent();
-									_c = new Agent();
+									_a = new Cell();
+									_b = new Cell();
+									_c = new Cell();
 
 									_a.OnStream().Of<Ping>().ReactWith(_b);
 									_b.OnStream().Of<Ping>().ReactWith(_c);
@@ -107,24 +107,24 @@ namespace Kostassoid.Nerve.Core.Specs
 								_c.Dispose();
 							};
 
-			Because of = () => _a.Dispatch(new Ping());
+			Because of = () => _a.Fire(new Ping());
 
 			It should_receive_signal = () => _received.ShouldBeTrue();
 
-			static IAgent _a;
-			static IAgent _b;
-			static IAgent _c;
+			static ICell _a;
+			static ICell _b;
+			static ICell _c;
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Basic")]
+		[Subject(typeof(ICell), "Basic")]
 		[Tags("Unit")]
-		public class when_requesting_using_concrete_receiver
+		public class when_firing_back_using_concrete_handler
 		{
 			Establish context = () =>
 								{
-									_ping = new Agent();
-									_pong = new Agent();
+									_ping = new Cell();
+									_pong = new Cell();
 
 									_ping.OnStream().Of<Ping>().ReactWith(_pong);
 									_pong.OnStream().Of<Pong>().ReactWith(_ping);
@@ -139,12 +139,12 @@ namespace Kostassoid.Nerve.Core.Specs
 								_pong.Dispose();
 							};
 
-			Because of = () => _ping.Dispatch(new Ping());
+			Because of = () => _ping.Fire(new Ping());
 
-			It should_receive_response_on_specified_receiver = () => _received.ShouldBeTrue();
+			It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 
-			static Agent _ping;
-			static Agent _pong;
+			static Cell _ping;
+			static Cell _pong;
 			static bool _received;
 		}
 

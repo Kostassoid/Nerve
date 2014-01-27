@@ -13,12 +13,12 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using Signal;
+	using System;
+	using Pipeline;
 
-	public interface IProducerOf<in T> where T : class
+	public interface ICell : IEmitter, IHandler, IDisposable
 	{
-		void Dispatch(T body);
-
-		void Dispatch(ISignal<T> signal);
+		IPipelineStep OnStream();
+		IEmitterOf<T> GetEmitterOf<T>() where T : class;
 	}
 }

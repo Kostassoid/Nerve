@@ -20,12 +20,14 @@ namespace Kostassoid.Nerve.Core
 	using Signal;
 	using Tools;
 
-	public class Agent : IAgent
+	public class Cell : ICell
 	{
-		public string Name { get; private set; }
-		readonly ISet<Link> _links = new HashSet<Link>();
+		private object _sync = new object();
 
-		public Agent(string name = null)
+		public string Name { get; private set; }
+		readonly ISet<Synapse> _links = new HashSet<Synapse>();
+
+		public Cell(string name = null)
 		{
 			Name = name;
 		}
@@ -36,45 +38,45 @@ namespace Kostassoid.Nerve.Core
 			_links.Clear();
 		}
 
-		public void Dispatch<T>(T body) where T : class
+		public void Fire<T>(T body) where T : class
 		{
-			Dispatch(new Signal<T>(body, new StackTrace(this)) as ISignal);
+			Fire(new Signal<T>(body, new StackTrace(this)) as ISignal);
 		}
 
-		public void Dispatch(ISignal signal)
+		public void Fire(ISignal signal)
 		{
 			_links.ForEach(l => l.Process(signal));
 		}
 
 		public IPipelineStep OnStream()
 		{
-			return new Link(this).Pipeline;
+			return new Synapse(this).Pipeline;
 		}
 
-		public void Subscribe(Link link)
+		internal void Attach(Synapse synapse)
 		{
-			_links.Add(link);
+			_links.Add(synapse);
 		}
 
-		public void Unsubscribe(Link link)
+		internal void Detach(Synapse synapse)
 		{
-			_links.Remove(link);
+			_links.Remove(synapse);
 		}
 
-		public IProducerOf<T> GetProducerOf<T>() where T : class
+		public IEmitterOf<T> GetEmitterOf<T>() where T : class
 		{
-			return new ProducerOf<T>(this);
+			return new EmitterOf<T>(this);
 		}
 
 		public void Handle(ISignal signal)
 		{
 			signal.Trace(this);
-			Dispatch(signal);
+			Fire(signal);
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Agent [{0}]", Name ?? "unnamed");
+			return string.Format("Cell [{0}]", Name ?? "unnamed");
 		}
 	}
 }

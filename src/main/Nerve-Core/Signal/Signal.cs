@@ -31,14 +31,14 @@ namespace Kostassoid.Nerve.Core.Signal
 		{
 			var sender = StackTrace.Root;
 			if (sender == null)
-				throw new InvalidOperationException("No agents in stacktrace.");
+				throw new InvalidOperationException("No cells in stacktrace.");
 
-			sender.Dispatch(response);
+			sender.Fire(response);
 		}
 
-		public void Trace(IAgent agent)
+		public void Trace(ICell cell)
 		{
-			StackTrace.Push(agent);
+			StackTrace.Push(cell);
 		}
 
 		public ISignal<TOut> As<TOut>() where TOut : class

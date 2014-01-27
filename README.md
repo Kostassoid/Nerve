@@ -6,55 +6,55 @@ Nerve is a federated messaging library for .NET. It combines ideas of [EventAggr
 Basic usage
 -----------
 
-A basic building block of Nerve infrastructure is an Agent, which, by default implementation, is basically an in-proc message broker. It allows you to subscribe to message stream using rich fluent interface and also to publish messages (called Signals).
+A basic building block of Nerve infrastructure is a Cell, which, by default implementation, is basically an in-proc message broker. It allows you to subscribe to message stream using rich fluent interface and also to publish messages (called Signals).
 
-A quick and simple example using a single agent:
+A quick and simple example using a single cell:
 
-    // creating a new agent
-    _agent = new Agent();
+    // creating a new cell
+    _cell = new Cell();
     
     //subscribing to Ping signals
-    _agent.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+    _cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
     
     //subscribing to Pong signals
-    _agent.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+    _cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
     
-    //dispatching (publishing) a signal
-    _agent.Dispatch(new Ping());
+    //firing (publishing) a signal
+    _cell.Fire(new Ping());
     
-    //disposing an agent
-    _agent.Dispose();
+    //disposing the cell
+    _cell.Dispose();
 
 Federation
 ----------
 
-Each agent is also a consumer. It can be subscribed to a stream of signals dispatched from another agents, which allows for building a really complex routing.
+Each cell can also be a receiver itself. It can be subscribed to a stream of signals fired from another cells, which allows for building a really complex routing.
 
-    // creating agents
-    _ping = new Agent();
-    _pong = new Agent();
+    // creating cells
+    _ping = new Cell();
+    _pong = new Cell();
 
-    // subscribing Agents to signals from each other
+    // subscribing cells to signals from each other
     _ping.OnStream().Of<Ping>().ReactWith(_pong);
     _pong.OnStream().Of<Pong>().ReactWith(_ping);
 
-    // defining handlers on each Agent
+    // defining handlers on each cell
     _pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
     _ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 
-    //dispatching (publishing) a signal
-    _ping.Dispatch(new Ping());
+    //firing (publishing) a signal
+    _ping.Fire(new Ping());
     
-    //disposing agents
+    //disposing cells
     _ping.Dispose();
     _pong.Dispose();
 
-This example may not look impressive. But imagine if one of the agents is actually implemented as a client for some out-of-proc messaging middleware (ex. MSMQ).
+This example may not look impressive. But imagine if one of the cells is actually implemented as a client for some out-of-proc messaging middleware (ex. MSMQ).
 
 Scheduling
 ----------
 
-Each signal passing through subscription pipeline is going through at least one scheduler. Scheduler decide how a signal will be delivered. By default, incoming signals are processed on the same thread they were dispatched on. But there are other implementations, allowing to use dedicated thread or a threadpool.
+Each signal passing through attached pipeline (synapse) is going through at least one scheduler. Scheduler decide how a signal will be delivered. By default, incoming signals are processed on the same thread they were dispatched on. But there are other implementations, allowing to use dedicated thread or a thread pool.
 
 Current State
 -------------

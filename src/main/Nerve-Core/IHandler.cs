@@ -15,23 +15,8 @@ namespace Kostassoid.Nerve.Core
 {
 	using Signal;
 
-	internal class ProducerOf<T> : IProducerOf<T> where T : class
+	public interface IHandler
 	{
-		readonly IAgent _agent;
-
-		public ProducerOf(IAgent agent)
-		{
-			_agent = agent;
-		}
-
-		public void Dispatch(T body)
-		{
-			_agent.Dispatch(body);
-		}
-
-		public void Dispatch(ISignal<T> signal)
-		{
-			_agent.Dispatch(signal);
-		}
+		void Handle(ISignal signal);
 	}
 }

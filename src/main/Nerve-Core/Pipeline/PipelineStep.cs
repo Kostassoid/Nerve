@@ -20,14 +20,14 @@ namespace Kostassoid.Nerve.Core.Pipeline
 	{
 		Action<ISignal<T>> _next;
 
-		public Link Link { get; private set; }
+		public Synapse Synapse { get; private set; }
 
-		public PipelineStep(Link link)
+		public PipelineStep(Synapse synapse)
 		{
-			Link = link;
+			Synapse = synapse;
 		}
 
-		public void Execute(ISignal<T> item)
+		public void Process(ISignal<T> item)
 		{
 			if (_next == null) return;
 			_next(item);
@@ -38,9 +38,9 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			_next = action;
 		}
 
-		void IPipelineStep.Execute(ISignal signal)
+		void IPipelineStep.Process(ISignal signal)
 		{
-			Execute(signal.As<T>());
+			Process(signal.As<T>());
 		}
 
 		void IPipelineStep.Attach(Action<ISignal> action)

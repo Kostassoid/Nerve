@@ -23,8 +23,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			where TOut : class
 			where TIn : class
 		{
-			var next = new PipelineStep<TOut>(step.Link);
-			step.Attach(s => next.Execute(new Signal<TOut>(mapFunc(s.Body), s.StackTrace)));
+			var next = new PipelineStep<TOut>(step.Synapse);
+			step.Attach(s => next.Process(new Signal<TOut>(mapFunc(s.Body), s.StackTrace)));
 
 			return next;
 		}
@@ -32,12 +32,12 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IPipelineStep<TOut> Of<TOut>(this IPipelineStep step)
 			where TOut : class
 		{
-			var next = new PipelineStep<TOut>(step.Link);
+			var next = new PipelineStep<TOut>(step.Synapse);
 			step.Attach(s =>
 							   {
 								   var t = s.Body as TOut;
 								   if (t == null) return;
-								   next.Execute(new Signal<TOut>(t, s.StackTrace));
+								   next.Process(new Signal<TOut>(t, s.StackTrace));
 							   });
 
 			return next;
@@ -46,11 +46,11 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IPipelineStep<T> Where<T>(this IPipelineStep<T> step, Func<T, bool> predicate)
 			where T : class
 		{
-			var next = new PipelineStep<T>(step.Link);
+			var next = new PipelineStep<T>(step.Synapse);
 			step.Attach(s =>
 						{
 							if (predicate(s.Body))
-								next.Execute(s);
+								next.Process(s);
 						});
 
 			return next;
@@ -58,40 +58,40 @@ namespace Kostassoid.Nerve.Core.Pipeline
 
 		public static IPipelineStep Through(this IPipelineStep step, IScheduler scheduler)
 		{
-			var next = new PipelineStep<object>(step.Link) as IPipelineStep;
-			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Execute(s)));
+			var next = new PipelineStep<object>(step.Synapse) as IPipelineStep;
+			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Process(s)));
 			return next;
 		}
 
 		public static IPipelineStep<T> Through<T>(this IPipelineStep<T> step, IScheduler scheduler)
 			where T : class
 		{
-			var next = new PipelineStep<T>(step.Link);
-			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Execute(s)));
+			var next = new PipelineStep<T>(step.Synapse);
+			step.Attach(s => scheduler.Fiber.Enqueue(() => next.Process(s)));
 			return next;
 		}
 
-		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, IConsumerOf<T> handler)
+		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, IHandlerOf<T> handler)
 			where T : class
 		{
 			step.Attach(handler.Handle);
-			step.Link.Subscribe();
-			return step.Link;
+			step.Synapse.Subscribe();
+			return step.Synapse;
 		}
 
 		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, Action<ISignal<T>> handler)
 			where T : class
 		{
 			step.Attach(handler);
-			step.Link.Subscribe();
-			return step.Link;
+			step.Synapse.Subscribe();
+			return step.Synapse;
 		}
 
-		public static IDisposable ReactWith(this IPipelineStep step, IAgent handler)
+		public static IDisposable ReactWith(this IPipelineStep step, IHandler handler)
 		{
 			step.Attach(handler.Handle);
-			step.Link.Subscribe();
-			return step.Link;
+			step.Synapse.Subscribe();
+			return step.Synapse;
 		}
 	}
 }

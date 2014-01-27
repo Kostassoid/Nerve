@@ -13,10 +13,34 @@
 
 namespace Kostassoid.Nerve.Core
 {
+	using System;
+	using Pipeline;
 	using Signal;
 
-	public interface IConsumer
+	public sealed class Synapse : IDisposable
 	{
-		void Handle(ISignal signal);
+		public Cell Owner { get; private set; }
+		public IPipelineStep Pipeline { get; private set; }
+
+		public Synapse(Cell owner)
+		{
+			Pipeline = new PipelineStep<object>(this);
+			Owner = owner;
+		}
+
+		public void Process(ISignal signal)
+		{
+			Pipeline.Process(signal);
+		}
+
+		public void Subscribe()
+		{
+			Owner.Attach(this);
+		}
+
+		public void Dispose()
+		{
+			Owner.Detach(this);
+		}
 	}
 }

@@ -11,6 +11,9 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System.Threading.Tasks;
+using Kostassoid.Nerve.Core.Signal;
+
 namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
@@ -29,14 +32,14 @@ namespace Kostassoid.Nerve.Core.Specs
 	#pragma warning disable 0169
 	public class SchedullingSpecs
 	{
-		[Subject(typeof(IAgent), "Scheduling")]
+		[Subject(typeof(ICell), "Scheduling")]
 		[Tags("Unit")]
-		public class when_dispatching_using_async_scheduler
+		public class when_firing_using_async_scheduler
 		{
 			Establish context = () =>
 			{
-				_agent = new Agent();
-				_agent.OnStream().Of<Ping>()
+				_cell = new Cell();
+				_cell.OnStream().Of<Ping>()
 					.Through(new PoolScheduler())
 					.ReactWith(_ =>
 					{
@@ -45,13 +48,13 @@ namespace Kostassoid.Nerve.Core.Specs
 					});
 			};
 
-			Cleanup after = () => _agent.Dispose();
+			Cleanup after = () => _cell.Dispose();
 
 			Because of = () =>
 			{
-				_agent.Dispatch(new Ping());
-				_agent.Dispatch(new Ping());
-				_agent.Dispatch(new Ping());
+				_cell.Fire(new Ping());
+				_cell.Fire(new Ping());
+				_cell.Fire(new Ping());
 			};
 
 			It should_receive_in_async_fashion = () =>
@@ -60,27 +63,27 @@ namespace Kostassoid.Nerve.Core.Specs
 				_waitHandle.Wait(TimeSpan.FromSeconds(3)).ShouldBeTrue();
 			};
 
-			static Agent _agent;
+			static Cell _cell;
 			static readonly CountdownEvent _waitHandle = new CountdownEvent(3);
 		}
 
 		[Behaviors]
 		public class serialized_processor
 		{
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 
 			It should_receive_in_original_order = () =>
 			{
 				var received = new List<int>();
 				var countdown = new CountdownEvent(10);
-				Agent.OnStream().Of<Num>().Through(Scheduler).ReactWith(s =>
-																		{
-																			received.Add(s.Body.Value);
-																			countdown.Signal();
-																		});
+				Cell.OnStream().Of<Num>().Through(Scheduler).ReactWith(s =>
+				{
+					received.Add(s.Body.Value);
+					countdown.Signal();
+				});
 
-				Enumerable.Range(1, 10).ForEach(i => Agent.Dispatch(new Num(i)));
+				Enumerable.Range(1, 10).ForEach(i => Cell.Fire(new Num(i)));
 
 				countdown.Wait();
 
@@ -88,58 +91,96 @@ namespace Kostassoid.Nerve.Core.Specs
 			};
 		}
 
-		[Subject(typeof(IAgent), "Scheduling")]
+		[Subject(typeof(ICell), "Scheduling")]
 		[Tags("Unit")]
-		public class when_dispatching_series_or_signals_using_immediate_scheduler
+		public class when_firing_series_or_signals_using_immediate_scheduler
 		{
 			Establish context = () =>
 			{
-				Agent = new Agent();
+				Cell = new Cell();
 				Scheduler = new ImmediateScheduler();
 			};
 
-			Cleanup after = () => Agent.Dispose();
+			Cleanup after = () => Cell.Dispose();
 
 			Behaves_like<serialized_processor> _;
 
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(IAgent), "Scheduling")]
+		[Subject(typeof(ICell), "Scheduling")]
 		[Tags("Unit")]
-		public class when_dispatching_series_or_signals_using_pool_scheduler
+		public class when_firing_series_or_signals_using_pool_scheduler
 		{
 			Establish context = () =>
 			{
-				Agent = new Agent();
+				Cell = new Cell();
 				Scheduler = new PoolScheduler();
 			};
 
-			Cleanup after = () => Agent.Dispose();
+			Cleanup after = () => Cell.Dispose();
 
 			Behaves_like<serialized_processor> _;
 
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(IAgent), "Scheduling")]
+		[Subject(typeof(ICell), "Scheduling")]
 		[Tags("Unit")]
-		public class when_dispatching_series_or_signals_using_thread_scheduler
+		public class when_firing_series_or_signals_using_thread_scheduler
 		{
 			Establish context = () =>
 			{
-				Agent = new Agent();
+				Cell = new Cell();
 				Scheduler = new ThreadScheduler();
 			};
 
-			Cleanup after = () => Agent.Dispose();
+			Cleanup after = () => Cell.Dispose();
 
 			Behaves_like<serialized_processor> _;
 
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
+		}
+
+		[Subject(typeof(ICell), "Scheduling")]
+		[Tags("Unit")]
+		public class when_firing_from_many_threads_using_serializing_scheduler
+		{
+			Establish context = () =>
+			{
+				_cell = new Cell();
+
+				Action<ISignal<Num>> handler = s =>
+				{
+					Thread.Sleep(100);
+					_result[s.Body.Value]++;
+					_waitHandle.Signal();
+				};
+
+				_cell.OnStream()
+					.Through(new ThreadScheduler())
+					.Of<Num>()
+					.ReactWith(handler);
+			};
+
+			Cleanup after = () => _cell.Dispose();
+
+			Because of = () => Enumerable.Range(0, _count).ForEach(i => Task.Factory.StartNew(() => _cell.Fire(new Num(i))));
+
+			It should_process_signals_serialized = () =>
+			{
+				_waitHandle.Wait(TimeSpan.FromSeconds(1)).ShouldBeFalse();
+				_waitHandle.Wait(TimeSpan.FromSeconds(3)).ShouldBeTrue();
+				_result.All(i => i == 1).ShouldBeTrue();
+			};
+
+			private const int _count = 20;
+			static readonly int[] _result = new int[_count];
+			static Cell _cell;
+			static readonly CountdownEvent _waitHandle = new CountdownEvent(_count);
 		}
 
 

@@ -17,26 +17,26 @@ namespace Kostassoid.Nerve.Core
 
 	public class StackTrace
 	{
-		readonly IList<IAgent> _stack = new List<IAgent>();
+		readonly IList<ICell> _stack = new List<ICell>();
 
-		public StackTrace(IAgent root)
+		public StackTrace(ICell root)
 		{
 			_stack.Add(root);
 		}
 
-		protected StackTrace(IList<IAgent> stack)
+		protected StackTrace(IList<ICell> stack)
 		{
 			_stack = stack;
 		}
 
-		public IAgent Root
+		public ICell Root
 		{
 			get { return _stack[0]; }
 		}
 
-		public void Push(IAgent agent)
+		public void Push(ICell cell)
 		{
-			_stack.Add(agent);
+			_stack.Add(cell);
 		}
 	}
 }

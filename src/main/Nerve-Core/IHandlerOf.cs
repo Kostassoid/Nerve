@@ -15,10 +15,8 @@ namespace Kostassoid.Nerve.Core
 {
 	using Signal;
 
-	public interface IProducer
+	public interface IHandlerOf<in T> where T : class
 	{
-		void Dispatch<T>(T body) where T : class;
-
-		void Dispatch(ISignal signal);
+		void Handle(ISignal<T> signal);
 	}
 }

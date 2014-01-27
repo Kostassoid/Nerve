@@ -11,6 +11,8 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System;
+
 namespace Kostassoid.Nerve.Core.Specs
 {
 	using System.Diagnostics;
@@ -31,78 +33,92 @@ namespace Kostassoid.Nerve.Core.Specs
 		public class fast_message_broker
 		{
 			protected static int SignalsCount;
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 
 			It should_be_faster_than_1_million_ops = () =>
 			{
 				var countdown = new CountdownEvent(SignalsCount);
-				Agent.OnStream().Through(Scheduler).Of<Ping>().ReactWith(_ => countdown.Signal());
+				Cell.OnStream().Through(Scheduler).Of<Ping>().ReactWith(_ => countdown.Signal());
 
 				var stopwatch = Stopwatch.StartNew();
-				Enumerable.Range(0, SignalsCount).ForEach(_ => Agent.Dispatch(new Ping()));
+				Enumerable.Range(0, SignalsCount).ForEach(_ => Cell.Fire(new Ping()));
 
 				countdown.Wait();
 				stopwatch.Stop();
 
-				(SignalsCount/stopwatch.ElapsedMilliseconds*1000).ShouldBeGreaterThan(1000000);
+				var ops = SignalsCount/stopwatch.ElapsedMilliseconds*1000;
+				Console.WriteLine("Ops / second: {0}", ops);
+				ops.ShouldBeGreaterThan(1000000);
 			};
 		}
 
-		[Subject(typeof(IAgent), "Performance")]
+		[Subject(typeof(ICell), "Performance")]
 		[Tags("Unit")]
-		public class when_publishing_many_signals_on_one_agent_using_immediate_scheduler
+		public class when_firing_many_signals_on_one_cell_using_immediate_scheduler
 		{
 			Establish context = () =>
 			{
-				Agent = new Agent();
+				Cell = new Cell();
 				Scheduler = new ImmediateScheduler();
 			};
 
-			Cleanup after = () => Agent.Dispose();
+			Cleanup after = () =>
+			{
+				Scheduler.Dispose();
+				Cell.Dispose();
+			};
 
 			Behaves_like<fast_message_broker> _;
 
 			protected static int SignalsCount = 1000000;
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(IAgent), "Performance")]
+		[Subject(typeof(ICell), "Performance")]
 		[Tags("Unit")]
-		public class when_publishing_many_signals_on_one_agent_using_pool_scheduler
+		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
 			Establish context = () =>
 			{
-				Agent = new Agent();
+				Cell = new Cell();
 				Scheduler = new PoolScheduler();
 			};
 
-			Cleanup after = () => Agent.Dispose();
+			Cleanup after = () =>
+			{
+				Scheduler.Dispose();
+				Cell.Dispose();
+			};
 
 			Behaves_like<fast_message_broker> _;
 
 			protected static int SignalsCount = 1000000;
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(IAgent), "Performance")]
+		[Subject(typeof(ICell), "Performance")]
 		[Tags("Unit")]
-		public class when_publishing_many_signals_on_one_agent_using_thread_scheduler
+		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
 			Establish context = () =>
 			{
-				Agent = new Agent();
+				Cell = new Cell();
 				Scheduler = new ThreadScheduler();
 			};
 
-			Cleanup after = () => Agent.Dispose();
+			Cleanup after = () =>
+			{
+				Scheduler.Dispose();
+				Cell.Dispose();
+			};
 
 			Behaves_like<fast_message_broker> _;
 
 			protected static int SignalsCount = 1000000;
-			protected static IAgent Agent;
+			protected static ICell Cell;
 			protected static IScheduler Scheduler;
 		}
 	}

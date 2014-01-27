@@ -13,34 +13,25 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System;
-	using Pipeline;
 	using Signal;
 
-	public class Link : IDisposable
+	internal class EmitterOf<T> : IEmitterOf<T> where T : class
 	{
-		public IAgent Owner { get; private set; }
-		public IPipelineStep Pipeline { get; private set; }
+		readonly ICell _cell;
 
-		public Link(IAgent owner)
+		public EmitterOf(ICell cell)
 		{
-			Pipeline = new PipelineStep<object>(this);
-			Owner = owner;
+			_cell = cell;
 		}
 
-		public void Process(ISignal signal)
+		public void Fire(T body)
 		{
-			Pipeline.Execute(signal);
+			_cell.Fire(body);
 		}
 
-		public void Subscribe()
+		public void Fire(ISignal<T> signal)
 		{
-			Owner.Subscribe(this);
-		}
-
-		public void Dispose()
-		{
-			Owner.Unsubscribe(this);
+			_cell.Fire(signal);
 		}
 	}
 }

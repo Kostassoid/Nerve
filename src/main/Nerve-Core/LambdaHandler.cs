@@ -13,10 +13,26 @@
 
 namespace Kostassoid.Nerve.Core
 {
+	using System;
 	using Signal;
 
-	public interface IConsumerOf<in T> where T : class
+	public class LambdaHandler<T> : IHandlerOf<T> where T : class
 	{
-		void Handle(ISignal<T> signal);
+		readonly Action<ISignal<T>> _handler;
+
+		public LambdaHandler(Action<ISignal<T>> handler)
+		{
+			_handler = handler;
+		}
+
+		public void Handle(ISignal<T> signal)
+		{
+			_handler(signal);
+		}
+
+		public void Handle(ISignal signal)
+		{
+			_handler(signal.As<T>());
+		}
 	}
 }

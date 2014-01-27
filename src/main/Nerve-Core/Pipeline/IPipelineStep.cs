@@ -18,15 +18,15 @@ namespace Kostassoid.Nerve.Core.Pipeline
 
 	public interface IPipelineStep
 	{
-		Link Link { get; }
+		Synapse Synapse { get; }
 
-		void Execute(ISignal item);
+		void Process(ISignal item);
 		void Attach(Action<ISignal> action);
 	}
 
 	public interface IPipelineStep<T> : IPipelineStep where T : class
 	{
-		void Execute(ISignal<T> item);
+		void Process(ISignal<T> item);
 		void Attach(Action<ISignal<T>> action);
 	}
 }

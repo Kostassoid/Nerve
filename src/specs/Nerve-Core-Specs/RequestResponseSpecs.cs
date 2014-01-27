@@ -21,36 +21,36 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable InconsistentNaming
 	public class RequestResponseSpecs
 	{
-		[Subject(typeof(IAgent), "Request")]
+		[Subject(typeof(ICell), "Request")]
 		[Tags("Unit")]
-		public class when_requesting_using_single_agent
+		public class when_requesting_using_single_cell
 		{
 			Establish context = () =>
 			{
-				_agent = new Agent();
+				_cell = new Cell();
 
-				_agent.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-				_agent.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+				_cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 			};
 
-			Cleanup after = () => _agent.Dispose();
+			Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _agent.Dispatch(new Ping());
+			Because of = () => _cell.Fire(new Ping());
 
 			It should_receive_response = () => _received.ShouldBeTrue();
 
-			static Agent _agent;
+			static Cell _cell;
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Request")]
+		[Subject(typeof(ICell), "Request")]
 		[Tags("Unit")]
-		public class when_requesting_using_concrete_receiver
+		public class when_requesting_using_concrete_handler
 		{
 			Establish context = () =>
 			{
-				_ping = new Agent();
-				_pong = new Agent();
+				_ping = new Cell();
+				_pong = new Cell();
 
 				_ping.OnStream().Of<Ping>().ReactWith(_pong);
 				_pong.OnStream().Of<Pong>().ReactWith(_ping);
@@ -65,24 +65,24 @@ namespace Kostassoid.Nerve.Core.Specs
 				_pong.Dispose();
 			};
 
-			Because of = () => _ping.Dispatch(new Ping());
+			Because of = () => _ping.Fire(new Ping());
 
-			It should_receive_response_on_specified_receiver = () => _received.ShouldBeTrue();
+			It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 
-			static Agent _ping;
-			static Agent _pong;
+			static Cell _ping;
+			static Cell _pong;
 			static bool _received;
 		}
 
-		[Subject(typeof(IAgent), "Request")]
+		[Subject(typeof(ICell), "Request")]
 		[Tags("Unit")]
-		public class when_requesting_using_chain_of_agents
+		public class when_requesting_using_chained_cells
 		{
 			Establish context = () =>
 			{
-				_ping = new Agent("Ping");
-				_middleman = new Agent("Middle man");
-				_pong = new Agent("Pong");
+				_ping = new Cell("Ping");
+				_middleman = new Cell("Middle man");
+				_pong = new Cell("Pong");
 
 				_ping.OnStream().Of<Ping>().ReactWith(_middleman);
 
@@ -100,13 +100,13 @@ namespace Kostassoid.Nerve.Core.Specs
 				_middleman.Dispose();
 			};
 
-			Because of = () => _ping.Dispatch(new Ping());
+			Because of = () => _ping.Fire(new Ping());
 
-			It should_receive_response_on_specified_receiver = () => _received.ShouldBeTrue();
+			It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 
-			static Agent _ping;
-			static Agent _middleman;
-			static Agent _pong;
+			static Cell _ping;
+			static Cell _middleman;
+			static Cell _pong;
 			static bool _received;
 		}
 	}
