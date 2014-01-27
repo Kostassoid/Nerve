@@ -53,6 +53,7 @@
     <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />
+    <Compile Include="SignalHandlingException.cs" />
     <Compile Include="Synapse.cs" />
     <Compile Include="Pipeline\IPipelineStep.cs" />
     <Compile Include="Pipeline\PipelineStep.cs" />

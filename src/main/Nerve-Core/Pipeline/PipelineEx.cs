@@ -106,7 +106,11 @@ namespace Kostassoid.Nerve.Core.Pipeline
 				}
 				catch (Exception ex)
 				{
-					handler.OnFailure(ex);
+					var signalException = new SignalHandlingException(ex, s);
+					if (!handler.OnFailure(signalException))
+					{
+						step.Synapse.Owner.OnFailure(signalException);
+					}
 				}
 			});
 			step.Synapse.Subscribe();
@@ -123,14 +127,18 @@ namespace Kostassoid.Nerve.Core.Pipeline
 				}
 				catch (Exception ex)
 				{
-					handler.OnFailure(ex);
+					var signalException = new SignalHandlingException(ex, s);
+					if (!handler.OnFailure(signalException))
+					{
+						step.Synapse.Owner.OnFailure(signalException);
+					}
 				}
 			});
 			step.Synapse.Subscribe();
 			return step.Synapse;
 		}
 
-		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, Action<ISignal<T>> handler, Action<Exception> failureHandler = null)
+		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler = null)
 			where T : class
 		{
 			return ReactWith(step, new LambdaHandler<T>(handler, failureHandler));

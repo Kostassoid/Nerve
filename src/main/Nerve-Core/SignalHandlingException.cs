@@ -11,36 +11,18 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System;
+using Kostassoid.Nerve.Core.Signal;
+
 namespace Kostassoid.Nerve.Core
 {
-	using System;
-	using Signal;
-
-	public class LambdaHandler<T> : IHandlerOf<T> where T : class
+	public class SignalHandlingException : Exception
 	{
-		readonly Action<ISignal<T>> _handler;
-		readonly Action<SignalHandlingException> _failureHandler;
+		public ISignal Signal { get; private set; }
 
-		public LambdaHandler(Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler)
+		public SignalHandlingException(Exception innerException, ISignal signal) : base("Unhandled exception", innerException)
 		{
-			_handler = handler;
-			_failureHandler = failureHandler;
-		}
-
-		public void Handle(ISignal<T> signal)
-		{
-			_handler(signal);
-		}
-
-		public bool OnFailure(SignalHandlingException exception)
-		{
-			if (_failureHandler != null)
-			{
-				_failureHandler(exception);
-				return true;
-			}
-
-			return false;
+			Signal = signal;
 		}
 	}
 }

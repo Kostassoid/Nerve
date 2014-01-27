@@ -30,6 +30,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			Establish context = () =>
 			{
 				_cell = new Cell();
+				_cell.UnhandledException += (sender, args) => { _cellIsNotified = true; };
 
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); });
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
@@ -51,11 +52,14 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			It should_not_disrupt_another_handlers = () => _received.ShouldBeTrue();
 
-			It exception_should_be_swallowed = () => _exceptionHasLeaked.ShouldBeFalse();
+			It should_swallow_exception = () => _exceptionHasLeaked.ShouldBeFalse();
+
+			It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
 
 			static ICell _cell;
 			static bool _received;
 			static bool _exceptionHasLeaked;
+			static bool _cellIsNotified;
 		}
 
 		[Subject(typeof(ICell), "Error handling")]
@@ -65,7 +69,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			Establish context = () =>
 			{
 				_cell = new Cell();
-
+				_cell.UnhandledException += (sender, args) => { _cellIsNotified = true; };
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); }, _ => { _exceptionWasHandled = true; });
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
 			};
@@ -76,10 +80,13 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			It should_not_disrupt_another_handlers = () => _received.ShouldBeTrue();
 
-			It exception_should_be_handled = () => _exceptionWasHandled.ShouldBeTrue();
+			It should_handle_exception = () => _exceptionWasHandled.ShouldBeTrue();
+
+			It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
 
 			static ICell _cell;
 			static bool _received;
+			static bool _cellIsNotified;
 			static bool _exceptionWasHandled;
 		}
 	}

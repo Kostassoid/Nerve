@@ -18,6 +18,8 @@ namespace Kostassoid.Nerve.Core
 
 	public interface ICell : IEmitter, IHandler, IDisposable
 	{
+		event EventHandler<UnhandledExceptionEventArgs> UnhandledException;
+
 		IPipelineStep OnStream();
 		IEmitterOf<T> GetEmitterOf<T>() where T : class;
 	}

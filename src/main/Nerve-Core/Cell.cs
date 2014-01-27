@@ -23,10 +23,11 @@ namespace Kostassoid.Nerve.Core
 
 	public class Cell : ICell
 	{
-		private object _sync = new object();
+		readonly ISet<Synapse> _links = new HashSet<Synapse>();
 
 		public string Name { get; private set; }
-		readonly ISet<Synapse> _links = new HashSet<Synapse>();
+
+		public event EventHandler<UnhandledExceptionEventArgs> UnhandledException = (sender, args) => {};
 
 		public Cell(string name = null)
 		{
@@ -75,9 +76,10 @@ namespace Kostassoid.Nerve.Core
 			Fire(signal);
 		}
 
-		public void OnFailure(Exception exception)
+		public bool OnFailure(SignalHandlingException exception)
 		{
-			//TODO: ?
+			UnhandledException(this, new UnhandledExceptionEventArgs(exception, false));
+			return true;
 		}
 
 		public override string ToString()

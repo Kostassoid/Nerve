@@ -11,8 +11,6 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-
 namespace Kostassoid.Nerve.Core
 {
 	using Signal;
@@ -21,6 +19,6 @@ namespace Kostassoid.Nerve.Core
 	{
 		void Handle(ISignal signal);
 
-		void OnFailure(Exception exception);
+		bool OnFailure(SignalHandlingException exception);
 	}
 }
