@@ -19,10 +19,12 @@ namespace Kostassoid.Nerve.Core
 	public class LambdaHandler<T> : IHandlerOf<T> where T : class
 	{
 		readonly Action<ISignal<T>> _handler;
+		readonly Action<Exception> _failureHandler;
 
-		public LambdaHandler(Action<ISignal<T>> handler)
+		public LambdaHandler(Action<ISignal<T>> handler, Action<Exception> failureHandler)
 		{
 			_handler = handler;
+			_failureHandler = failureHandler;
 		}
 
 		public void Handle(ISignal<T> signal)
@@ -30,9 +32,10 @@ namespace Kostassoid.Nerve.Core
 			_handler(signal);
 		}
 
-		public void Handle(ISignal signal)
+		public void OnFailure(Exception exception)
 		{
-			_handler(signal.As<T>());
+			if (_failureHandler != null)
+				_failureHandler(exception);
 		}
 	}
 }

@@ -98,24 +98,42 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, IHandlerOf<T> handler)
 			where T : class
 		{
-			step.Attach(handler.Handle);
-			step.Synapse.Subscribe();
-			return step.Synapse;
-		}
-
-		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, Action<ISignal<T>> handler)
-			where T : class
-		{
-			step.Attach(handler);
+			step.Attach(s =>
+			{
+				try
+				{
+					handler.Handle(s);
+				}
+				catch (Exception ex)
+				{
+					handler.OnFailure(ex);
+				}
+			});
 			step.Synapse.Subscribe();
 			return step.Synapse;
 		}
 
 		public static IDisposable ReactWith(this IPipelineStep step, IHandler handler)
 		{
-			step.Attach(handler.Handle);
+			step.Attach(s =>
+			{
+				try
+				{
+					handler.Handle(s);
+				}
+				catch (Exception ex)
+				{
+					handler.OnFailure(ex);
+				}
+			});
 			step.Synapse.Subscribe();
 			return step.Synapse;
+		}
+
+		public static IDisposable ReactWith<T>(this IPipelineStep<T> step, Action<ISignal<T>> handler, Action<Exception> failureHandler = null)
+			where T : class
+		{
+			return ReactWith(step, new LambdaHandler<T>(handler, failureHandler));
 		}
 	}
 }

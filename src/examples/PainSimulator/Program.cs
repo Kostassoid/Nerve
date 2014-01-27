@@ -14,25 +14,25 @@
 		static void Main(string[] args)
 		{
 			ICell tumor = new Cell("Tumor");
-			ICell brain = new Cell("Brain");
+			ICell patient = new Cell("Brain");
 			ICell nurse = new Cell("Nurse");
 
-			Int32 tumorTimeout = 0;
+			var tumorTimeout = 0;
 
-			tumor.OnStream().Of<Pain>().ReactWith(brain);
-			brain.OnStream().Of<Pain>().Gate(3, 5000).ReactWith(_ =>
+			tumor.OnStream().Of<Pain>().ReactWith(patient);
+			patient.OnStream().Of<Pain>().Gate(3, 1000).ReactWith(_ =>
 			{
-				Console.WriteLine("Suffering.");
+				Console.WriteLine("\n[Patient]: Suffering.");
 				nurse.Fire(new Scream());
 			});
-			nurse.OnStream().Of<Scream>().Gate(3, 5000).ReactWith(_ =>
+			nurse.OnStream().Of<Scream>().Gate(3, 1000).ReactWith(_ =>
 			{
-				Console.WriteLine("Administering morphine.");
+				Console.WriteLine("[Nurse]: Administering morphine.");
 				tumor.Fire(new Morphine());
 			});
 			tumor.OnStream().Of<Morphine>().ReactWith(_ =>
 			{
-				Console.WriteLine("Much better.");
+				Console.WriteLine("[Tumor]: Not hurting anymore.");
 				tumorTimeout += 5;
 			});
 
@@ -55,7 +55,7 @@
 
 			timer.Dispose();
 			nurse.Dispose();
-			brain.Dispose();
+			patient.Dispose();
 			tumor.Dispose();
 		}
 	}

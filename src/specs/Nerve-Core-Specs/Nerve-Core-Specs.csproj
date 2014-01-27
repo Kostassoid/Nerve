@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorHandlingSpecs.cs" />
     <Compile Include="Model\Num.cs" />
     <Compile Include="SchedullingSpecs.cs" />
     <Compile Include="PerformanceSpecs.cs" />
