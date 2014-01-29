@@ -11,16 +11,12 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+using Kostassoid.Nerve.Core;
+
+namespace Kostassoid.Nerve.RabbitMq
 {
-	using System;
-	using Pipeline;
-
-	public interface ICell : IEmitter, IHandler, IDisposable
+/*	public class RabbitCell : ICell
 	{
-		event EventHandler<UnhandledExceptionEventArgs> UnhandledException;
-
-		ISynapseContinuation OnStream();
-		IEmitterOf<T> GetEmitterOf<T>() where T : class;
-	}
+		 
+	}*/
 }

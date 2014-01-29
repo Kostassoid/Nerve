@@ -55,9 +55,9 @@ namespace Kostassoid.Nerve.Core
 			_links.ForEach(l => l.Process(signal));
 		}
 
-		public IPipelineStep OnStream()
+		public ISynapseContinuation OnStream()
 		{
-			return new Synapse(this).Pipeline;
+			return new Synapse(this).Pipeline as ISynapseContinuation;
 		}
 
 		internal void Attach(Synapse synapse)

@@ -13,39 +13,15 @@
 
 namespace Kostassoid.Nerve.Core.Pipeline
 {
-	using System;
-	using Signal;
-
-	internal class PipelineStep<T> : IPipelineStep<T> where T : class
+	public interface ISynapseContinuation
 	{
-		Action<ISignal<T>> _next;
+		Synapse Synapse { get; }
 
-		public Synapse Synapse { get; private set; }
+		void Attach(ISynapseOperator next);
+	}
 
-		public PipelineStep(Synapse synapse)
-		{
-			Synapse = synapse;
-		}
-
-		public void Process(ISignal<T> item)
-		{
-			if (_next == null) return;
-			_next(item);
-		}
-
-		public void Attach(Action<ISignal<T>> action)
-		{
-			_next = action;
-		}
-
-		void IPipelineStep.Process(ISignal signal)
-		{
-			Process(signal.As<T>());
-		}
-
-		void IPipelineStep.Attach(Action<ISignal> action)
-		{
-			_next = action;
-		}
+	public interface ISynapseContinuation<out T> : ISynapseContinuation where T : class
+	{
+		void Attach(ISynapseOperator<T> next);
 	}
 }

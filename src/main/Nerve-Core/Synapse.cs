@@ -11,6 +11,8 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using Kostassoid.Nerve.Core.Pipeline.Operators;
+
 namespace Kostassoid.Nerve.Core
 {
 	using System;
@@ -20,11 +22,11 @@ namespace Kostassoid.Nerve.Core
 	public sealed class Synapse : IDisposable
 	{
 		public Cell Owner { get; private set; }
-		public IPipelineStep Pipeline { get; private set; }
+		public ISynapseOperator Pipeline { get; private set; }
 
 		public Synapse(Cell owner)
 		{
-			Pipeline = new PipelineStep<object>(this);
+			Pipeline = new StreamOperator(this);
 			Owner = owner;
 		}
 

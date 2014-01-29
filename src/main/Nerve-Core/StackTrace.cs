@@ -11,6 +11,8 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System.Linq;
+
 namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
@@ -37,6 +39,11 @@ namespace Kostassoid.Nerve.Core
 		public ICell Root
 		{
 			get { return _stack[0]; }
+		}
+
+		public ICell Last
+		{
+			get { return _stack.Last(); }
 		}
 
 		public void Push(ICell cell)

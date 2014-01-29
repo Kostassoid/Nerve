@@ -11,22 +11,17 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using Kostassoid.Nerve.Core.Signal;
+
 namespace Kostassoid.Nerve.Core.Pipeline
 {
-	using System;
-	using Signal;
-
-	public interface IPipelineStep
+	public interface ISynapseOperator
 	{
-		Synapse Synapse { get; }
-
-		void Process(ISignal item);
-		void Attach(Action<ISignal> action);
+		void Process(ISignal signal);
 	}
 
-	public interface IPipelineStep<T> : IPipelineStep where T : class
+	public interface ISynapseOperator<in T> : ISynapseOperator where T : class
 	{
-		void Process(ISignal<T> item);
-		void Attach(Action<ISignal<T>> action);
+		void Process(ISignal<T> signal);
 	}
 }

@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Nerve-Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,6 +49,17 @@
     <Compile Include="IHandler.cs" />
     <Compile Include="IEmitterOf.cs" />
     <Compile Include="EmitterOf.cs" />
+    <Compile Include="Pipeline\Operators\AbstractOperator.cs" />
+    <Compile Include="Pipeline\Operators\CastOperator.cs" />
+    <Compile Include="Pipeline\Operators\ThroughOperator.cs" />
+    <Compile Include="Pipeline\Operators\GateOperator.cs" />
+    <Compile Include="Pipeline\Operators\StreamOperator.cs" />
+    <Compile Include="Pipeline\Operators\HandleOperator.cs" />
+    <Compile Include="Pipeline\Operators\MapOperator.cs" />
+    <Compile Include="Pipeline\Operators\FilterOperator.cs" />
+    <Compile Include="Pipeline\ISynapseContinuation.cs" />
+    <Compile Include="Pipeline\SynapseContinuationEx.cs" />
+    <Compile Include="Pipeline\ISynapseOperator.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />
     <Compile Include="Scheduling\ThreadScheduler.cs" />
     <Compile Include="Scheduling\PoolScheduler.cs" />
@@ -55,9 +67,6 @@
     <Compile Include="Scheduling\IScheduler.cs" />
     <Compile Include="SignalHandlingException.cs" />
     <Compile Include="Synapse.cs" />
-    <Compile Include="Pipeline\IPipelineStep.cs" />
-    <Compile Include="Pipeline\PipelineStep.cs" />
-    <Compile Include="Pipeline\PipelineEx.cs" />
     <Compile Include="Signal\ISignal.cs" />
     <Compile Include="Signal\Signal.cs" />
     <Compile Include="IEmitter.cs" />
@@ -76,6 +85,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
