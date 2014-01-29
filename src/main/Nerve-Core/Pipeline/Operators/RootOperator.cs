@@ -15,9 +15,9 @@ using Kostassoid.Nerve.Core.Signal;
 
 namespace Kostassoid.Nerve.Core.Pipeline.Operators
 {
-	internal class StreamOperator : AbstractOperator
+	internal class RootOperator : AbstractOperator
 	{
-		public StreamOperator(Synapse synapse):base(synapse)
+		public RootOperator(ISynapse synapse):base(synapse)
 		{
 		}
 
@@ -25,6 +25,5 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 		{
 			Next.Process(signal);
 		}
-
 	}
 }

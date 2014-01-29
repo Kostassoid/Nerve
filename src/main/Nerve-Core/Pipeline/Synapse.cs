@@ -11,38 +11,33 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System;
 using Kostassoid.Nerve.Core.Pipeline.Operators;
+using Kostassoid.Nerve.Core.Signal;
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Pipeline
 {
-	using System;
-	using Pipeline;
-	using Signal;
-
-	public sealed class Synapse : IDisposable
+	internal class Synapse : ISynapse
 	{
-		public Cell Owner { get; private set; }
-		public ISynapseOperator Pipeline { get; private set; }
+		private readonly Cell _owner;
+		private readonly RootOperator _root;
 
 		public Synapse(Cell owner)
 		{
-			Pipeline = new StreamOperator(this);
-			Owner = owner;
+			_owner = owner;
+			_root = new RootOperator(this);
 		}
+
+		public ISynapseContinuation Root { get { return _root; } }
 
 		public void Process(ISignal signal)
 		{
-			Pipeline.Process(signal);
+			_root.Process(signal);
 		}
 
-		public void Subscribe()
+		public IDisposable AttachToCell()
 		{
-			Owner.Attach(this);
-		}
-
-		public void Dispose()
-		{
-			Owner.Detach(this);
+			return _owner.Attach(this);
 		}
 	}
 }

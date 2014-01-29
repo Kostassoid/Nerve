@@ -11,17 +11,12 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System;
+
 namespace Kostassoid.Nerve.Core.Pipeline
 {
-	public interface ISynapseContinuation
+	public interface ISynapse : ISynapseOperator
 	{
-		ISynapse Synapse { get; }
-
-		void Attach(ISynapseOperator next);
-	}
-
-	public interface ISynapseContinuation<out T> : ISynapseContinuation where T : class
-	{
-		void Attach(ISynapseOperator<T> next);
+		IDisposable AttachToCell();
 	}
 }

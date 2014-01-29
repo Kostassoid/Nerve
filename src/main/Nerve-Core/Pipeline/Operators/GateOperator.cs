@@ -26,7 +26,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 		private readonly ulong _ms;
 		private IList<UInt64> _ticks = new List<UInt64>();
 
-		public GateOperator(Synapse synapse, long minCount, ulong ms)
+		public GateOperator(ISynapse synapse, long minCount, ulong ms)
 			: base(synapse)
 		{
 			Requires.InRange(minCount >= 0, "minCount");
@@ -50,7 +50,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 
 	internal class GateOperator<T> : GateOperator, ISynapseContinuation<T> where T : class
 	{
-		public GateOperator(Synapse synapse, long minCount, ulong ms)
+		public GateOperator(ISynapse synapse, long minCount, ulong ms)
 			: base(synapse, minCount, ms)
 		{}
 

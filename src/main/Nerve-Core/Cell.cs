@@ -13,6 +13,7 @@
 
 using System;
 using System.Linq;
+using Kostassoid.Nerve.Core.Pipeline.Operators;
 
 namespace Kostassoid.Nerve.Core
 {
@@ -24,7 +25,7 @@ namespace Kostassoid.Nerve.Core
 
 	public class Cell : ICell
 	{
-		readonly ISet<Synapse> _links = new HashSet<Synapse>();
+		readonly ISet<ISynapse> _synapses = new HashSet<ISynapse>();
 
 		public string Name { get; private set; }
 
@@ -37,8 +38,9 @@ namespace Kostassoid.Nerve.Core
 
 		public void Dispose()
 		{
-			_links.ToArray().ForEach(l => l.Dispose());
-			_links.Clear();
+			//var linksSnapshot = _synapses.ToArray();
+			_synapses.Clear();
+			//linksSnapshot.ForEach(l => l.Dispose());
 		}
 
 		public void Fire<T>(T body) where T : class
@@ -52,26 +54,28 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(signal, "signal");
 
-			_links.ForEach(l => l.Process(signal));
+			_synapses.ForEach(l => l.Process(signal));
 		}
 
 		public ISynapseContinuation OnStream()
 		{
-			return new Synapse(this).Pipeline as ISynapseContinuation;
+			return new Synapse(this).Root;
 		}
 
-		internal void Attach(Synapse synapse)
+		//TODO: possible race condition?
+		internal IDisposable Attach(ISynapse synapse)
 		{
 			Requires.NotNull(synapse, "synapse");
 
-			_links.Add(synapse);
+			_synapses.Add(synapse);
+			return new DisposableAction(() => Detach(synapse));
 		}
 
-		internal void Detach(Synapse synapse)
+		internal void Detach(ISynapse synapse)
 		{
 			Requires.NotNull(synapse, "synapse");
 
-			_links.Remove(synapse);
+			_synapses.Remove(synapse);
 		}
 
 		public IEmitterOf<T> GetEmitterOf<T>() where T : class

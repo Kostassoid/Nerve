@@ -20,7 +20,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 	{
 		private readonly IScheduler _scheduler;
 
-		public ThroughOperator(Synapse synapse, IScheduler scheduler):base(synapse)
+		public ThroughOperator(ISynapse synapse, IScheduler scheduler):base(synapse)
 		{
 			_scheduler = scheduler;
 		}
@@ -33,7 +33,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 
 	internal class ThroughOperator<T> : ThroughOperator, ISynapseContinuation<T> where T : class
 	{
-		public ThroughOperator(Synapse synapse, IScheduler scheduler)
+		public ThroughOperator(ISynapse synapse, IScheduler scheduler)
 			: base(synapse, scheduler)
 		{
 		}

@@ -18,7 +18,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 	internal class CastOperator<TOut> : AbstractOperator, ISynapseContinuation<TOut>
 		where TOut : class
 	{
-		public CastOperator(Synapse synapse):base(synapse)
+		public CastOperator(ISynapse synapse):base(synapse)
 		{
 		}
 

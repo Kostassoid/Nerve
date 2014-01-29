@@ -21,7 +21,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 	{
 		private readonly Func<T, bool> _predicateFunc;
 
-		public FilterOperator(Func<T, bool> predicateFunc, Synapse synapse) : base(synapse)
+		public FilterOperator(ISynapse synapse, Func<T, bool> predicateFunc) : base(synapse)
 		{
 			_predicateFunc = predicateFunc;
 		}
@@ -37,7 +37,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 	{
 		private readonly Func<object, bool> _predicateFunc;
 
-		public FilterOperator(Func<object, bool> predicateFunc, Synapse synapse)
+		public FilterOperator(ISynapse synapse, Func<object, bool> predicateFunc)
 			: base(synapse)
 		{
 			_predicateFunc = predicateFunc;

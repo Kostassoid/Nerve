@@ -22,7 +22,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 	{
 		private readonly Func<TIn, TOut> _mapFunc;
 
-		public MapOperator(Func<TIn, TOut> mapFunc, Synapse synapse) : base(synapse)
+		public MapOperator(ISynapse synapse, Func<TIn, TOut> mapFunc) : base(synapse)
 		{
 			_mapFunc = mapFunc;
 		}

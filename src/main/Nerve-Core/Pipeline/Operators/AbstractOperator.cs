@@ -19,10 +19,10 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 	{
 		private ISynapseOperator _next;
 
-		public Synapse Synapse { get; private set; }
+		public ISynapse Synapse { get; private set; }
 		public ISynapseOperator Next { get { return _next; }}
 
-		protected AbstractOperator(Synapse synapse)
+		protected AbstractOperator(ISynapse synapse)
 		{
 			Synapse = synapse;
 		}
@@ -52,7 +52,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 		where TIn : class
 		where TOut : class
 	{
-		protected AbstractOperator(Synapse synapse):base(synapse)
+		protected AbstractOperator(ISynapse synapse):base(synapse)
 		{
 		}
 

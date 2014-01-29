@@ -30,7 +30,7 @@ namespace Kostassoid.Nerve.Core.Pipeline
 
 		public static ISynapseContinuation Where(this ISynapseContinuation step, Func<object, bool> predicateFunc)
 		{
-			var next = new FilterOperator(predicateFunc, step.Synapse);
+			var next = new FilterOperator(step.Synapse, predicateFunc);
 			step.Attach(next);
 			return next;
 		}
@@ -38,7 +38,7 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		public static ISynapseContinuation<T> Where<T>(this ISynapseContinuation<T> step, Func<T, bool> predicateFunc)
 			where T : class
 		{
-			var next = new FilterOperator<T>(predicateFunc, step.Synapse);
+			var next = new FilterOperator<T>(step.Synapse, predicateFunc);
 			step.Attach(next);
 			return next;
 		}
@@ -79,8 +79,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			var next = new HandleOperator(handler);
 			step.Attach(next);
 
-			step.Synapse.Subscribe();
-			return step.Synapse;
+			//TODO: not pretty
+			return step.Synapse.AttachToCell();
 		}
 
 		public static IDisposable ReactWith<T>(this ISynapseContinuation<T> step, IHandlerOf<T> handler)
@@ -89,8 +89,8 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			var next = new HandleOperator<T>(handler);
 			step.Attach(next);
 
-			step.Synapse.Subscribe();
-			return step.Synapse;
+			//TODO: not pretty
+			return step.Synapse.AttachToCell();
 		}
 
 		public static IDisposable ReactWith<T>(this ISynapseContinuation<T> step, Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler = null)

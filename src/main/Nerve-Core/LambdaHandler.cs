@@ -17,7 +17,7 @@ namespace Kostassoid.Nerve.Core
 	using Signal;
 	using Tools.CodeContracts;
 
-	public class LambdaHandler<T> : IHandlerOf<T> where T : class
+	internal class LambdaHandler<T> : IHandlerOf<T> where T : class
 	{
 		readonly Action<ISignal<T>> _handler;
 		readonly Action<SignalHandlingException> _failureHandler;
