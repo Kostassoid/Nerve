@@ -20,12 +20,12 @@
 			var tumorTimeout = 0;
 
 			tumor.OnStream().Of<Pain>().ReactWith(patient);
-			patient.OnStream().Of<Pain>().Gate(3, 1000).ReactWith(_ =>
+			patient.OnStream().Of<Pain>().Gate(3, TimeSpan.FromSeconds(1)).ReactWith(_ =>
 			{
 				Console.WriteLine("\n[Patient]: Suffering.");
 				nurse.Fire(new Scream());
 			});
-			nurse.OnStream().Of<Scream>().Gate(3, 1000).ReactWith(_ =>
+			nurse.OnStream().Of<Scream>().Gate(3, TimeSpan.FromSeconds(1)).ReactWith(_ =>
 			{
 				Console.WriteLine("[Nurse]: Administering morphine.");
 				tumor.Fire(new Morphine());

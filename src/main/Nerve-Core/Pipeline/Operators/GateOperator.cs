@@ -22,18 +22,18 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 {
 	internal class GateOperator : AbstractOperator
 	{
-		private readonly long _minCount;
-		private readonly ulong _ms;
+		private readonly int _threshold;
+		private readonly ulong _timespan;
 		private IList<UInt64> _ticks = new List<UInt64>();
 
-		public GateOperator(ISynapse synapse, long minCount, ulong ms)
+		public GateOperator(ISynapse synapse, int threshold, TimeSpan timespan)
 			: base(synapse)
 		{
-			Requires.InRange(minCount >= 0, "minCount");
-			Requires.InRange(ms >= 1, "ms");
+			Requires.InRange(threshold >= 0, "threshold");
+			Requires.InRange(timespan.TotalMilliseconds > 0, "timespan");
 
-			_minCount = minCount;
-			_ms = ms;
+			_threshold = threshold;
+			_timespan = (ulong)timespan.TotalMilliseconds;
 		}
 
 		public override void InternalProcess(ISignal signal)
@@ -41,17 +41,17 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 			var last = SystemTicks.Get();
 			_ticks.Add(last);
 			var first = _ticks[0];
-			_ticks = _ticks.SkipWhile(t => last - first > _ms).ToList();
+			_ticks = _ticks.SkipWhile(t => last - first > _timespan).ToList();
 
-			if (_ticks.Count >= _minCount)
+			if (_ticks.Count >= _threshold)
 				Next.Process(signal);
 		}
 	}
 
 	internal class GateOperator<T> : GateOperator, ISynapseContinuation<T> where T : class
 	{
-		public GateOperator(ISynapse synapse, long minCount, ulong ms)
-			: base(synapse, minCount, ms)
+		public GateOperator(ISynapse synapse, int threshold, TimeSpan timespan)
+			: base(synapse, threshold, timespan)
 		{}
 
 		public void Attach(ISynapseOperator<T> next)

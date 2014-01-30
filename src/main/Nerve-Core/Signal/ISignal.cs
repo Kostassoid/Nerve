@@ -11,17 +11,22 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+using System;
+
 namespace Kostassoid.Nerve.Core.Signal
 {
 	public interface ISignal
 	{
 		object Body { get; }
 		StackTrace StackTrace { get; }
+		ICell Sender { get; }
 
 		ISignal<T> As<T>() where T : class;
 
 		void Return<TResponse>(TResponse body) where TResponse : class;
 		void Trace(ICell cell);
+		void ThrowOnAdjacent(Exception exception);
+		void ThrowOnSender(Exception exception);
 	}
 
 	public interface ISignal<out T> : ISignal where T : class

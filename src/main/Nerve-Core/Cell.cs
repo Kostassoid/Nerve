@@ -12,8 +12,6 @@
 // specific language governing permissions and limitations under the License.
 
 using System;
-using System.Linq;
-using Kostassoid.Nerve.Core.Pipeline.Operators;
 
 namespace Kostassoid.Nerve.Core
 {
@@ -28,8 +26,6 @@ namespace Kostassoid.Nerve.Core
 		readonly ISet<ISynapse> _synapses = new HashSet<ISynapse>();
 
 		public string Name { get; private set; }
-
-		public event EventHandler<UnhandledExceptionEventArgs> UnhandledException = (sender, args) => {};
 
 		public Cell(string name = null)
 		{
@@ -63,7 +59,7 @@ namespace Kostassoid.Nerve.Core
 		}
 
 		//TODO: possible race condition?
-		internal IDisposable Attach(ISynapse synapse)
+		public IDisposable Attach(ISynapse synapse)
 		{
 			Requires.NotNull(synapse, "synapse");
 
@@ -71,7 +67,7 @@ namespace Kostassoid.Nerve.Core
 			return new DisposableAction(() => Detach(synapse));
 		}
 
-		internal void Detach(ISynapse synapse)
+		public void Detach(ISynapse synapse)
 		{
 			Requires.NotNull(synapse, "synapse");
 
@@ -93,7 +89,8 @@ namespace Kostassoid.Nerve.Core
 
 		public bool OnFailure(SignalHandlingException exception)
 		{
-			UnhandledException(this, new UnhandledExceptionEventArgs(exception, false));
+			//TODO: don't eat, return [previous cell].OnFailure(exception)
+			
 			return true;
 		}
 

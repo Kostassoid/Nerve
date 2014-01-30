@@ -58,17 +58,17 @@ namespace Kostassoid.Nerve.Core.Pipeline
 			return next;
 		}
 
-		public static ISynapseContinuation Gate(this ISynapseContinuation step, long minCount, ulong ms)
+		public static ISynapseContinuation Gate(this ISynapseContinuation step, int threshold, TimeSpan timespan)
 		{
-			var next = new GateOperator(step.Synapse, minCount, ms);
+			var next = new GateOperator(step.Synapse, threshold, timespan);
 			step.Attach(next);
 			return next;
 		}
 
-		public static ISynapseContinuation<T> Gate<T>(this ISynapseContinuation<T> step, long minCount, ulong ms)
+		public static ISynapseContinuation<T> Gate<T>(this ISynapseContinuation<T> step, int threshold, TimeSpan timespan)
 			where T : class
 		{
-			var next = new GateOperator<T>(step.Synapse, minCount, ms);
+			var next = new GateOperator<T>(step.Synapse, threshold, timespan);
 			step.Attach(next);
 			return next;
 		}

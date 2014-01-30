@@ -39,5 +39,11 @@ namespace Kostassoid.Nerve.Core.Pipeline
 		{
 			return _owner.Attach(this);
 		}
+
+		public static ISynapseContinuation OnStream()
+		{
+
+			throw new NotImplementedException();
+		}
 	}
 }

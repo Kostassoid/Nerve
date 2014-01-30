@@ -22,6 +22,8 @@ namespace Kostassoid.Nerve.Core
 	{
 		readonly IList<ICell> _stack = new List<ICell>();
 
+		public IEnumerable<ICell> Stack { get { return _stack; }}
+
 		public StackTrace(ICell root)
 		{
 			Requires.NotNull(root, "root");

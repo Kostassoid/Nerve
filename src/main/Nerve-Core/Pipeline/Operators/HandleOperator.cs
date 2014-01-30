@@ -36,8 +36,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 				var signalException = new SignalHandlingException(ex, signal);
 				if (!_handler.OnFailure(signalException))
 				{
-					//TODO: cascade
-					signal.StackTrace.Last.OnFailure(signalException);
+					signal.ThrowOnAdjacent(signalException);
 				}
 			}
 		}
@@ -68,8 +67,7 @@ namespace Kostassoid.Nerve.Core.Pipeline.Operators
 				var signalException = new SignalHandlingException(ex, signal);
 				if (!_handler.OnFailure(signalException))
 				{
-					//TODO: cascade
-					signal.StackTrace.Last.OnFailure(signalException);
+					signal.ThrowOnAdjacent(signalException);
 				}
 			}
 		}

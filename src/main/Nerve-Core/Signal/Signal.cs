@@ -20,6 +20,7 @@ namespace Kostassoid.Nerve.Core.Signal
 		public T Body { get; private set; }
 		object ISignal.Body { get { return Body; } }
 		public StackTrace StackTrace { get; private set; }
+		public ICell Sender { get { return StackTrace.Root; } }
 
 		public Signal(T body, StackTrace stackTrace)
 		{
@@ -29,11 +30,7 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		public void Return<TResponse>(TResponse response) where TResponse : class
 		{
-			var sender = StackTrace.Root;
-			if (sender == null)
-				throw new InvalidOperationException("No cells in stacktrace.");
-
-			sender.Fire(response);
+			Sender.Fire(response);
 		}
 
 		public void Trace(ICell cell)
@@ -41,12 +38,31 @@ namespace Kostassoid.Nerve.Core.Signal
 			StackTrace.Push(cell);
 		}
 
+		private void Throw(Exception exception, IEmitter emitter)
+		{
+			var signalHandlingException =
+				exception as SignalHandlingException
+				?? new SignalHandlingException(exception, this);
+
+			emitter.Fire(signalHandlingException);
+		}
+
+		public void ThrowOnAdjacent(Exception exception)
+		{
+			Throw(exception, StackTrace.Last);
+		}
+
+		public void ThrowOnSender(Exception exception)
+		{
+			Throw(exception, StackTrace.Root);
+		}
+
 		public ISignal<TOut> As<TOut>() where TOut : class
 		{
 			var body = Body as TOut;
 			if (body == null)
-				throw new InvalidCastException(string.Format("Unable to cast from [{0}] to [{1}].", typeof (T).Name,
-					typeof (TOut).Name));
+				throw new InvalidCastException(string.Format("Unable to cast from [{0}] to [{1}].",
+					typeof (T).Name, typeof (TOut).Name));
 
 			return new Signal<TOut>(body, StackTrace);
 		}
