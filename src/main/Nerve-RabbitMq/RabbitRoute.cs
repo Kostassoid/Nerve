@@ -11,34 +11,17 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-using Kostassoid.Nerve.Core;
-using Kostassoid.Nerve.RabbitMq.Configuration;
-
 namespace Kostassoid.Nerve.RabbitMq
 {
-    public class RabbitEndpoint : IDisposable
-    {
-	    public string Name { get; private set; }
+	public class RabbitRoute
+	{
+		public string Exchange { get; private set; }
+		public string RoutingKey { get; private set; }
 
-	    public RabbitEndpoint(string name)
-	    {
-		    Name = name;
-	    }
-
-	    public void Start(Action<IRabbitEndpointConfigurator> configurator)
-	    {
-		    
-	    }
-
-		public ICell BuildCell(Action<IRabbitCellConfigurator> action)
-	    {
-			throw new NotImplementedException();
-	    }
-
-	    public void Dispose()
-	    {
-		    
-	    }
-    }
+		public RabbitRoute(string exchange, string routingKey = "")
+		{
+			Exchange = exchange;
+			RoutingKey = routingKey;
+		}
+	}
 }

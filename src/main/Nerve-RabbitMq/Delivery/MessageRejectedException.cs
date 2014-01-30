@@ -12,33 +12,18 @@
 // specific language governing permissions and limitations under the License.
 
 using System;
-using Kostassoid.Nerve.Core;
-using Kostassoid.Nerve.RabbitMq.Configuration;
 
-namespace Kostassoid.Nerve.RabbitMq
+namespace Kostassoid.Nerve.RabbitMq.Delivery
 {
-    public class RabbitEndpoint : IDisposable
-    {
-	    public string Name { get; private set; }
+	public class MessageRejectedException : Exception
+	{
+		public MessageRejectedException():base("Message was rejected.")
+		{
+		}
 
-	    public RabbitEndpoint(string name)
-	    {
-		    Name = name;
-	    }
-
-	    public void Start(Action<IRabbitEndpointConfigurator> configurator)
-	    {
-		    
-	    }
-
-		public ICell BuildCell(Action<IRabbitCellConfigurator> action)
-	    {
-			throw new NotImplementedException();
-	    }
-
-	    public void Dispose()
-	    {
-		    
-	    }
-    }
+		public MessageRejectedException(Exception innerException)
+			: base("Message was rejected.", innerException)
+		{
+		}
+	}
 }

@@ -11,34 +11,29 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-using Kostassoid.Nerve.Core;
-using Kostassoid.Nerve.RabbitMq.Configuration;
+using RabbitMQ.Client;
 
-namespace Kostassoid.Nerve.RabbitMq
+namespace Kostassoid.Nerve.RabbitMq.Configuration.Topology
 {
-    public class RabbitEndpoint : IDisposable
-    {
-	    public string Name { get; private set; }
+	public class Exchange
+	{
+		public static ExchangeBuilder Named(string name)
+		{
+			return new ExchangeBuilder(name);
+		}
 
-	    public RabbitEndpoint(string name)
-	    {
-		    Name = name;
-	    }
+		public string Name { get; internal set; }
+		public string Type { get; internal set; }
+		public bool Durable { get; internal set; }
+		public bool AutoDelete { get; internal set; }
 
-	    public void Start(Action<IRabbitEndpointConfigurator> configurator)
-	    {
-		    
-	    }
+		internal Exchange(string name)
+		{
+			Name = name;
+			Type = ExchangeType.Direct;
+			Durable = false;
+			AutoDelete = false;
+		}
 
-		public ICell BuildCell(Action<IRabbitCellConfigurator> action)
-	    {
-			throw new NotImplementedException();
-	    }
-
-	    public void Dispose()
-	    {
-		    
-	    }
-    }
+	}
 }

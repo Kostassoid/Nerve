@@ -12,33 +12,13 @@
 // specific language governing permissions and limitations under the License.
 
 using System;
-using Kostassoid.Nerve.Core;
-using Kostassoid.Nerve.RabbitMq.Configuration;
+using Kostassoid.Nerve.RabbitMq.Delivery;
 
-namespace Kostassoid.Nerve.RabbitMq
+namespace Kostassoid.Nerve.RabbitMq.Configuration
 {
-    public class RabbitEndpoint : IDisposable
-    {
-	    public string Name { get; private set; }
-
-	    public RabbitEndpoint(string name)
-	    {
-		    Name = name;
-	    }
-
-	    public void Start(Action<IRabbitEndpointConfigurator> configurator)
-	    {
-		    
-	    }
-
-		public ICell BuildCell(Action<IRabbitCellConfigurator> action)
-	    {
-			throw new NotImplementedException();
-	    }
-
-	    public void Dispose()
-	    {
-		    
-	    }
-    }
+	public interface ITypeHandler
+	{
+		void Transform(OutgoingDelivery outgoing);
+		Type Resolve(IncomingDelivery incoming);
+	}
 }

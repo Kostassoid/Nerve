@@ -22,6 +22,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PainSimulator", "examples\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve-RabbitMq", "main\Nerve-RabbitMq\Nerve-RabbitMq.csproj", "{B11D5799-62F7-4851-9ED2-7C395B63697D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve-RabbitMq-Specs", "specs\Nerve-RabbitMq-Specs\Nerve-RabbitMq-Specs.csproj", "{463C7C99-1C31-4B73-8D2D-54A783D52B6C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F16D6AB-4E1F-4B03-95FB-44F792CD087D}"
+	ProjectSection(SolutionItems) = preProject
+		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +51,10 @@ Global
 		{B11D5799-62F7-4851-9ED2-7C395B63697D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B11D5799-62F7-4851-9ED2-7C395B63697D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B11D5799-62F7-4851-9ED2-7C395B63697D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{463C7C99-1C31-4B73-8D2D-54A783D52B6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{463C7C99-1C31-4B73-8D2D-54A783D52B6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{463C7C99-1C31-4B73-8D2D-54A783D52B6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{463C7C99-1C31-4B73-8D2D-54A783D52B6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +63,7 @@ Global
 		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC} = {86D93403-BD8F-49EF-BC0B-66C0B82F4A37}
 		{B11D5799-62F7-4851-9ED2-7C395B63697D} = {86D93403-BD8F-49EF-BC0B-66C0B82F4A37}
 		{EFA61018-1F3E-4F85-A2F4-76F5BB505042} = {812C8697-C2E7-423E-AD57-20C008A63AFD}
+		{463C7C99-1C31-4B73-8D2D-54A783D52B6C} = {812C8697-C2E7-423E-AD57-20C008A63AFD}
 		{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB} = {711CD250-C2EC-41A7-AC81-2C7EE016A457}
 	EndGlobalSection
 EndGlobal

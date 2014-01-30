@@ -12,33 +12,16 @@
 // specific language governing permissions and limitations under the License.
 
 using System;
-using Kostassoid.Nerve.Core;
-using Kostassoid.Nerve.RabbitMq.Configuration;
+using System.Threading.Tasks;
 
-namespace Kostassoid.Nerve.RabbitMq
+namespace Kostassoid.Nerve.RabbitMq.Delivery
 {
-    public class RabbitEndpoint : IDisposable
-    {
-	    public string Name { get; private set; }
+	public delegate void ConfirmationHandler(bool isConfirmed, ulong seqNo, bool isMultiple);
 
-	    public RabbitEndpoint(string name)
-	    {
-		    Name = name;
-	    }
+	internal interface IPublishConfirmationTracker : IDisposable
+	{
+		Task Track();
 
-	    public void Start(Action<IRabbitEndpointConfigurator> configurator)
-	    {
-		    
-	    }
-
-		public ICell BuildCell(Action<IRabbitCellConfigurator> action)
-	    {
-			throw new NotImplementedException();
-	    }
-
-	    public void Dispose()
-	    {
-		    
-	    }
-    }
+		void HandleConfirmation(bool isConfirmed, ulong seqNo, bool isMultiple);
+	}
 }

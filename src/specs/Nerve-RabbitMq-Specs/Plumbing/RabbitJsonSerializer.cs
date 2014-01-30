@@ -11,34 +11,26 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-using Kostassoid.Nerve.Core;
-using Kostassoid.Nerve.RabbitMq.Configuration;
+using RestSharp;
+using RestSharp.Serializers;
 
-namespace Kostassoid.Nerve.RabbitMq
+namespace Kostassoid.Nerve.RabbitMq.Specs.Plumbing
 {
-    public class RabbitEndpoint : IDisposable
-    {
-	    public string Name { get; private set; }
+	internal class RabbitJsonSerializer : ISerializer
+	{
+		public RabbitJsonSerializer()
+		{
+			ContentType = "application/json";
+		}
 
-	    public RabbitEndpoint(string name)
-	    {
-		    Name = name;
-	    }
+		public string Serialize(object obj)
+		{
+			return SimpleJson.SerializeObject(obj, new RabbitJsonSerializerStrategy());
+		}
 
-	    public void Start(Action<IRabbitEndpointConfigurator> configurator)
-	    {
-		    
-	    }
-
-		public ICell BuildCell(Action<IRabbitCellConfigurator> action)
-	    {
-			throw new NotImplementedException();
-	    }
-
-	    public void Dispose()
-	    {
-		    
-	    }
-    }
+		public string RootElement { get; set; }
+		public string Namespace { get; set; }
+		public string DateFormat { get; set; }
+		public string ContentType { get; set; }
+	}
 }
