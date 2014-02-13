@@ -3,7 +3,7 @@
 	using System;
 	using System.Threading;
 	using Kostassoid.Nerve.Core;
-	using Kostassoid.Nerve.Core.Pipeline;
+	using Kostassoid.Nerve.Core.Linking;
 
 	class Program
 	{
@@ -13,9 +13,9 @@
 
 		static void Main(string[] args)
 		{
-			ICell tumor = new Cell("Tumor");
-			ICell patient = new Cell("Brain");
-			ICell nurse = new Cell("Nurse");
+			ICell tumor = new RelayCell("Tumor");
+			ICell patient = new RelayCell("Brain");
+			ICell nurse = new RelayCell("Nurse");
 
 			var tumorTimeout = 0;
 

@@ -13,18 +13,10 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System;
-	using Linking;
-
-	public interface ICell : IEmitter, IHandler, IDisposable
+	public class RelayCell : Cell
 	{
-		string Name { get; }
-		NerveCenter Owner { get; }
-
-		IDisposable Attach(ILink link);
-		void Detach(ILink link);
-
-		ILinkContinuation OnStream();
-		IEmitterOf<T> GetEmitterOf<T>() where T : class;
+		public RelayCell(string name = null, NerveCenter owner = null):base(name, owner)
+		{
+		}
 	}
 }

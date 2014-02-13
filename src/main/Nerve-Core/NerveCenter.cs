@@ -14,17 +14,21 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System;
-	using Linking;
+	using System.Collections.Generic;
 
-	public interface ICell : IEmitter, IHandler, IDisposable
+	public class NerveCenter
 	{
-		string Name { get; }
-		NerveCenter Owner { get; }
+		private IList<ICell> _cells = new ICell[0];
+		Func<ICell> _cellFactory;
 
-		IDisposable Attach(ILink link);
-		void Detach(ILink link);
+		public NerveCenter(Func<ICell> cellFactory)
+		{
+			_cellFactory = cellFactory;
+		}
 
-		ILinkContinuation OnStream();
-		IEmitterOf<T> GetEmitterOf<T>() where T : class;
+		public void OnFailure(ICell source, SignalHandlingException exception)
+		{
+			//TODO: this
+		}
 	}
 }

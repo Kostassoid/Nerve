@@ -18,9 +18,9 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
+	using Linking;
 	using Machine.Specifications;
 	using Model;
-	using Pipeline;
 	using Scheduling;
 	using Tools;
 
@@ -53,13 +53,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			};
 		}
 
-		[Subject(typeof(ICell), "Performance")]
+		[Subject(typeof(RelayCell), "Performance")]
 		[Tags("Unit")]
 		public class when_firing_many_signals_on_one_cell_using_immediate_scheduler
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
+				Cell = new RelayCell();
 				Scheduler = new ImmediateScheduler();
 			};
 
@@ -76,13 +76,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(ICell), "Performance")]
+		[Subject(typeof(RelayCell), "Performance")]
 		[Tags("Unit")]
 		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
+				Cell = new RelayCell();
 				Scheduler = new PoolScheduler();
 			};
 
@@ -99,13 +99,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(ICell), "Performance")]
+		[Subject(typeof(RelayCell), "Performance")]
 		[Tags("Unit")]
 		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
+				Cell = new RelayCell();
 				Scheduler = new ThreadScheduler();
 			};
 

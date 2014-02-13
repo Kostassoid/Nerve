@@ -1,4 +1,4 @@
-﻿// Copyright 2014 https://github.com/Kostassoid/Nerve
+// Copyright 2014 https://github.com/Kostassoid/Nerve
 //   
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -11,20 +11,27 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Linking.Operators
 {
-	using System;
-	using Linking;
+	using Signal;
 
-	public interface ICell : IEmitter, IHandler, IDisposable
+	internal class CastOperator<TOut> : AbstractOperator, ILinkContinuation<TOut>
+		where TOut : class
 	{
-		string Name { get; }
-		NerveCenter Owner { get; }
+		public CastOperator(ILink link):base(link)
+		{
+		}
 
-		IDisposable Attach(ILink link);
-		void Detach(ILink link);
+		public override void InternalProcess(ISignal signal)
+		{
+			var t = signal.Body as TOut;
+			if (t == null) return;
+			Next.Process(new Signal<TOut>(t, signal.StackTrace));
+		}
 
-		ILinkContinuation OnStream();
-		IEmitterOf<T> GetEmitterOf<T>() where T : class;
+		public void Attach(ILinkOperator<TOut> next)
+		{
+			base.Attach(next);
+		}
 	}
 }

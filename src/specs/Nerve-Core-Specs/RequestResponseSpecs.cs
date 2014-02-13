@@ -13,9 +13,9 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
+	using Linking;
 	using Machine.Specifications;
 	using Model;
-	using Pipeline;
 
 	// ReSharper disable UnusedMember.Local
 	// ReSharper disable InconsistentNaming
@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new Cell();
+				_cell = new RelayCell();
 
 				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
 				_cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
@@ -49,8 +49,8 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_ping = new Cell();
-				_pong = new Cell();
+				_ping = new RelayCell();
+				_pong = new RelayCell();
 
 				_ping.OnStream().Of<Ping>().ReactWith(_pong);
 				_pong.OnStream().Of<Pong>().ReactWith(_ping);
@@ -80,9 +80,9 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_ping = new Cell("Ping");
-				_middleman = new Cell("Middle man");
-				_pong = new Cell("Pong");
+				_ping = new RelayCell("Ping");
+				_middleman = new RelayCell("Middle man");
+				_pong = new RelayCell("Pong");
 
 				_ping.OnStream().Of<Ping>().ReactWith(_middleman);
 

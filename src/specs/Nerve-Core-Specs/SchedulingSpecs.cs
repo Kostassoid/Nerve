@@ -20,9 +20,9 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Threading;
+	using Linking;
 	using Machine.Specifications;
 	using Model;
-	using Pipeline;
 	using Scheduling;
 	using Tools;
 
@@ -38,7 +38,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new Cell();
+				_cell = new RelayCell();
 				_cell.OnStream().Of<Ping>()
 					.Through(new PoolScheduler())
 					.ReactWith(_ =>
@@ -97,7 +97,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
+				Cell = new RelayCell();
 				Scheduler = new ImmediateScheduler();
 			};
 
@@ -115,7 +115,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
+				Cell = new RelayCell();
 				Scheduler = new PoolScheduler();
 			};
 
@@ -133,7 +133,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
+				Cell = new RelayCell();
 				Scheduler = new ThreadScheduler();
 			};
 
@@ -151,7 +151,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new Cell();
+				_cell = new RelayCell();
 
 				Action<ISignal<Num>> handler = s =>
 				{

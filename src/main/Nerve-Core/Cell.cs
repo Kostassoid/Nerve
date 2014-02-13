@@ -16,26 +16,32 @@ using System;
 namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
-	using Pipeline;
+	using Linking;
 	using Signal;
 	using Tools;
 	using Tools.CodeContracts;
 
-	public class Cell : ICell
+	public abstract class Cell : ICell
 	{
-		readonly ISet<ISynapse> _synapses = new HashSet<ISynapse>();
+		readonly ISet<ILink> _links = new HashSet<ILink>();
 
 		public string Name { get; private set; }
+		public NerveCenter Owner { get; private set; }
 
-		public Cell(string name = null)
+		protected Cell(string name = null, NerveCenter owner = null)
 		{
 			Name = name;
+			Owner = owner;
+		}
+
+		protected Cell()
+		{
 		}
 
 		public void Dispose()
 		{
-			//var linksSnapshot = _synapses.ToArray();
-			_synapses.Clear();
+			//var linksSnapshot = _links.ToArray();
+			_links.Clear();
 			//linksSnapshot.ForEach(l => l.Dispose());
 		}
 
@@ -50,28 +56,28 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(signal, "signal");
 
-			_synapses.ForEach(l => l.Process(signal));
+			_links.ForEach(l => l.Process(signal));
 		}
 
-		public ISynapseContinuation OnStream()
+		public ILinkContinuation OnStream()
 		{
-			return new Synapse(this).Root;
+			return new Link(this).Root;
 		}
 
 		//TODO: possible race condition?
-		public IDisposable Attach(ISynapse synapse)
+		public IDisposable Attach(ILink link)
 		{
-			Requires.NotNull(synapse, "synapse");
+			Requires.NotNull(link, "link");
 
-			_synapses.Add(synapse);
-			return new DisposableAction(() => Detach(synapse));
+			_links.Add(link);
+			return new DisposableAction(() => Detach(link));
 		}
 
-		public void Detach(ISynapse synapse)
+		public void Detach(ILink link)
 		{
-			Requires.NotNull(synapse, "synapse");
+			Requires.NotNull(link, "link");
 
-			_synapses.Remove(synapse);
+			_links.Remove(link);
 		}
 
 		public IEmitterOf<T> GetEmitterOf<T>() where T : class
@@ -87,16 +93,17 @@ namespace Kostassoid.Nerve.Core
 			Fire(signal);
 		}
 
-		public bool OnFailure(SignalHandlingException exception)
+		public virtual bool OnFailure(SignalHandlingException exception)
 		{
-			//TODO: don't eat, return [previous cell].OnFailure(exception)
-			
+			if (Owner != null)
+				Owner.OnFailure(this, exception);
+
 			return true;
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Cell [{0}]", Name ?? "unnamed");
+			return string.Format("{0} [{1}]", GetType().Name, Name ?? "unnamed");
 		}
 	}
 }

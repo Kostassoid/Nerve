@@ -11,20 +11,39 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Linking
 {
 	using System;
-	using Linking;
+	using Operators;
+	using Signal;
 
-	public interface ICell : IEmitter, IHandler, IDisposable
+	internal class Link : ILink
 	{
-		string Name { get; }
-		NerveCenter Owner { get; }
+		private readonly Cell _owner;
+		private readonly RootOperator _root;
 
-		IDisposable Attach(ILink link);
-		void Detach(ILink link);
+		public Link(Cell owner)
+		{
+			_owner = owner;
+			_root = new RootOperator(this);
+		}
 
-		ILinkContinuation OnStream();
-		IEmitterOf<T> GetEmitterOf<T>() where T : class;
+		public ILinkContinuation Root { get { return _root; } }
+
+		public void Process(ISignal signal)
+		{
+			_root.Process(signal);
+		}
+
+		public IDisposable AttachToCell()
+		{
+			return _owner.Attach(this);
+		}
+
+		public static ILinkContinuation OnStream()
+		{
+
+			throw new NotImplementedException();
+		}
 	}
 }

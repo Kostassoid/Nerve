@@ -49,22 +49,24 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="RelayCell.cs" />
     <Compile Include="IHandler.cs" />
     <Compile Include="IEmitterOf.cs" />
     <Compile Include="EmitterOf.cs" />
-    <Compile Include="Pipeline\ISynapse.cs" />
-    <Compile Include="Pipeline\Operators\AbstractOperator.cs" />
-    <Compile Include="Pipeline\Operators\CastOperator.cs" />
-    <Compile Include="Pipeline\Operators\ThroughOperator.cs" />
-    <Compile Include="Pipeline\Operators\GateOperator.cs" />
-    <Compile Include="Pipeline\Operators\RootOperator.cs" />
-    <Compile Include="Pipeline\Operators\HandleOperator.cs" />
-    <Compile Include="Pipeline\Operators\MapOperator.cs" />
-    <Compile Include="Pipeline\Operators\FilterOperator.cs" />
-    <Compile Include="Pipeline\ISynapseContinuation.cs" />
-    <Compile Include="Pipeline\Synapse.cs" />
-    <Compile Include="Pipeline\SynapseContinuationEx.cs" />
-    <Compile Include="Pipeline\ISynapseOperator.cs" />
+    <Compile Include="NerveCenter.cs" />
+    <Compile Include="Linking\ILink.cs" />
+    <Compile Include="Linking\Operators\AbstractOperator.cs" />
+    <Compile Include="Linking\Operators\CastOperator.cs" />
+    <Compile Include="Linking\Operators\ThroughOperator.cs" />
+    <Compile Include="Linking\Operators\GateOperator.cs" />
+    <Compile Include="Linking\Operators\RootOperator.cs" />
+    <Compile Include="Linking\Operators\HandleOperator.cs" />
+    <Compile Include="Linking\Operators\MapOperator.cs" />
+    <Compile Include="Linking\Operators\FilterOperator.cs" />
+    <Compile Include="Linking\ILinkContinuation.cs" />
+    <Compile Include="Linking\Link.cs" />
+    <Compile Include="Linking\LinkContinuationEx.cs" />
+    <Compile Include="Linking\ILinkOperator.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />
     <Compile Include="Scheduling\ThreadScheduler.cs" />
     <Compile Include="Scheduling\PoolScheduler.cs" />

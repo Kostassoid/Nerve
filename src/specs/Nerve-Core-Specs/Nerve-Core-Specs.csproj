@@ -50,12 +50,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicCustomSpecs.cs" />
     <Compile Include="ErrorHandlingSpecs.cs" />
     <Compile Include="Model\Num.cs" />
     <Compile Include="SchedulingSpecs.cs" />
     <Compile Include="PerformanceSpecs.cs" />
     <Compile Include="RequestResponseSpecs.cs" />
-    <Compile Include="BasicSpecs.cs" />
+    <Compile Include="BasicRelaySpecs.cs" />
     <Compile Include="Model\Ping.cs" />
     <Compile Include="Model\Pong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
