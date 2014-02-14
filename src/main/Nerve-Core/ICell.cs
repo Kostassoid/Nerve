@@ -20,9 +20,7 @@ namespace Kostassoid.Nerve.Core
 	{
 		string Name { get; }
 		NerveCenter Owner { get; }
-
-		IDisposable Attach(ILink link);
-		void Detach(ILink link);
+		event Action<ICell, SignalHandlingException> Failed;
 
 		ILinkContinuation OnStream();
 		IEmitterOf<T> GetEmitterOf<T>() where T : class;

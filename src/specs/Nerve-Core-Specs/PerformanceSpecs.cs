@@ -53,13 +53,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			};
 		}
 
-		[Subject(typeof(RelayCell), "Performance")]
+		[Subject(typeof(Cell), "Performance")]
 		[Tags("Unit")]
 		public class when_firing_many_signals_on_one_cell_using_immediate_scheduler
 		{
 			Establish context = () =>
 			{
-				Cell = new RelayCell();
+				Cell = new Cell();
 				Scheduler = new ImmediateScheduler();
 			};
 
@@ -76,13 +76,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(RelayCell), "Performance")]
+		[Subject(typeof(Cell), "Performance")]
 		[Tags("Unit")]
 		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
 			Establish context = () =>
 			{
-				Cell = new RelayCell();
+				Cell = new Cell();
 				Scheduler = new PoolScheduler();
 			};
 
@@ -99,13 +99,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			protected static IScheduler Scheduler;
 		}
 
-		[Subject(typeof(RelayCell), "Performance")]
+		[Subject(typeof(Cell), "Performance")]
 		[Tags("Unit")]
 		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
 			Establish context = () =>
 			{
-				Cell = new RelayCell();
+				Cell = new Cell();
 				Scheduler = new ThreadScheduler();
 			};
 

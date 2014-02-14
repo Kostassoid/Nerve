@@ -21,24 +21,30 @@ namespace Kostassoid.Nerve.Core
 	using Tools;
 	using Tools.CodeContracts;
 
-	public abstract class Cell : ICell
+	/// <summary>
+	/// Base Class implementation.
+	/// Relays all incoming signals through all links.
+	/// </summary>
+	public class Cell : ICell
 	{
 		readonly ISet<ILink> _links = new HashSet<ILink>();
 
 		public string Name { get; private set; }
 		public NerveCenter Owner { get; private set; }
 
-		protected Cell(string name = null, NerveCenter owner = null)
+		public event Action<ICell, SignalHandlingException> Failed = (cell, exception) => { };
+
+		public Cell(string name = null, NerveCenter owner = null)
 		{
 			Name = name;
 			Owner = owner;
 		}
 
-		protected Cell()
+		public Cell()
 		{
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			//var linksSnapshot = _links.ToArray();
 			_links.Clear();
@@ -54,9 +60,7 @@ namespace Kostassoid.Nerve.Core
 
 		public void Fire(ISignal signal)
 		{
-			Requires.NotNull(signal, "signal");
-
-			_links.ForEach(l => l.Process(signal));
+			Relay(signal);
 		}
 
 		public ILinkContinuation OnStream()
@@ -93,8 +97,17 @@ namespace Kostassoid.Nerve.Core
 			Fire(signal);
 		}
 
+		protected void Relay(ISignal signal)
+		{
+			Requires.NotNull(signal, "signal");
+
+			_links.ForEach(l => l.Process(signal));
+		}
+
 		public virtual bool OnFailure(SignalHandlingException exception)
 		{
+			Failed(this, exception);
+
 			if (Owner != null)
 				Owner.OnFailure(this, exception);
 

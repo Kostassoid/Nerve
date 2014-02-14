@@ -21,13 +21,13 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable UnusedMember.Local
 	public class BasicRelaySpecs
 	{
-		[Subject(typeof(RelayCell), "Basic")]
+		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_a_signal_with_attached_handler
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
+				_cell = new Cell();
 
 				_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 			};
@@ -42,13 +42,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(RelayCell), "Basic")]
+		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_a_signal_with_detached_handler
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
+				_cell = new Cell();
 
 				var subscription = _cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 				subscription.Dispose();
@@ -64,13 +64,13 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(RelayCell), "Basic")]
+		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_a_signal_without_attached_consumer
 		{
 			Establish context = () =>
 								{
-									_cell = new RelayCell();
+									_cell = new Cell();
 
 									_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 								};
@@ -85,15 +85,15 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(RelayCell), "Basic")]
+		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_a_signal_with_intermediate_attached_cells
 		{
 			Establish context = () =>
 								{
-									_a = new RelayCell();
-									_b = new RelayCell();
-									_c = new RelayCell();
+									_a = new Cell();
+									_b = new Cell();
+									_c = new Cell();
 
 									_a.OnStream().Of<Ping>().ReactWith(_b);
 									_b.OnStream().Of<Ping>().ReactWith(_c);
@@ -117,14 +117,14 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(RelayCell), "Basic")]
+		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_back_using_concrete_handler
 		{
 			Establish context = () =>
 								{
-									_ping = new RelayCell();
-									_pong = new RelayCell();
+									_ping = new Cell();
+									_pong = new Cell();
 
 									_ping.OnStream().Of<Ping>().ReactWith(_pong);
 									_pong.OnStream().Of<Pong>().ReactWith(_ping);

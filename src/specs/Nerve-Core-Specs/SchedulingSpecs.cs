@@ -38,7 +38,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
+				_cell = new Cell();
 				_cell.OnStream().Of<Ping>()
 					.Through(new PoolScheduler())
 					.ReactWith(_ =>
@@ -97,7 +97,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new RelayCell();
+				Cell = new Cell();
 				Scheduler = new ImmediateScheduler();
 			};
 
@@ -115,7 +115,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new RelayCell();
+				Cell = new Cell();
 				Scheduler = new PoolScheduler();
 			};
 
@@ -133,7 +133,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new RelayCell();
+				Cell = new Cell();
 				Scheduler = new ThreadScheduler();
 			};
 
@@ -151,7 +151,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
+				_cell = new Cell();
 
 				Action<ISignal<Num>> handler = s =>
 				{

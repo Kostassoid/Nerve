@@ -23,13 +23,13 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable UnusedMember.Local
 	public class ErrorHandlingSpecs
 	{
-		[Subject(typeof(RelayCell), "Error handling")]
+		[Subject(typeof(Cell), "Error handling")]
 		[Tags("Unit")]
 		public class when_handler_throws_unhandled_exception_without_fault_handler_set
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
+				_cell = new Cell();
 				_cell.OnStream().Of<SignalHandlingException>().ReactWith(_ => _cellIsNotified = true);
 
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); });
@@ -62,14 +62,14 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _cellIsNotified;
 		}
 
-		[Subject(typeof(RelayCell), "Error handling")]
+		[Subject(typeof(Cell), "Error handling")]
 		[Tags("Unit")]
 		public class when_handler_throws_unhandled_exception_with_fault_handler_set
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
-				_cell.OnStream().Of<SignalHandlingException>().ReactWith(_ => _cellIsNotified = true);
+				_cell = new Cell();
+				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); }, _ => { _exceptionWasHandled = true; });
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
 			};

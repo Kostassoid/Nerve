@@ -13,9 +13,9 @@
 
 		static void Main(string[] args)
 		{
-			ICell tumor = new RelayCell("Tumor");
-			ICell patient = new RelayCell("Brain");
-			ICell nurse = new RelayCell("Nurse");
+			ICell tumor = new Cell("Tumor");
+			ICell patient = new Cell("Brain");
+			ICell nurse = new Cell("Nurse");
 
 			var tumorTimeout = 0;
 

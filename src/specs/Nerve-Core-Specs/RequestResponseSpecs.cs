@@ -21,13 +21,13 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable InconsistentNaming
 	public class RequestResponseSpecs
 	{
-		[Subject(typeof(ICell), "Request")]
+		[Subject(typeof(Cell), "Request")]
 		[Tags("Unit")]
 		public class when_requesting_using_single_cell
 		{
 			Establish context = () =>
 			{
-				_cell = new RelayCell();
+				_cell = new Cell();
 
 				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
 				_cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
@@ -43,14 +43,14 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(ICell), "Request")]
+		[Subject(typeof(Cell), "Request")]
 		[Tags("Unit")]
 		public class when_requesting_using_concrete_handler
 		{
 			Establish context = () =>
 			{
-				_ping = new RelayCell();
-				_pong = new RelayCell();
+				_ping = new Cell();
+				_pong = new Cell();
 
 				_ping.OnStream().Of<Ping>().ReactWith(_pong);
 				_pong.OnStream().Of<Pong>().ReactWith(_ping);
@@ -74,15 +74,15 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _received;
 		}
 
-		[Subject(typeof(ICell), "Request")]
+		[Subject(typeof(Cell), "Request")]
 		[Tags("Unit")]
 		public class when_requesting_using_chained_cells
 		{
 			Establish context = () =>
 			{
-				_ping = new RelayCell("Ping");
-				_middleman = new RelayCell("Middle man");
-				_pong = new RelayCell("Pong");
+				_ping = new Cell("Ping");
+				_middleman = new Cell("Middle man");
+				_pong = new Cell("Pong");
 
 				_ping.OnStream().Of<Ping>().ReactWith(_middleman);
 
