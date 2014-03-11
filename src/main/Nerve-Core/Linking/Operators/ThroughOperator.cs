@@ -27,11 +27,11 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		public override void InternalProcess(ISignal signal)
 		{
-			_scheduler.Fiber.Enqueue(() => Next.Process(signal));
+			_scheduler.Enqueue(() => Next.Process(signal));
 		}
 	}
 
-	internal class ThroughOperator<T> : ThroughOperator, ILinkContinuation<T> where T : class
+	internal class ThroughOperator<T> : ThroughOperator/*, ILinkContinuation<T>*/ where T : class
 	{
 		public ThroughOperator(ILink link, IScheduler scheduler)
 			: base(link, scheduler)

@@ -14,27 +14,28 @@
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
+	using Handling;
 	using Signal;
 
 	internal class HandleOperator : ILinkOperator
 	{
-		private readonly IHandler _handler;
+		private readonly IReactiveHandler _reactiveHandler;
 
-		public HandleOperator(IHandler handler)
+		public HandleOperator(IReactiveHandler reactiveHandler)
 		{
-			_handler = handler;
+			_reactiveHandler = reactiveHandler;
 		}
 
 		public void Process(ISignal signal)
 		{
 			try
 			{
-				_handler.Handle(signal);
+				_reactiveHandler.Handle(signal);
 			}
 			catch (Exception ex)
 			{
 				var signalException = new SignalHandlingException(ex, signal);
-				if (!_handler.OnFailure(signalException))
+				if (!_reactiveHandler.OnFailure(signalException))
 				{
 					signal.ThrowOnAdjacent(signalException);
 				}
@@ -49,23 +50,23 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 	internal class HandleOperator<T> : ILinkOperator<T> where T : class
 	{
-		private readonly IHandlerOf<T> _handler;
+		private readonly IReactiveHandlerOf<T> _reactiveHandler;
 
-		public HandleOperator(IHandlerOf<T> handler)
+		public HandleOperator(IReactiveHandlerOf<T> reactiveHandler)
 		{
-			_handler = handler;
+			_reactiveHandler = reactiveHandler;
 		}
 
 		public void Process(ISignal<T> signal)
 		{
 			try
 			{
-				_handler.Handle(signal);
+				_reactiveHandler.Handle(signal);
 			}
 			catch (Exception ex)
 			{
 				var signalException = new SignalHandlingException(ex, signal);
-				if (!_handler.OnFailure(signalException))
+				if (!_reactiveHandler.OnFailure(signalException))
 				{
 					signal.ThrowOnAdjacent(signalException);
 				}

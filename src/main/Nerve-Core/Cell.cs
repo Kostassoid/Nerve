@@ -17,6 +17,7 @@ namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
 	using Linking;
+	using Scheduling;
 	using Signal;
 	using Tools;
 	using Tools.CodeContracts;
@@ -30,14 +31,12 @@ namespace Kostassoid.Nerve.Core
 		readonly ISet<ILink> _links = new HashSet<ILink>();
 
 		public string Name { get; private set; }
-		public NerveCenter Owner { get; private set; }
 
 		public event Action<ICell, SignalHandlingException> Failed = (cell, exception) => { };
 
-		public Cell(string name = null, NerveCenter owner = null)
+		public Cell(string name = null)
 		{
 			Name = name;
-			Owner = owner;
 		}
 
 		public Cell()
@@ -107,9 +106,6 @@ namespace Kostassoid.Nerve.Core
 		public virtual bool OnFailure(SignalHandlingException exception)
 		{
 			Failed(this, exception);
-
-			if (Owner != null)
-				Owner.OnFailure(this, exception);
 
 			return true;
 		}

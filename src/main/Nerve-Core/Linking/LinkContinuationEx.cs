@@ -14,6 +14,7 @@
 namespace Kostassoid.Nerve.Core.Linking
 {
 	using System;
+	using Handling;
 	using Operators;
 	using Scheduling;
 	using Signal;
@@ -24,8 +25,7 @@ namespace Kostassoid.Nerve.Core.Linking
 			where TOut : class
 		{
 			var next = new CastOperator<TOut>(step.Link);
-			step.Attach(next);
-			return next;
+			return step.Attach(next);
 		}
 
 		public static ILinkContinuation Where(this ILinkContinuation step, Func<object, bool> predicateFunc)
@@ -73,31 +73,15 @@ namespace Kostassoid.Nerve.Core.Linking
 			return next;
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, IHandler handler)
-			where T : class
-		{
-			var next = new HandleOperator(handler);
-			step.Attach(next);
+        public static IHandlerSelectionSyntax Handle(this ILinkContinuation step)
+        {
+            return new HandlerSelectionSyntax(step);
+        }
 
-			//TODO: not pretty
-			return step.Link.AttachToCell();
-		}
-
-		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, IHandlerOf<T> handler)
-			where T : class
-		{
-			var next = new HandleOperator<T>(handler);
-			step.Attach(next);
-
-			//TODO: not pretty
-			return step.Link.AttachToCell();
-		}
-
-		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler = null)
-			where T : class
-		{
-			return ReactWith(step, new LambdaHandler<T>(handler, failureHandler));
-		}
-
+        public static IHandlerSelectionSyntax<T> Handle<T>(this ILinkContinuation<T> step)
+            where T : class
+        {
+            return new HandlerSelectionSyntax<T>(step);
+        }
 	}
 }

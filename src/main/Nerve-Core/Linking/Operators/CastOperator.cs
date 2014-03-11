@@ -15,7 +15,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using Signal;
 
-	internal class CastOperator<TOut> : AbstractOperator, ILinkContinuation<TOut>
+	internal class CastOperator<TOut> : AbstractOperator//, ILinkContinuation<TOut>
 		where TOut : class
 	{
 		public CastOperator(ILink link):base(link)

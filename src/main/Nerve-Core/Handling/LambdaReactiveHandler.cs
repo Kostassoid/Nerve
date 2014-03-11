@@ -11,18 +11,18 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Handling
 {
-	using System;
-	using Signal;
-	using Tools.CodeContracts;
+    using System;
+    using Kostassoid.Nerve.Core.Signal;
+    using Kostassoid.Nerve.Core.Tools.CodeContracts;
 
-	internal class LambdaHandler<T> : IHandlerOf<T> where T : class
+    internal class LambdaReactiveHandler<T> : IReactiveHandlerOf<T> where T : class
 	{
 		readonly Action<ISignal<T>> _handler;
 		readonly Action<SignalHandlingException> _failureHandler;
 
-		public LambdaHandler(Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler)
+		public LambdaReactiveHandler(Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler)
 		{
 			Requires.NotNull(handler, "handler");
 
