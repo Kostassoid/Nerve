@@ -39,11 +39,5 @@ namespace Kostassoid.Nerve.Core.Linking
 		{
 			return _owner.Attach(this);
 		}
-
-		public static ILinkContinuation OnStream()
-		{
-
-			throw new NotImplementedException();
-		}
 	}
 }

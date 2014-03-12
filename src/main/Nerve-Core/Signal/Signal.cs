@@ -38,11 +38,12 @@ namespace Kostassoid.Nerve.Core.Signal
 			StackTrace.Push(cell);
 		}
 
+/*
 		private void Throw(Exception exception, IEmitter emitter)
 		{
 			var signalHandlingException =
-				exception as SignalHandlingException
-				?? new SignalHandlingException(exception, this);
+				exception as SignalException
+				?? new SignalException(exception, this);
 
 			emitter.Fire(signalHandlingException);
 		}
@@ -56,6 +57,7 @@ namespace Kostassoid.Nerve.Core.Signal
 		{
 			Throw(exception, StackTrace.Root);
 		}
+*/
 
 		public ISignal<TOut> As<TOut>() where TOut : class
 		{

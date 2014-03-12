@@ -11,14 +11,14 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Handling
+namespace Kostassoid.Nerve.Core
 {
-    using Kostassoid.Nerve.Core.Signal;
+	using Signal;
 
-    public interface IReactiveHandlerOf<in T> where T : class
+	public interface IConsumerOf<in T> where T : class
 	{
 		void Handle(ISignal<T> signal);
 
-		bool OnFailure(SignalHandlingException exception);
+		bool OnFailure(SignalException exception);
 	}
 }

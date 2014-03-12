@@ -26,7 +26,7 @@ namespace Kostassoid.Nerve.Core
 			_cellFactory = cellFactory;
 		}
 
-		public void OnFailure(ICell source, SignalHandlingException exception)
+		public void OnFailure(ICell source, SignalException exception)
 		{
 			//TODO: this
 		}

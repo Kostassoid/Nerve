@@ -25,8 +25,10 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		void Return<TResponse>(TResponse body) where TResponse : class;
 		void Trace(ICell cell);
+/*
 		void ThrowOnAdjacent(Exception exception);
 		void ThrowOnSender(Exception exception);
+*/
 	}
 
 	public interface ISignal<out T> : ISignal where T : class

@@ -15,7 +15,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using Signal;
 
-	public abstract class AbstractOperator : ILinkOperator//, ILinkContinuation
+	public abstract class AbstractOperator : ILinkOperator, ILinkContinuation
 	{
 		private ILinkOperator _next;
 
@@ -48,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 		}
 	}
 
-	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, ILinkOperator<TIn>//, ILinkContinuation<TOut>
+	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, ILinkOperator<TIn>, ILinkContinuation<TOut>
 		where TIn : class
 		where TOut : class
 	{

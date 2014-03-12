@@ -19,6 +19,6 @@ namespace Kostassoid.Nerve.Core
 	{
 		void Fire<T>(T body) where T : class;
 
-		void Fire(ISignal signal);
+		//void Fire(ISignal signal);
 	}
 }

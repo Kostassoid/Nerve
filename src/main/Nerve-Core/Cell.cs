@@ -17,7 +17,6 @@ namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
 	using Linking;
-	using Scheduling;
 	using Signal;
 	using Tools;
 	using Tools.CodeContracts;
@@ -28,18 +27,18 @@ namespace Kostassoid.Nerve.Core
 	/// </summary>
 	public class Cell : ICell
 	{
-		readonly ISet<ILink> _links = new HashSet<ILink>();
-
 		public string Name { get; private set; }
 
-		public event Action<ICell, SignalHandlingException> Failed = (cell, exception) => { };
+		public event SignalExceptionHandler Failed = (cell, exception) => { };
 
-		public Cell(string name = null)
+        readonly ISet<ILink> _links = new HashSet<ILink>();
+
+	    public Cell(string name = null)
 		{
 			Name = name;
 		}
 
-		public Cell()
+	    public Cell()
 		{
 		}
 
@@ -50,51 +49,28 @@ namespace Kostassoid.Nerve.Core
 			//linksSnapshot.ForEach(l => l.Dispose());
 		}
 
-		public void Fire<T>(T body) where T : class
-		{
-			Requires.NotNull(body, "body");
-
-			Fire(new Signal<T>(body, new StackTrace(this)) as ISignal);
-		}
-
-		public void Fire(ISignal signal)
-		{
-			Relay(signal);
-		}
-
-		public ILinkContinuation OnStream()
-		{
-			return new Link(this).Root;
-		}
-
-		//TODO: possible race condition?
-		public IDisposable Attach(ILink link)
-		{
-			Requires.NotNull(link, "link");
-
-			_links.Add(link);
-			return new DisposableAction(() => Detach(link));
-		}
-
-		public void Detach(ILink link)
-		{
-			Requires.NotNull(link, "link");
-
-			_links.Remove(link);
-		}
-
+/*
 		public IEmitterOf<T> GetEmitterOf<T>() where T : class
 		{
 			return new EmitterOf<T>(this);
 		}
+*/
 
-		public void Handle(ISignal signal)
-		{
-			Requires.NotNull(signal, "signal");
+        //TODO: possible race condition?
+        internal IDisposable Attach(ILink link)
+        {
+            Requires.NotNull(link, "link");
 
-			signal.Trace(this);
-			Fire(signal);
-		}
+            _links.Add(link);
+            return new DisposableAction(() => Detach(link));
+        }
+
+        internal void Detach(ILink link)
+        {
+            Requires.NotNull(link, "link");
+
+            _links.Remove(link);
+        }
 
 		protected void Relay(ISignal signal)
 		{
@@ -103,7 +79,7 @@ namespace Kostassoid.Nerve.Core
 			_links.ForEach(l => l.Process(signal));
 		}
 
-		public virtual bool OnFailure(SignalHandlingException exception)
+		public virtual bool OnFailure(SignalException exception)
 		{
 			Failed(this, exception);
 
@@ -114,5 +90,33 @@ namespace Kostassoid.Nerve.Core
 		{
 			return string.Format("{0} [{1}]", GetType().Name, Name ?? "unnamed");
 		}
+
+        public ILinkContinuation OnStream()
+        {
+            return new Link(this).Root;
+        }
+
+        public void Fire<T>(T body) where T : class
+        {
+            Requires.NotNull(body, "body");
+
+            Handle(new Signal<T>(body, new StackTrace(this)));
+        }
+
+        public void Handle(ISignal signal)
+        {
+            Requires.NotNull(signal, "signal");
+
+            signal.Trace(this);
+            Relay(signal);
+        }
+
+        /*
+                public void Fire(ISignal signal)
+                {
+                    Relay(signal);
+                }
+        */
+
 	}
 }

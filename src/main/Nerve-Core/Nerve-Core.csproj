@@ -49,14 +49,9 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Handling\IReactiveHandler.cs" />
+    <Compile Include="IConsumer.cs" />
     <Compile Include="IEmitterOf.cs" />
-    <Compile Include="EmitterOf.cs" />
-    <Compile Include="Handling\IProactiveHandler.cs" />
-    <Compile Include="Linking\IHandlerSelectionSyntax.cs" />
-    <Compile Include="Handling\IProactiveHandlerOf.cs" />
-    <Compile Include="Handling\ISignalQueue.cs" />
-    <Compile Include="Linking\ISignalQueueOf.cs" />
+    <Compile Include="Linking\ILinkAttachPoint.cs" />
     <Compile Include="NerveCenter.cs" />
     <Compile Include="Linking\ILink.cs" />
     <Compile Include="Linking\Operators\AbstractOperator.cs" />
@@ -76,14 +71,14 @@
     <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />
-    <Compile Include="SignalHandlingException.cs" />
+    <Compile Include="SignalException.cs" />
     <Compile Include="Signal\ISignal.cs" />
     <Compile Include="Signal\Signal.cs" />
     <Compile Include="IEmitter.cs" />
     <Compile Include="ICell.cs" />
-    <Compile Include="Handling\LambdaReactiveHandler.cs" />
+    <Compile Include="LambdaConsumer.cs" />
     <Compile Include="Cell.cs" />
-    <Compile Include="Handling\IReactiveHandlerOf.cs" />
+    <Compile Include="IConsumerOf.cs" />
     <Compile Include="StackTrace.cs" />
     <Compile Include="Tools\CodeContracts\Assumes.cs" />
     <Compile Include="Tools\CodeContracts\Requires.cs" />

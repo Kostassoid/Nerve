@@ -48,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 		}
 	}
 
-	internal class GateOperator<T> : GateOperator/*, ILinkContinuation<T>*/ where T : class
+	internal class GateOperator<T> : GateOperator, ILinkContinuation<T> where T : class
 	{
 		public GateOperator(ILink link, int threshold, TimeSpan timespan)
 			: base(link, threshold, timespan)

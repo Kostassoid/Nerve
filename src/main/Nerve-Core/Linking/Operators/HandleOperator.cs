@@ -14,30 +14,30 @@
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
-	using Handling;
 	using Signal;
 
 	internal class HandleOperator : ILinkOperator
 	{
-		private readonly IReactiveHandler _reactiveHandler;
+		private readonly IConsumer _consumer;
 
-		public HandleOperator(IReactiveHandler reactiveHandler)
+		public HandleOperator(IConsumer consumer)
 		{
-			_reactiveHandler = reactiveHandler;
+			_consumer = consumer;
 		}
 
 		public void Process(ISignal signal)
 		{
 			try
 			{
-				_reactiveHandler.Handle(signal);
+				_consumer.Handle(signal);
 			}
 			catch (Exception ex)
 			{
-				var signalException = new SignalHandlingException(ex, signal);
-				if (!_reactiveHandler.OnFailure(signalException))
+				var signalException = new SignalException(ex, signal);
+				if (!_consumer.OnFailure(signalException))
 				{
-					signal.ThrowOnAdjacent(signalException);
+				    signal.Sender.OnFailure(signalException);
+					//signal.ThrowOnAdjacent(signalException);
 				}
 			}
 		}
@@ -50,25 +50,26 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 	internal class HandleOperator<T> : ILinkOperator<T> where T : class
 	{
-		private readonly IReactiveHandlerOf<T> _reactiveHandler;
+		private readonly IConsumerOf<T> _consumer;
 
-		public HandleOperator(IReactiveHandlerOf<T> reactiveHandler)
+		public HandleOperator(IConsumerOf<T> consumer)
 		{
-			_reactiveHandler = reactiveHandler;
+			_consumer = consumer;
 		}
 
 		public void Process(ISignal<T> signal)
 		{
 			try
 			{
-				_reactiveHandler.Handle(signal);
+				_consumer.Handle(signal);
 			}
 			catch (Exception ex)
 			{
-				var signalException = new SignalHandlingException(ex, signal);
-				if (!_reactiveHandler.OnFailure(signalException))
+				var signalException = new SignalException(ex, signal);
+				if (!_consumer.OnFailure(signalException))
 				{
-					signal.ThrowOnAdjacent(signalException);
+                    signal.Sender.OnFailure(signalException);
+                    //signal.ThrowOnAdjacent(signalException);
 				}
 			}
 		}

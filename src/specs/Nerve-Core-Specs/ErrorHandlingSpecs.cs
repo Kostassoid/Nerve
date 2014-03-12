@@ -30,7 +30,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			Establish context = () =>
 			{
 				_cell = new Cell();
-				_cell.OnStream().Of<SignalHandlingException>().ReactWith(_ => _cellIsNotified = true);
+				_cell.OnStream().Of<SignalException>().ReactWith(_ => _cellIsNotified = true);
 
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); });
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
