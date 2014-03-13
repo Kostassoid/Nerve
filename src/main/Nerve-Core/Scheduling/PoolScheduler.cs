@@ -13,11 +13,14 @@
 
 namespace Kostassoid.Nerve.Core.Scheduling
 {
-	using Retlang.Fibers;
+    using System;
+    using Retlang.Fibers;
 
 	public class PoolScheduler : AbstractScheduler
 	{
-		protected override IFiber BuildFiber()
+        public static readonly Func<IScheduler> Factory = () => new PoolScheduler();
+        
+        protected override IFiber BuildFiber()
 		{
 			return new PoolFiber();
 		}

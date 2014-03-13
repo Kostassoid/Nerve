@@ -13,12 +13,15 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using Signal;
+	using System;
+
+	using Linking;
 
 	public interface IEmitter
 	{
-		void Fire<T>(T body) where T : class;
+		IDisposable Attach(ILink link);
 
-		void Fire(ISignal signal);
+		//TODO: refactor
+		ILinkContinuation OnStream();
 	}
 }

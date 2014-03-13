@@ -1,4 +1,4 @@
-﻿// Copyright 2014 https://github.com/Kostassoid/Nerve
+// Copyright 2014 https://github.com/Kostassoid/Nerve
 //   
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -11,33 +11,28 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking
+namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
-	using Operators;
+	using System.Collections.Generic;
 	using Signal;
+	using Tools;
 
-	internal class Link : ILink
+    internal class SplitOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
+		where TIn : class
+		where TOut : class
 	{
-		private readonly IEmitter _owner;
-		private readonly RootOperator _root;
+		private readonly Func<TIn, IEnumerable<TOut>> _splitFunc;
 
-		public Link(IEmitter owner)
+		public SplitOperator(ILink link, Func<TIn, IEnumerable<TOut>> splitFunc) : base(link)
 		{
-			_owner = owner;
-			_root = new RootOperator(this);
+			_splitFunc = splitFunc;
 		}
 
-		public ILinkContinuation Root { get { return _root; } }
-
-		public void Process(ISignal signal)
+		public override void InternalProcess(ISignal<TIn> signal)
 		{
-			_root.Process(signal);
-		}
-
-		public IDisposable AttachToCell()
-		{
-			return _owner.Attach(this);
+		    _splitFunc(signal.Body)
+                .ForEach(b => Next.Process(new Signal<TOut>(b, signal.StackTrace)));
 		}
 	}
 }

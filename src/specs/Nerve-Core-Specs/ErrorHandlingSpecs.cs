@@ -15,6 +15,8 @@ using System;
 
 namespace Kostassoid.Nerve.Core.Specs
 {
+	using Kostassoid.Nerve.Core.Linking.Operators;
+
 	using Linking;
 	using Machine.Specifications;
 	using Model;
@@ -30,7 +32,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			Establish context = () =>
 			{
 				_cell = new Cell();
-				_cell.OnStream().Of<SignalHandlingException>().ReactWith(_ => _cellIsNotified = true);
+				_cell.Failed += (cell, exception) => _cellIsNotified = true;
 
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); });
 				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
@@ -89,6 +91,34 @@ namespace Kostassoid.Nerve.Core.Specs
 			static bool _cellIsNotified;
 			static bool _exceptionWasHandled;
 		}
+
+		[Subject(typeof(AbstractOperator), "Error handling")]
+		[Tags("Unit")]
+		public class when_operator_throws_exception
+		{
+			Establish context = () =>
+			{
+				_cell = new Cell();
+				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+				_cell.OnStream()
+					.Of<Ping>()
+					.Where(_ => { throw new InvalidOperationException(); })
+					.ReactWith(_ => { _received = true; });
+			};
+
+			Cleanup after = () => _cell.Dispose();
+
+			Because of = () => _cell.Fire(new Ping());
+
+			It should_not_continue_signal_processing = () => _received.ShouldBeFalse();
+
+			It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+
+			static ICell _cell;
+			static bool _received;
+			static bool _cellIsNotified;
+		}
+
 	}
 
 	// ReSharper restore InconsistentNaming

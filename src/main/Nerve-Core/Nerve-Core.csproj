@@ -49,9 +49,9 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="IHandler.cs" />
-    <Compile Include="IEmitterOf.cs" />
-    <Compile Include="EmitterOf.cs" />
+    <Compile Include="IConsumer.cs" />
+    <Compile Include="Linking\Operators\OfOperator.cs" />
+    <Compile Include="Linking\Operators\SplitOperator.cs" />
     <Compile Include="NerveCenter.cs" />
     <Compile Include="Linking\ILink.cs" />
     <Compile Include="Linking\Operators\AbstractOperator.cs" />
@@ -71,14 +71,14 @@
     <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />
-    <Compile Include="SignalHandlingException.cs" />
+    <Compile Include="SignalException.cs" />
     <Compile Include="Signal\ISignal.cs" />
     <Compile Include="Signal\Signal.cs" />
     <Compile Include="IEmitter.cs" />
     <Compile Include="ICell.cs" />
-    <Compile Include="LambdaHandler.cs" />
+    <Compile Include="LambdaConsumer.cs" />
     <Compile Include="Cell.cs" />
-    <Compile Include="IHandlerOf.cs" />
+    <Compile Include="IConsumerOf.cs" />
     <Compile Include="StackTrace.cs" />
     <Compile Include="Tools\CodeContracts\Assumes.cs" />
     <Compile Include="Tools\CodeContracts\Requires.cs" />

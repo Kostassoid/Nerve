@@ -13,9 +13,9 @@
 
 		static void Main(string[] args)
 		{
-			ICell tumor = new Cell("Tumor");
-			ICell patient = new Cell("Brain");
-			ICell nurse = new Cell("Nurse");
+			var tumor = new Cell("Tumor");
+			var patient = new Cell("Brain");
+			var nurse = new Cell("Nurse");
 
 			var tumorTimeout = 0;
 

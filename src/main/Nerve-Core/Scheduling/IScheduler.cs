@@ -19,5 +19,6 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	public interface IScheduler : IDisposable
 	{
 		IFiber Fiber { get; }
+	    void Schedule(Action action);
 	}
 }

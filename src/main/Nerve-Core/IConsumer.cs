@@ -13,37 +13,12 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System;
 	using Signal;
-	using Tools.CodeContracts;
 
-	internal class LambdaHandler<T> : IHandlerOf<T> where T : class
+	public interface IConsumer
 	{
-		readonly Action<ISignal<T>> _handler;
-		readonly Action<SignalHandlingException> _failureHandler;
+		void Handle(ISignal signal);
 
-		public LambdaHandler(Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler)
-		{
-			Requires.NotNull(handler, "handler");
-
-			_handler = handler;
-			_failureHandler = failureHandler;
-		}
-
-		public void Handle(ISignal<T> signal)
-		{
-			_handler(signal);
-		}
-
-		public bool OnFailure(SignalHandlingException exception)
-		{
-			if (_failureHandler != null)
-			{
-				_failureHandler(exception);
-				return true;
-			}
-
-			return false;
-		}
+		bool OnFailure(SignalException exception);
 	}
 }

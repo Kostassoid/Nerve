@@ -13,6 +13,8 @@
 
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
+	using System;
+
 	using Signal;
 
 	public abstract class AbstractOperator : ILinkOperator, ILinkContinuation
@@ -31,7 +33,14 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 		{
 			if (_next == null) return;
 
-			InternalProcess(signal);
+			try
+			{
+				InternalProcess(signal);
+			}
+			catch (Exception ex)
+			{
+				signal.HandleException(ex);
+			}
 		}
 
 		public abstract void InternalProcess(ISignal signal);

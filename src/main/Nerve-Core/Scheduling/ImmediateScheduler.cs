@@ -13,10 +13,13 @@
 
 namespace Kostassoid.Nerve.Core.Scheduling
 {
-	using Retlang.Fibers;
+    using System;
+    using Retlang.Fibers;
 
 	public class ImmediateScheduler : AbstractScheduler
 	{
+        public static readonly Func<IScheduler> Factory = () => new ImmediateScheduler(); 
+
 		protected override IFiber BuildFiber()
 		{
 			return new StubFiber {ExecutePendingImmediately = true};

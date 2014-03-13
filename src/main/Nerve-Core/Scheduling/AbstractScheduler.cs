@@ -13,7 +13,8 @@
 
 namespace Kostassoid.Nerve.Core.Scheduling
 {
-	using Retlang.Fibers;
+    using System;
+    using Retlang.Fibers;
 
 	public abstract class AbstractScheduler : IScheduler
 	{
@@ -32,7 +33,12 @@ namespace Kostassoid.Nerve.Core.Scheduling
 			}
 		}
 
-		protected abstract IFiber BuildFiber();
+	    public void Schedule(Action action)
+	    {
+            Fiber.Enqueue(action);
+	    }
+
+	    protected abstract IFiber BuildFiber();
 
 		public void Dispose()
 		{

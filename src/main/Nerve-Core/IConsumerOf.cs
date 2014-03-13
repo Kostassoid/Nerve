@@ -15,10 +15,10 @@ namespace Kostassoid.Nerve.Core
 {
 	using Signal;
 
-	public interface IHandler
+	public interface IConsumerOf<in T> where T : class
 	{
-		void Handle(ISignal signal);
+		void Handle(ISignal<T> signal);
 
-		bool OnFailure(SignalHandlingException exception);
+		bool OnFailure(SignalException exception);
 	}
 }

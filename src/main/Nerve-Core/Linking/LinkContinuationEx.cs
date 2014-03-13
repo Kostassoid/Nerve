@@ -14,6 +14,8 @@
 namespace Kostassoid.Nerve.Core.Linking
 {
 	using System;
+	using System.Collections.Generic;
+
 	using Operators;
 	using Scheduling;
 	using Signal;
@@ -21,6 +23,14 @@ namespace Kostassoid.Nerve.Core.Linking
 	public static class LinkContinuationEx
 	{
 		public static ILinkContinuation<TOut> Of<TOut>(this ILinkContinuation step)
+			where TOut : class
+		{
+			var next = new OfOperator<TOut>(step.Link);
+			step.Attach(next);
+			return next;
+		}
+
+		public static ILinkContinuation<TOut> Cast<TOut>(this ILinkContinuation step)
 			where TOut : class
 		{
 			var next = new CastOperator<TOut>(step.Link);
@@ -73,30 +83,48 @@ namespace Kostassoid.Nerve.Core.Linking
 			return next;
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, IHandler handler)
+		public static ILinkContinuation<TOut> Map<TIn, TOut>(this ILinkContinuation<TIn> step, Func<TIn, TOut> mapFunc)
+			where TIn : class
+			where TOut : class
+		{
+			var next = new MapOperator<TIn, TOut>(step.Link, mapFunc);
+			step.Attach(next);
+			return next;
+		}
+
+		public static ILinkContinuation<TOut> Split<TIn, TOut>(this ILinkContinuation<TIn> step, Func<TIn, IEnumerable<TOut>> splitFunc)
+			where TIn : class
+			where TOut : class
+		{
+			var next = new SplitOperator<TIn, TOut>(step.Link, splitFunc);
+			step.Attach(next);
+			return next;
+		}
+
+		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, IConsumer consumer)
 			where T : class
 		{
-			var next = new HandleOperator(handler);
+			var next = new HandleOperator(consumer);
 			step.Attach(next);
 
 			//TODO: not pretty
 			return step.Link.AttachToCell();
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, IHandlerOf<T> handler)
+		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, IConsumerOf<T> consumer)
 			where T : class
 		{
-			var next = new HandleOperator<T>(handler);
+			var next = new HandleOperator<T>(consumer);
 			step.Attach(next);
 
 			//TODO: not pretty
 			return step.Link.AttachToCell();
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, Action<ISignal<T>> handler, Action<SignalHandlingException> failureHandler = null)
+		public static IDisposable ReactWith<T>(this ILinkContinuation<T> step, Action<ISignal<T>> handler, Action<SignalException> failureHandler = null)
 			where T : class
 		{
-			return ReactWith(step, new LambdaHandler<T>(handler, failureHandler));
+			return ReactWith(step, new LambdaConsumer<T>(handler, failureHandler));
 		}
 
 	}

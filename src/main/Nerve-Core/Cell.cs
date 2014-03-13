@@ -17,6 +17,7 @@ namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
 	using Linking;
+	using Scheduling;
 	using Signal;
 	using Tools;
 	using Tools.CodeContracts;
@@ -27,49 +28,67 @@ namespace Kostassoid.Nerve.Core
 	/// </summary>
 	public class Cell : ICell
 	{
-		readonly ISet<ILink> _links = new HashSet<ILink>();
-
 		public string Name { get; private set; }
-		public NerveCenter Owner { get; private set; }
 
-		public event Action<ICell, SignalHandlingException> Failed = (cell, exception) => { };
+		public event SignalExceptionHandler Failed = (cell, exception) => { };
 
-		public Cell(string name = null, NerveCenter owner = null)
+        private readonly ISet<ILink> _links = new HashSet<ILink>();
+	    private readonly IScheduler _scheduler;
+
+        public Cell(string name, Func<IScheduler> schedulerFactory)
+        {
+            Requires.NotNull(schedulerFactory, "schedulerFactory");
+
+            Name = name;
+            _scheduler = schedulerFactory();
+        }
+
+        public Cell(string name)
+            : this(name, () => new ImmediateScheduler())
+        {
+        }
+
+        public Cell(Func<IScheduler> schedulerFactory)
+            : this(null, schedulerFactory)
+        {
+        }
+
+        public Cell()
+            : this(null, () => new ImmediateScheduler())
+        {
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if (_links != null)
+            {
+                _links.Clear();
+            }
+
+            if (_scheduler != null)
+            {
+                _scheduler.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~Cell()
+        {
+            Dispose(false);
+        }
+
+        //TODO: possible race condition?
+		IDisposable IEmitter.Attach(ILink link)
 		{
-			Name = name;
-			Owner = owner;
-		}
+			return Attach(link);
+        }
 
-		public Cell()
-		{
-		}
-
-		public virtual void Dispose()
-		{
-			//var linksSnapshot = _links.ToArray();
-			_links.Clear();
-			//linksSnapshot.ForEach(l => l.Dispose());
-		}
-
-		public void Fire<T>(T body) where T : class
-		{
-			Requires.NotNull(body, "body");
-
-			Fire(new Signal<T>(body, new StackTrace(this)) as ISignal);
-		}
-
-		public void Fire(ISignal signal)
-		{
-			Relay(signal);
-		}
-
-		public ILinkContinuation OnStream()
-		{
-			return new Link(this).Root;
-		}
-
-		//TODO: possible race condition?
-		public IDisposable Attach(ILink link)
+		internal IDisposable Attach(ILink link)
 		{
 			Requires.NotNull(link, "link");
 
@@ -77,25 +96,12 @@ namespace Kostassoid.Nerve.Core
 			return new DisposableAction(() => Detach(link));
 		}
 
-		public void Detach(ILink link)
-		{
-			Requires.NotNull(link, "link");
+        internal void Detach(ILink link)
+        {
+            Requires.NotNull(link, "link");
 
-			_links.Remove(link);
-		}
-
-		public IEmitterOf<T> GetEmitterOf<T>() where T : class
-		{
-			return new EmitterOf<T>(this);
-		}
-
-		public void Handle(ISignal signal)
-		{
-			Requires.NotNull(signal, "signal");
-
-			signal.Trace(this);
-			Fire(signal);
-		}
+            _links.Remove(link);
+        }
 
 		protected void Relay(ISignal signal)
 		{
@@ -104,12 +110,9 @@ namespace Kostassoid.Nerve.Core
 			_links.ForEach(l => l.Process(signal));
 		}
 
-		public virtual bool OnFailure(SignalHandlingException exception)
+		public virtual bool OnFailure(SignalException exception)
 		{
 			Failed(this, exception);
-
-			if (Owner != null)
-				Owner.OnFailure(this, exception);
 
 			return true;
 		}
@@ -118,5 +121,27 @@ namespace Kostassoid.Nerve.Core
 		{
 			return string.Format("{0} [{1}]", GetType().Name, Name ?? "unnamed");
 		}
+
+        public void Fire<T>(T body) where T : class
+        {
+            Requires.NotNull(body, "body");
+
+            Handle(new Signal<T>(body, new StackTrace(this)));
+        }
+
+        public void Handle(ISignal signal)
+        {
+            Requires.NotNull(signal, "signal");
+
+            signal.Trace(this);
+
+            _scheduler.Schedule(() => Relay(signal));
+        }
+
+		public ILinkContinuation OnStream()
+		{
+			return new Link(this).Root;
+		}
+
 	}
 }

@@ -14,15 +14,14 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System;
-	using Linking;
 
-	public interface ICell : IEmitter, IHandler, IDisposable
+	public delegate void SignalExceptionHandler(ICell cell, SignalException exception);
+
+    public interface ICell : IEmitter, IConsumer, IDisposable
 	{
 		string Name { get; }
-		NerveCenter Owner { get; }
-		event Action<ICell, SignalHandlingException> Failed;
+		event SignalExceptionHandler Failed;
 
-		ILinkContinuation OnStream();
-		IEmitterOf<T> GetEmitterOf<T>() where T : class;
+        void Fire<T>(T body) where T : class;
 	}
 }
