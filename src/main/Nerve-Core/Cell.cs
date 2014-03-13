@@ -83,13 +83,18 @@ namespace Kostassoid.Nerve.Core
         }
 
         //TODO: possible race condition?
-        internal IDisposable Attach(ILink link)
-        {
-            Requires.NotNull(link, "link");
-
-            _links.Add(link);
-            return new DisposableAction(() => Detach(link));
+		IDisposable IEmitter.Attach(ILink link)
+		{
+			return Attach(link);
         }
+
+		internal IDisposable Attach(ILink link)
+		{
+			Requires.NotNull(link, "link");
+
+			_links.Add(link);
+			return new DisposableAction(() => Detach(link));
+		}
 
         internal void Detach(ILink link)
         {
@@ -117,11 +122,6 @@ namespace Kostassoid.Nerve.Core
 			return string.Format("{0} [{1}]", GetType().Name, Name ?? "unnamed");
 		}
 
-        public ILinkContinuation OnStream()
-        {
-            return new Link(this).Root;
-        }
-
         public void Fire<T>(T body) where T : class
         {
             Requires.NotNull(body, "body");
@@ -137,5 +137,11 @@ namespace Kostassoid.Nerve.Core
 
             _scheduler.Schedule(() => Relay(signal));
         }
+
+		public ILinkContinuation OnStream()
+		{
+			return new Link(this).Root;
+		}
+
 	}
 }

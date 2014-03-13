@@ -13,11 +13,15 @@
 
 namespace Kostassoid.Nerve.Core
 {
-    using Linking;
-    using Signal;
+	using System;
+
+	using Linking;
 
 	public interface IEmitter
 	{
-        ILinkContinuation OnStream();
+		IDisposable Attach(ILink link);
+
+		//TODO: refactor
+		ILinkContinuation OnStream();
 	}
 }

@@ -36,8 +36,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 				var signalException = new SignalException(ex, signal);
 				if (!_consumer.OnFailure(signalException))
 				{
-				    signal.Sender.OnFailure(signalException);
-					//signal.ThrowOnAdjacent(signalException);
+					signal.HandleException(signalException);
 				}
 			}
 		}
@@ -68,8 +67,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 				var signalException = new SignalException(ex, signal);
 				if (!_consumer.OnFailure(signalException))
 				{
-                    signal.Sender.OnFailure(signalException);
-                    //signal.ThrowOnAdjacent(signalException);
+					signal.HandleException(signalException);
 				}
 			}
 		}

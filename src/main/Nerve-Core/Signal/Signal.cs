@@ -15,11 +15,15 @@ namespace Kostassoid.Nerve.Core.Signal
 {
 	using System;
 
+	using Kostassoid.Nerve.Core.Tools.CodeContracts;
+
 	internal sealed class Signal<T> : ISignal<T> where T : class
 	{
 		public T Body { get; private set; }
 		object ISignal.Body { get { return Body; } }
 		public StackTrace StackTrace { get; private set; }
+		public SignalException Exception { get; private set; }
+
 		public ICell Sender { get { return StackTrace.Root; } }
 
 		public Signal(T body, StackTrace stackTrace)
@@ -38,35 +42,12 @@ namespace Kostassoid.Nerve.Core.Signal
 			StackTrace.Push(cell);
 		}
 
-/*
-		private void Throw(Exception exception, IEmitter emitter)
+		public void HandleException(Exception exception)
 		{
-			var signalHandlingException =
-				exception as SignalException
-				?? new SignalException(exception, this);
+			Requires.ValidState(Exception == null, "Already marked as faulted with exception of type [{0}].", Exception != null ? Exception.GetType().Name : "");
 
-			emitter.Fire(signalHandlingException);
-		}
-
-		public void ThrowOnAdjacent(Exception exception)
-		{
-			Throw(exception, StackTrace.Last);
-		}
-
-		public void ThrowOnSender(Exception exception)
-		{
-			Throw(exception, StackTrace.Root);
-		}
-*/
-
-		public ISignal<TOut> As<TOut>() where TOut : class
-		{
-			var body = Body as TOut;
-			if (body == null)
-				throw new InvalidCastException(string.Format("Unable to cast from [{0}] to [{1}].",
-					typeof (T).Name, typeof (TOut).Name));
-
-			return new Signal<TOut>(body, StackTrace);
+			Exception = new SignalException(exception, this);
+			Sender.OnFailure(Exception);
 		}
 	}
 }

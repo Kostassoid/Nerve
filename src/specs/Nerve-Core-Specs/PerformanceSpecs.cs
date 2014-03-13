@@ -46,7 +46,7 @@ namespace Kostassoid.Nerve.Core.Specs
 				countdown.Wait();
 				stopwatch.Stop();
 
-				var ops = SignalsCount/stopwatch.ElapsedMilliseconds*1000;
+				var ops = SignalsCount * 1000L / stopwatch.ElapsedMilliseconds;
 				Console.WriteLine("Ops / second: {0}", ops);
 				ops.ShouldBeGreaterThan(500000);
 			};

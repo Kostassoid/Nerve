@@ -50,7 +50,8 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="IConsumer.cs" />
-    <Compile Include="IEmitterOf.cs" />
+    <Compile Include="Linking\Operators\OfOperator.cs" />
+    <Compile Include="Linking\Operators\SplitOperator.cs" />
     <Compile Include="NerveCenter.cs" />
     <Compile Include="Linking\ILink.cs" />
     <Compile Include="Linking\Operators\AbstractOperator.cs" />

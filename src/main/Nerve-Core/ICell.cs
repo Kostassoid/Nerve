@@ -14,9 +14,8 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System;
-	using Linking;
 
-    public delegate void SignalExceptionHandler(ICell cell, SignalException exception);
+	public delegate void SignalExceptionHandler(ICell cell, SignalException exception);
 
     public interface ICell : IEmitter, IConsumer, IDisposable
 	{
@@ -24,7 +23,5 @@ namespace Kostassoid.Nerve.Core
 		event SignalExceptionHandler Failed;
 
         void Fire<T>(T body) where T : class;
-
-        //void Fire(ISignal signal);
 	}
 }

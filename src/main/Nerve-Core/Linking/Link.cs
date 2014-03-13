@@ -19,10 +19,10 @@ namespace Kostassoid.Nerve.Core.Linking
 
 	internal class Link : ILink
 	{
-		private readonly Cell _owner;
+		private readonly IEmitter _owner;
 		private readonly RootOperator _root;
 
-		public Link(Cell owner)
+		public Link(IEmitter owner)
 		{
 			_owner = owner;
 			_root = new RootOperator(this);

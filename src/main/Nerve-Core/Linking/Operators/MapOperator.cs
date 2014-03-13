@@ -29,7 +29,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		public override void InternalProcess(ISignal<TIn> signal)
 		{
-			Next.Process(_mapFunc(signal.Body) as ISignal<TOut>);
+			Next.Process(new Signal<TOut>(_mapFunc(signal.Body), signal.StackTrace));
 		}
 	}
 }

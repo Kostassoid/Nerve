@@ -15,24 +15,60 @@ using System;
 
 namespace Kostassoid.Nerve.Core.Signal
 {
+	/// <summary>
+	/// Untyped signal interface
+	/// </summary>
 	public interface ISignal
 	{
+		/// <summary>
+		/// Signal payload.
+		/// </summary>
 		object Body { get; }
-		StackTrace StackTrace { get; }
+
+		/// <summary>
+		/// Original signal sender.
+		/// </summary>
 		ICell Sender { get; }
 
-		ISignal<T> As<T>() where T : class;
+		/// <summary>
+		/// Recorded stack trace.
+		/// </summary>
+		StackTrace StackTrace { get; }
 
+		/// <summary>
+		/// First exception encountered during signal processing.
+		/// </summary>
+		SignalException Exception { get; }
+
+		/// <summary>
+		/// Fires back at original sender.
+		/// </summary>
+		/// <typeparam name="TResponse">Response payload type.</typeparam>
+		/// <param name="body">Signal payload.</param>
 		void Return<TResponse>(TResponse body) where TResponse : class;
+
+		/// <summary>
+		/// Registers intermediate cell in stack trace.
+		/// </summary>
+		/// <param name="cell">Cell</param>
 		void Trace(ICell cell);
-/*
-		void ThrowOnAdjacent(Exception exception);
-		void ThrowOnSender(Exception exception);
-*/
+
+		/// <summary>
+		/// Handles exception.
+		/// </summary>
+		/// <param name="exception">Original exception.</param>
+		void HandleException(Exception exception);
 	}
 
+	/// <summary>
+	/// Typed signal interface.
+	/// </summary>
+	/// <typeparam name="T">Signal payload type.</typeparam>
 	public interface ISignal<out T> : ISignal where T : class
 	{
+		/// <summary>
+		/// Signal payload.
+		/// </summary>
 		new T Body { get; }
 	}
 }

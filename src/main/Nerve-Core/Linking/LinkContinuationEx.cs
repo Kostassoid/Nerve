@@ -14,6 +14,8 @@
 namespace Kostassoid.Nerve.Core.Linking
 {
 	using System;
+	using System.Collections.Generic;
+
 	using Operators;
 	using Scheduling;
 	using Signal;
@@ -21,6 +23,14 @@ namespace Kostassoid.Nerve.Core.Linking
 	public static class LinkContinuationEx
 	{
 		public static ILinkContinuation<TOut> Of<TOut>(this ILinkContinuation step)
+			where TOut : class
+		{
+			var next = new OfOperator<TOut>(step.Link);
+			step.Attach(next);
+			return next;
+		}
+
+		public static ILinkContinuation<TOut> Cast<TOut>(this ILinkContinuation step)
 			where TOut : class
 		{
 			var next = new CastOperator<TOut>(step.Link);
@@ -69,6 +79,24 @@ namespace Kostassoid.Nerve.Core.Linking
 			where T : class
 		{
 			var next = new GateOperator<T>(step.Link, threshold, timespan);
+			step.Attach(next);
+			return next;
+		}
+
+		public static ILinkContinuation<TOut> Map<TIn, TOut>(this ILinkContinuation<TIn> step, Func<TIn, TOut> mapFunc)
+			where TIn : class
+			where TOut : class
+		{
+			var next = new MapOperator<TIn, TOut>(step.Link, mapFunc);
+			step.Attach(next);
+			return next;
+		}
+
+		public static ILinkContinuation<TOut> Split<TIn, TOut>(this ILinkContinuation<TIn> step, Func<TIn, IEnumerable<TOut>> splitFunc)
+			where TIn : class
+			where TOut : class
+		{
+			var next = new SplitOperator<TIn, TOut>(step.Link, splitFunc);
 			step.Attach(next);
 			return next;
 		}
