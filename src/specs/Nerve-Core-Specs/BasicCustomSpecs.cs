@@ -46,7 +46,6 @@ namespace Kostassoid.Nerve.Core.Specs
 			public SpecialCell()
 			{
 				OnStream().Of<Ping>().ReactWith(_ => Received = true);
-				//On(Stream().Of<Ping>(), _ => Received = true);
 			}
 		}
 

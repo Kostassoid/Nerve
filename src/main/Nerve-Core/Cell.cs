@@ -17,6 +17,7 @@ namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
 	using Linking;
+	using Scheduling;
 	using Signal;
 	using Tools;
 	using Tools.CodeContracts;
@@ -31,30 +32,55 @@ namespace Kostassoid.Nerve.Core
 
 		public event SignalExceptionHandler Failed = (cell, exception) => { };
 
-        readonly ISet<ILink> _links = new HashSet<ILink>();
+        private readonly ISet<ILink> _links = new HashSet<ILink>();
+	    private readonly IScheduler _scheduler;
 
-	    public Cell(string name = null)
-		{
-			Name = name;
-		}
+        public Cell(string name, Func<IScheduler> schedulerFactory)
+        {
+            Requires.NotNull(schedulerFactory, "schedulerFactory");
 
-	    public Cell()
-		{
-		}
+            Name = name;
+            _scheduler = schedulerFactory();
+        }
 
-		public virtual void Dispose()
-		{
-			//var linksSnapshot = _links.ToArray();
-			_links.Clear();
-			//linksSnapshot.ForEach(l => l.Dispose());
-		}
+        public Cell(string name)
+            : this(name, () => new ImmediateScheduler())
+        {
+        }
 
-/*
-		public IEmitterOf<T> GetEmitterOf<T>() where T : class
-		{
-			return new EmitterOf<T>(this);
-		}
-*/
+        public Cell(Func<IScheduler> schedulerFactory)
+            : this(null, schedulerFactory)
+        {
+        }
+
+        public Cell()
+            : this(null, () => new ImmediateScheduler())
+        {
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if (_links != null)
+            {
+                _links.Clear();
+            }
+
+            if (_scheduler != null)
+            {
+                _scheduler.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~Cell()
+        {
+            Dispose(false);
+        }
 
         //TODO: possible race condition?
         internal IDisposable Attach(ILink link)
@@ -108,15 +134,8 @@ namespace Kostassoid.Nerve.Core
             Requires.NotNull(signal, "signal");
 
             signal.Trace(this);
-            Relay(signal);
+
+            _scheduler.Schedule(() => Relay(signal));
         }
-
-        /*
-                public void Fire(ISignal signal)
-                {
-                    Relay(signal);
-                }
-        */
-
 	}
 }

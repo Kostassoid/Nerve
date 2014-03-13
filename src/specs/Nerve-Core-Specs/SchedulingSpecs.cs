@@ -38,9 +38,8 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new Cell();
+                _cell = new Cell(PoolScheduler.Factory);
 				_cell.OnStream().Of<Ping>()
-					.Through(new PoolScheduler())
 					.ReactWith(_ =>
 					{
 						Thread.Sleep(100);
@@ -71,13 +70,12 @@ namespace Kostassoid.Nerve.Core.Specs
 		public class serialized_processor
 		{
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 
 			It should_receive_in_original_order = () =>
 			{
 				var received = new List<int>();
 				var countdown = new CountdownEvent(10);
-				Cell.OnStream().Of<Num>().Through(Scheduler).ReactWith(s =>
+				Cell.OnStream().Of<Num>().ReactWith(s =>
 				{
 					received.Add(s.Body.Value);
 					countdown.Signal();
@@ -97,8 +95,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
-				Scheduler = new ImmediateScheduler();
+				Cell = new Cell(ImmediateScheduler.Factory);
 			};
 
 			Cleanup after = () => Cell.Dispose();
@@ -106,7 +103,6 @@ namespace Kostassoid.Nerve.Core.Specs
 			Behaves_like<serialized_processor> _;
 
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 		}
 
 		[Subject(typeof(ICell), "Scheduling")]
@@ -115,8 +111,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
-				Scheduler = new PoolScheduler();
+                Cell = new Cell(PoolScheduler.Factory);
 			};
 
 			Cleanup after = () => Cell.Dispose();
@@ -124,7 +119,6 @@ namespace Kostassoid.Nerve.Core.Specs
 			Behaves_like<serialized_processor> _;
 
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 		}
 
 		[Subject(typeof(ICell), "Scheduling")]
@@ -133,8 +127,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
-				Scheduler = new ThreadScheduler();
+                Cell = new Cell(ThreadScheduler.Factory);
 			};
 
 			Cleanup after = () => Cell.Dispose();
@@ -142,7 +135,6 @@ namespace Kostassoid.Nerve.Core.Specs
 			Behaves_like<serialized_processor> _;
 
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 		}
 
 		[Subject(typeof(ICell), "Scheduling")]
@@ -151,7 +143,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				_cell = new Cell();
+				_cell = new Cell(ThreadScheduler.Factory);
 
 				Action<ISignal<Num>> handler = s =>
 				{
@@ -161,7 +153,6 @@ namespace Kostassoid.Nerve.Core.Specs
 				};
 
 				_cell.OnStream()
-					.Through(new ThreadScheduler())
 					.Of<Num>()
 					.ReactWith(handler);
 			};

@@ -34,12 +34,11 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			protected static int SignalsCount;
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 
-			It should_be_faster_than_1_million_ops = () =>
+			It should_be_faster_than_0_5_million_ops = () =>
 			{
 				var countdown = new CountdownEvent(SignalsCount);
-				Cell.OnStream().Through(Scheduler).Of<Ping>().ReactWith(_ => countdown.Signal());
+				Cell.OnStream().Of<Ping>().ReactWith(_ => countdown.Signal());
 
 				var stopwatch = Stopwatch.StartNew();
 				Enumerable.Range(0, SignalsCount).ForEach(_ => Cell.Fire(new Ping()));
@@ -49,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 				var ops = SignalsCount/stopwatch.ElapsedMilliseconds*1000;
 				Console.WriteLine("Ops / second: {0}", ops);
-				ops.ShouldBeGreaterThan(1000000);
+				ops.ShouldBeGreaterThan(500000);
 			};
 		}
 
@@ -59,21 +58,15 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
-				Scheduler = new ImmediateScheduler();
+				Cell = new Cell(ImmediateScheduler.Factory);
 			};
 
-			Cleanup after = () =>
-			{
-				Scheduler.Dispose();
-				Cell.Dispose();
-			};
+			Cleanup after = () => Cell.Dispose();
 
 			Behaves_like<fast_message_broker> _;
 
 			protected static int SignalsCount = 1000000;
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 		}
 
 		[Subject(typeof(Cell), "Performance")]
@@ -82,21 +75,15 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
-				Scheduler = new PoolScheduler();
-			};
+                Cell = new Cell(PoolScheduler.Factory);
+            };
 
-			Cleanup after = () =>
-			{
-				Scheduler.Dispose();
-				Cell.Dispose();
-			};
+			Cleanup after = () => Cell.Dispose();
 
 			Behaves_like<fast_message_broker> _;
 
 			protected static int SignalsCount = 1000000;
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 		}
 
 		[Subject(typeof(Cell), "Performance")]
@@ -105,21 +92,15 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			Establish context = () =>
 			{
-				Cell = new Cell();
-				Scheduler = new ThreadScheduler();
+                Cell = new Cell(ThreadScheduler.Factory);
 			};
 
-			Cleanup after = () =>
-			{
-				Scheduler.Dispose();
-				Cell.Dispose();
-			};
+			Cleanup after = () => Cell.Dispose();
 
 			Behaves_like<fast_message_broker> _;
 
 			protected static int SignalsCount = 1000000;
 			protected static ICell Cell;
-			protected static IScheduler Scheduler;
 		}
 	}
 
