@@ -1,12 +1,22 @@
 Nerve
 =====
 
-Nerve is a federated messaging library for .NET. It combines ideas of [EventAggregator](http://martinfowler.com/eaaDev/EventAggregator.html), [Actors](http://en.wikipedia.org/wiki/Actor_model) and [Reactive Extensions](https://rx.codeplex.com/), allowing for fast and easy concurrent message handling.
+![Nerve logo](http://i.kostassoid.com/nerve/logo.png)
+
+Nerve is a federated event driven integration library for .NET which allows for fast and easy concurrent message routing and processing. It is based on personal experience and ideas from various sources.
+
+To name a few:
+* [Event Aggregator](http://martinfowler.com/eaaDev/EventAggregator.html)
+* [Actor Model](http://en.wikipedia.org/wiki/Actor_model)
+* [Reactive Extensions](https://rx.codeplex.com/)
+* [Apache Camel](https://camel.apache.org/)
 
 Basic usage
 -----------
 
-A basic building block of Nerve infrastructure is a Cell, which, by default implementation, is basically an in-proc message broker. It allows you to subscribe to message stream using rich fluent interface and also to publish messages (called Signals).
+A basic building block of Nerve infrastructure is a Cell, which, by default implementation, is basically an in-proc queue with broadcast routing. All processing within a cell is serialized but can be scheduled on a dedicated thread, a thread pool or a caller's thread in case context switching is not acceptable.
+
+Subscription to message stream can be done using rich fluent interface which is used to build a route from source Cell to concrete message consumer.
 
 A quick and simple example using a single cell:
 
@@ -28,7 +38,7 @@ A quick and simple example using a single cell:
 Federation
 ----------
 
-Each cell can also be a receiver itself. It can be subscribed to a stream of signals fired from another cells, which allows for building a really complex routing.
+Each Cell can also be a message consumer itself. It can be subscribed to a stream of messages fired from another cells, which allows for a really complex routing.
 
     // creating cells
     _ping = new Cell();
@@ -49,12 +59,12 @@ Each cell can also be a receiver itself. It can be subscribed to a stream of sig
     _ping.Dispose();
     _pong.Dispose();
 
-This example may not look impressive. But imagine if one of the cells is actually implemented as a client for some out-of-proc messaging middleware (ex. MSMQ).
+This example may not look any better than the first one. But imagine if one of the Cells is actually implemented as a client for some out-of-proc messaging middleware (ex. MSMQ).
 
 Scheduling
 ----------
 
-Each signal passing through attached pipeline (synapse) is going through at least one scheduler. Scheduler decide how a signal will be delivered. By default, incoming signals are processed on the same thread they were dispatched on. But there are other implementations, allowing to use dedicated thread or a thread pool.
+Each message (called Signals) passing through some route attached to a Cell travels through at least one scheduler. Scheduler decide how a signal will be delivered. By default, incoming signals are processed on the same thread they were dispatched on. But there are other implementations, allowing to use dedicated thread or a thread pool.
 
 Current State
 -------------
