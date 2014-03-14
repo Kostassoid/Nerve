@@ -95,7 +95,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(body, "body");
 
-			OnSignal(new Signal<T>(body, new StackTrace(this)));
+			OnSignal(new Signal<T>(body, StackTrace.Empty));
 		}
 
 		public void OnSignal(ISignal signal)
@@ -126,7 +126,7 @@ namespace Kostassoid.Nerve.Core
 
 		public override string ToString()
 		{
-			return string.Format("{0} [{1}]", GetType().Name, Name ?? "unnamed");
+			return string.Format("{0}[{1}]", GetType().Name, Name ?? "unnamed");
 		}
 
 		#endregion

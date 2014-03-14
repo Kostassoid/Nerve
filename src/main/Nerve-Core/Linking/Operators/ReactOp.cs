@@ -40,7 +40,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			Action<ISignal<T>> handler,
 			Action<SignalException> failureHandler = null) where T : class
 		{
-			return ReactWith(step, new LambdaHandler<T>(handler, failureHandler));
+			return ReactWith(step, new LambdaHandlerOf<T>(handler, failureHandler));
 		}
 	}
 }

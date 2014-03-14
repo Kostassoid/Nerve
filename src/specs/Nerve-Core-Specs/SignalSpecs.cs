@@ -90,7 +90,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cellB = new Cell();
 					_payload = new object();
 					_stackTrace = new StackTrace(_cellA);
-					_stackTrace.Push(_cellB);
+					_stackTrace.Trace(_cellB);
 				};
 
 			private Because of = () => _signal = new Signal<object>(_payload, _stackTrace);

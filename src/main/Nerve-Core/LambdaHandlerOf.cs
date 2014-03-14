@@ -19,7 +19,7 @@ namespace Kostassoid.Nerve.Core
 
 	using Tools.CodeContracts;
 
-	internal class LambdaHandler<T> : IHandlerOf<T>
+	internal class LambdaHandlerOf<T> : IHandlerOf<T>
 		where T : class
 	{
 		#region Fields
@@ -32,7 +32,7 @@ namespace Kostassoid.Nerve.Core
 
 		#region Constructors and Destructors
 
-		public LambdaHandler(Action<ISignal<T>> handler, Action<SignalException> failureHandler)
+		public LambdaHandlerOf(Action<ISignal<T>> handler, Action<SignalException> failureHandler)
 		{
 			Requires.NotNull(handler, "handler");
 

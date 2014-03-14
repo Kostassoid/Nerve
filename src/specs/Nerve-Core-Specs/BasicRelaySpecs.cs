@@ -14,12 +14,15 @@
 namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
+	using System.Linq;
 
 	using Linking.Operators;
 
 	using Machine.Specifications;
 
 	using Model;
+
+	using Signal;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
@@ -80,7 +83,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private static ICell _c;
 
-			private static bool _received;
+			private static ISignal<Ping> _received;
 
 			private Cleanup after = () =>
 				{
@@ -91,18 +94,32 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () =>
 				{
-					_a = new Cell();
-					_b = new Cell();
-					_c = new Cell();
+					_a = new Cell("a");
+					_b = new Cell("b");
+					_c = new Cell("c");
 
 					_a.OnStream().Of<Ping>().ReactWith(_b);
-					_b.OnStream().Of<Ping>().ReactWith(_c);
-					_c.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+					_b.Attach(_c);
+					_c.OnStream().Of<Ping>().ReactWith(s => _received = s);
 				};
 
 			private Because of = () => _a.Fire(new Ping());
 
-			private It should_receive_signal = () => _received.ShouldBeTrue();
+			private It should_receive_signal = () => _received.ShouldNotBeNull();
+
+			It should_have_all_handlers_on_stack =
+				() => _received.StackTrace.Frames
+					.Select(f => f.ToString())
+					.ShouldEqual(new[]
+					{
+						"Cell[a]",
+						"Operator[Root]",
+						"Operator[Of of Ping]",
+						"Cell[b]",
+						"Cell[c]",
+						"Operator[Root]",
+						"Operator[Of of Ping]"
+					});
 		}
 
 		[Subject(typeof(Cell), "Basic")]

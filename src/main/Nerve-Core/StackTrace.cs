@@ -22,20 +22,24 @@ namespace Kostassoid.Nerve.Core
 	{
 		#region Fields
 
-		private readonly IList<ICell> _frames = new List<ICell>();
+		private readonly IList<IHandler> _frames = new List<IHandler>();
 
 		#endregion
 
 		#region Constructors and Destructors
 
-		public StackTrace(ICell root)
+		public StackTrace()
+		{
+		}
+
+		public StackTrace(IHandler root)
 		{
 			Requires.NotNull(root, "root");
 
 			_frames.Add(root);
 		}
 
-		protected StackTrace(IList<ICell> frames)
+		protected StackTrace(IList<IHandler> frames)
 		{
 			Requires.NotNullOrEmpty(frames, "Frames");
 
@@ -46,7 +50,7 @@ namespace Kostassoid.Nerve.Core
 
 		#region Public Properties
 
-		public IEnumerable<ICell> Frames
+		public IEnumerable<IHandler> Frames
 		{
 			get
 			{
@@ -54,7 +58,7 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		public ICell Root
+		public IHandler Root
 		{
 			get
 			{
@@ -62,11 +66,19 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		public ICell Top
+		public IHandler Top
 		{
 			get
 			{
 				return _frames.LastOrDefault();
+			}
+		}
+
+		public static StackTrace Empty
+		{
+			get
+			{
+				return new StackTrace();
 			}
 		}
 
@@ -101,7 +113,7 @@ namespace Kostassoid.Nerve.Core
 			return (_frames != null ? _frames.GetHashCode() : 0);
 		}
 
-		public void Push(ICell cell)
+		public void Trace(IHandler cell)
 		{
 			Requires.NotNull(cell, "cell");
 

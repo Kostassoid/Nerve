@@ -76,7 +76,7 @@
     <Compile Include="Signal\Signal.cs" />
     <Compile Include="ISignalSource.cs" />
     <Compile Include="ICell.cs" />
-    <Compile Include="LambdaHandler.cs" />
+    <Compile Include="LambdaHandlerOf.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="IHandlerOf.cs" />
     <Compile Include="StackTrace.cs" />

@@ -14,6 +14,7 @@
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
+	using System.Linq;
 
 	using Signal;
 
@@ -59,6 +60,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 			try
 			{
+				signal.Trace(this);
 				InternalProcess(signal);
 			}
 			catch (Exception ex)
@@ -83,10 +85,34 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		public abstract void InternalProcess(ISignal signal);
 
+		private string GetDescription()
+		{
+			var type = GetType();
+
+			var name = type.Name;
+
+			if (type.IsGenericType)
+			{
+				name = name.Remove(name.IndexOf('`'));
+			}
+
+			if (name.EndsWith("Operator"))
+			{
+				name = name.Substring(0, name.Length - "Operator".Length);
+			}
+
+			if (type.IsGenericType)
+			{
+				name += " of " + string.Join(",", type.GetGenericArguments().Select(t => t.Name));
+				return name;
+			}
+
+			return name;
+		}
+
 		public override string ToString()
 		{
-			//TODO: strip Operator from name, convert '1 to generic param name
-			return string.Format("Operator [{0}]", GetType().Name);
+			return string.Format("Operator[{0}]", GetDescription());
 		}
 
 		#endregion

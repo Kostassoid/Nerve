@@ -44,7 +44,7 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		public T Payload { get; private set; }
 
-		public ICell Sender
+		public IHandler Sender
 		{
 			get
 			{
@@ -88,12 +88,12 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		public void Return<TResponse>(TResponse response) where TResponse : class
 		{
-			Sender.Fire(response);
+			Sender.OnSignal(CloneWithPayload(response));
 		}
 
-		public void Trace(ICell cell)
+		public void Trace(IHandler handler)
 		{
-			StackTrace.Push(cell);
+			StackTrace.Trace(handler);
 		}
 
 		#endregion
