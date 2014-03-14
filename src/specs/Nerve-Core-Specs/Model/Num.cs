@@ -15,11 +15,11 @@ namespace Kostassoid.Nerve.Core.Specs.Model
 {
 	public class Num
 	{
-		public int Value { get; private set; }
-
 		public Num(int value)
 		{
 			Value = value;
 		}
+
+		public int Value { get; private set; }
 	}
 }

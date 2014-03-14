@@ -13,43 +13,40 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
-	using Linking;
+	using Linking.Operators;
+
 	using Machine.Specifications;
+
 	using Model;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
 	public class BasicCustomSpecs
 	{
-		[Subject(typeof(Cell), "Basic")]
-		[Tags("Unit")]
-		public class when_firing_a_signal_with_attached_handler
+		private class SpecialCell : Cell
 		{
-			Establish context = () =>
-			{
-				_cell = new SpecialCell();
-			};
-
-			Cleanup after = () => _cell.Dispose();
-
-			Because of = () => _cell.Fire(new Ping());
-
-			It should_be_handled = () => _cell.Received.ShouldBeTrue();
-
-			static SpecialCell _cell;
-		}
-
-		class SpecialCell : Cell
-		{
-			public bool Received { get; private set; }
-
 			public SpecialCell()
 			{
 				OnStream().Of<Ping>().ReactWith(_ => Received = true);
 			}
+
+			public bool Received { get; private set; }
 		}
 
+		[Subject(typeof(Cell), "Basic")]
+		[Tags("Unit")]
+		public class when_firing_a_signal_with_attached_handler
+		{
+			private static SpecialCell _cell;
 
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () => { _cell = new SpecialCell(); };
+
+			private Because of = () => _cell.Fire(new Ping());
+
+			private It should_be_handled = () => _cell.Received.ShouldBeTrue();
+		}
 	}
 
 	// ReSharper restore InconsistentNaming

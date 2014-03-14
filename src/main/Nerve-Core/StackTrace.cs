@@ -11,48 +11,112 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System.Linq;
-
 namespace Kostassoid.Nerve.Core
 {
 	using System.Collections.Generic;
+	using System.Linq;
+
 	using Tools.CodeContracts;
 
 	public class StackTrace
 	{
-		readonly IList<ICell> _stack = new List<ICell>();
+		#region Fields
 
-		public IEnumerable<ICell> Stack { get { return _stack; }}
+		private readonly IList<ICell> _frames = new List<ICell>();
+
+		#endregion
+
+		#region Constructors and Destructors
 
 		public StackTrace(ICell root)
 		{
 			Requires.NotNull(root, "root");
 
-			_stack.Add(root);
+			_frames.Add(root);
 		}
 
-		protected StackTrace(IList<ICell> stack)
+		protected StackTrace(IList<ICell> frames)
 		{
-			Requires.NotNullOrEmpty(stack, "stack");
+			Requires.NotNullOrEmpty(frames, "Frames");
 
-			_stack = stack;
+			_frames = frames;
+		}
+
+		#endregion
+
+		#region Public Properties
+
+		public IEnumerable<ICell> Frames
+		{
+			get
+			{
+				return _frames;
+			}
 		}
 
 		public ICell Root
 		{
-			get { return _stack[0]; }
+			get
+			{
+				return _frames.FirstOrDefault();
+			}
 		}
 
-		public ICell Last
+		public ICell Top
 		{
-			get { return _stack.Last(); }
+			get
+			{
+				return _frames.LastOrDefault();
+			}
+		}
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		public StackTrace Clone()
+		{
+			return new StackTrace(_frames);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != GetType())
+			{
+				return false;
+			}
+			return Equals((StackTrace)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (_frames != null ? _frames.GetHashCode() : 0);
 		}
 
 		public void Push(ICell cell)
 		{
 			Requires.NotNull(cell, "cell");
 
-			_stack.Add(cell);
+			_frames.Add(cell);
 		}
+
+		#endregion
+
+		#region Methods
+
+		protected bool Equals(StackTrace other)
+		{
+			return Equals(_frames, other._frames);
+		}
+
+		#endregion
 	}
 }

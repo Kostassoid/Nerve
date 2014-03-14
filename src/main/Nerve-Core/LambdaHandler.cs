@@ -14,15 +14,25 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System;
+
 	using Signal;
+
 	using Tools.CodeContracts;
 
-	internal class LambdaConsumer<T> : IConsumerOf<T> where T : class
+	internal class LambdaHandler<T> : IHandlerOf<T>
+		where T : class
 	{
-		readonly Action<ISignal<T>> _handler;
-		readonly Action<SignalException> _failureHandler;
+		#region Fields
 
-		public LambdaConsumer(Action<ISignal<T>> handler, Action<SignalException> failureHandler)
+		private readonly Action<SignalException> _failureHandler;
+
+		private readonly Action<ISignal<T>> _handler;
+
+		#endregion
+
+		#region Constructors and Destructors
+
+		public LambdaHandler(Action<ISignal<T>> handler, Action<SignalException> failureHandler)
 		{
 			Requires.NotNull(handler, "handler");
 
@@ -30,7 +40,11 @@ namespace Kostassoid.Nerve.Core
 			_failureHandler = failureHandler;
 		}
 
-		public void Handle(ISignal<T> signal)
+		#endregion
+
+		#region Public Methods and Operators
+
+		public void OnSignal(ISignal<T> signal)
 		{
 			_handler(signal);
 		}
@@ -45,5 +59,7 @@ namespace Kostassoid.Nerve.Core
 
 			return false;
 		}
+
+		#endregion
 	}
 }

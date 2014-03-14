@@ -13,18 +13,28 @@
 
 namespace Kostassoid.Nerve.Core.Scheduling
 {
-    using System;
-    using Retlang.Fibers;
+	using System;
+
+	using Retlang.Fibers;
 
 	public abstract class AbstractScheduler : IScheduler
 	{
-		IFiber _fiber;
+		#region Fields
+
+		private IFiber _fiber;
+
+		#endregion
+
+		#region Public Properties
 
 		public IFiber Fiber
 		{
 			get
 			{
-				if (_fiber != null) return _fiber;
+				if (_fiber != null)
+				{
+					return _fiber;
+				}
 
 				_fiber = BuildFiber();
 				_fiber.Start();
@@ -33,17 +43,29 @@ namespace Kostassoid.Nerve.Core.Scheduling
 			}
 		}
 
-	    public void Schedule(Action action)
-	    {
-            Fiber.Enqueue(action);
-	    }
+		#endregion
 
-	    protected abstract IFiber BuildFiber();
+		#region Public Methods and Operators
 
 		public void Dispose()
 		{
 			if (_fiber != null)
+			{
 				_fiber.Dispose();
+			}
 		}
+
+		public void Schedule(Action action)
+		{
+			Fiber.Enqueue(action);
+		}
+
+		#endregion
+
+		#region Methods
+
+		protected abstract IFiber BuildFiber();
+
+		#endregion
 	}
 }

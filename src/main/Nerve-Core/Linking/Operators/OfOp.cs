@@ -15,23 +15,40 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using Signal;
 
-	internal class CastOperator<TOut> : AbstractOperator, ILinkContinuation<TOut>
-		where TOut : class
+	public static class OfOp
 	{
-		public CastOperator(ILink link):base(link)
+		public static ILinkJunction<TOut> Of<TOut>(this ILinkJunction step) where TOut : class
 		{
+			var next = new OfOperator<TOut>(step.Link);
+			step.Attach(next);
+			return next;
 		}
 
-		public override void InternalProcess(ISignal signal)
+		internal class OfOperator<TOut> : AbstractOperator, ILinkJunction<TOut>
+			where TOut : class
 		{
-			var t = signal.Body as TOut;
-			if (t == null) return;
-			Next.Process(new Signal<TOut>(t, signal.StackTrace));
-		}
+			#region Constructors and Destructors
 
-		public void Attach(ILinkOperator<TOut> next)
-		{
-			base.Attach(next);
+			public OfOperator(ILink link)
+				: base(link)
+			{
+			}
+
+			#endregion
+
+			#region Public Methods and Operators
+
+			public override void InternalProcess(ISignal signal)
+			{
+				var typedSignal = signal as Signal<TOut>;
+				if (typedSignal == null)
+				{
+					return;
+				}
+				Next.OnSignal(typedSignal);
+			}
+
+			#endregion
 		}
 	}
 }

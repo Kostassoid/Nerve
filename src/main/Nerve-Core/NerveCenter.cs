@@ -18,17 +18,30 @@ namespace Kostassoid.Nerve.Core
 
 	public class NerveCenter
 	{
+		#region Fields
+
+		private Func<ICell> _cellFactory;
+
 		private IList<ICell> _cells = new ICell[0];
-		Func<ICell> _cellFactory;
+
+		#endregion
+
+		#region Constructors and Destructors
 
 		public NerveCenter(Func<ICell> cellFactory)
 		{
 			_cellFactory = cellFactory;
 		}
 
+		#endregion
+
+		#region Public Methods and Operators
+
 		public void OnFailure(ICell source, SignalException exception)
 		{
 			//TODO: this
 		}
+
+		#endregion
 	}
 }

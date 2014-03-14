@@ -15,21 +15,37 @@ namespace Kostassoid.Nerve.Core.Tools
 {
 	using System;
 
-	public class DisposableAction : IDisposable
+	internal class DisposableAction : IDisposable
 	{
-		readonly Action _disposeAction;
-		bool _isDisposed;
+		#region Fields
+
+		private readonly Action _disposeAction;
+
+		private bool _isDisposed;
+
+		#endregion
+
+		#region Constructors and Destructors
 
 		public DisposableAction(Action disposeAction)
 		{
 			_disposeAction = disposeAction;
 		}
 
+		#endregion
+
+		#region Public Methods and Operators
+
 		public void Dispose()
 		{
-			if (_isDisposed) return;
+			if (_isDisposed)
+			{
+				return;
+			}
 			_disposeAction();
 			_isDisposed = true;
 		}
+
+		#endregion
 	}
 }

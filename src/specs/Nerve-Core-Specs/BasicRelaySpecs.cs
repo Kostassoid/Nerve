@@ -13,8 +13,12 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
-	using Linking;
+	using System;
+
+	using Linking.Operators;
+
 	using Machine.Specifications;
+
 	using Model;
 
 	// ReSharper disable InconsistentNaming
@@ -25,129 +29,136 @@ namespace Kostassoid.Nerve.Core.Specs
 		[Tags("Unit")]
 		public class when_firing_a_signal_with_attached_handler
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
+			private static ICell _cell;
 
-				_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
-			};
+			private static bool _received;
 
-			Cleanup after = () => _cell.Dispose();
+			private Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _cell.Fire(new Ping());
+			private Establish context = () =>
+				{
+					_cell = new Cell();
 
-			It should_be_handled = () => _received.ShouldBeTrue();
+					_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+				};
 
-			static ICell _cell;
-			static bool _received;
+			private Because of = () => _cell.Fire(new Ping());
+
+			private It should_be_handled = () => _received.ShouldBeTrue();
 		}
 
 		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_a_signal_with_detached_handler
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
+			private static ICell _cell;
 
-				var subscription = _cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
-				subscription.Dispose();
-			};
+			private static bool _received;
 
-			Cleanup after = () => _cell.Dispose();
+			private Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _cell.Fire(new Ping());
+			private Establish context = () =>
+				{
+					_cell = new Cell();
 
-			It should_not_be_handled = () => _received.ShouldBeFalse();
+					IDisposable subscription = _cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+					subscription.Dispose();
+				};
 
-			static ICell _cell;
-			static bool _received;
-		}
+			private Because of = () => _cell.Fire(new Ping());
 
-		[Subject(typeof(Cell), "Basic")]
-		[Tags("Unit")]
-		public class when_firing_a_signal_without_attached_consumer
-		{
-			Establish context = () =>
-								{
-									_cell = new Cell();
-
-									_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
-								};
-
-			Cleanup after = () => _cell.Dispose();
-
-			Because of = () => _cell.Fire(new Pong());
-
-			It should_not_be_handled = () => _received.ShouldBeFalse();
-
-			static ICell _cell;
-			static bool _received;
+			private It should_not_be_handled = () => _received.ShouldBeFalse();
 		}
 
 		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_a_signal_with_intermediate_attached_cells
 		{
-			Establish context = () =>
-								{
-									_a = new Cell();
-									_b = new Cell();
-									_c = new Cell();
+			private static ICell _a;
 
-									_a.OnStream().Of<Ping>().ReactWith(_b);
-									_b.OnStream().Of<Ping>().ReactWith(_c);
-									_c.OnStream().Of<Ping>().ReactWith(_ => _received = true);
-								};
+			private static ICell _b;
 
-			Cleanup after = () =>
-							{
-								_a.Dispose();
-								_b.Dispose();
-								_c.Dispose();
-							};
+			private static ICell _c;
 
-			Because of = () => _a.Fire(new Ping());
+			private static bool _received;
 
-			It should_receive_signal = () => _received.ShouldBeTrue();
+			private Cleanup after = () =>
+				{
+					_a.Dispose();
+					_b.Dispose();
+					_c.Dispose();
+				};
 
-			static ICell _a;
-			static ICell _b;
-			static ICell _c;
-			static bool _received;
+			private Establish context = () =>
+				{
+					_a = new Cell();
+					_b = new Cell();
+					_c = new Cell();
+
+					_a.OnStream().Of<Ping>().ReactWith(_b);
+					_b.OnStream().Of<Ping>().ReactWith(_c);
+					_c.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+				};
+
+			private Because of = () => _a.Fire(new Ping());
+
+			private It should_receive_signal = () => _received.ShouldBeTrue();
+		}
+
+		[Subject(typeof(Cell), "Basic")]
+		[Tags("Unit")]
+		public class when_firing_a_signal_without_attached_consumer
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+
+					_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+				};
+
+			private Because of = () => _cell.Fire(new Pong());
+
+			private It should_not_be_handled = () => _received.ShouldBeFalse();
 		}
 
 		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
 		public class when_firing_back_using_concrete_handler
 		{
-			Establish context = () =>
-								{
-									_ping = new Cell();
-									_pong = new Cell();
+			private static Cell _ping;
 
-									_ping.OnStream().Of<Ping>().ReactWith(_pong);
-									_pong.OnStream().Of<Pong>().ReactWith(_ping);
+			private static Cell _pong;
 
-									_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-									_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
-								};
+			private static bool _received;
 
-			Cleanup after = () =>
-							{
-								_ping.Dispose();
-								_pong.Dispose();
-							};
+			private Cleanup after = () =>
+				{
+					_ping.Dispose();
+					_pong.Dispose();
+				};
 
-			Because of = () => _ping.Fire(new Ping());
+			private Establish context = () =>
+				{
+					_ping = new Cell();
+					_pong = new Cell();
 
-			It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
+					_ping.OnStream().Of<Ping>().ReactWith(_pong);
+					_pong.OnStream().Of<Pong>().ReactWith(_ping);
 
-			static Cell _ping;
-			static Cell _pong;
-			static bool _received;
+					_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+					_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+				};
+
+			private Because of = () => _ping.Fire(new Ping());
+
+			private It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 		}
-
 	}
 
 	// ReSharper restore InconsistentNaming

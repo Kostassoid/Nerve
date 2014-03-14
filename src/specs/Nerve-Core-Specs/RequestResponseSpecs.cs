@@ -13,8 +13,10 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
-	using Linking;
+	using Linking.Operators;
+
 	using Machine.Specifications;
+
 	using Model;
 
 	// ReSharper disable UnusedMember.Local
@@ -23,91 +25,97 @@ namespace Kostassoid.Nerve.Core.Specs
 	{
 		[Subject(typeof(Cell), "Request")]
 		[Tags("Unit")]
-		public class when_requesting_using_single_cell
+		public class when_requesting_using_chained_cells
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
+			private static Cell _ping;
 
-				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-				_cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
-			};
+			private static Cell _middleman;
 
-			Cleanup after = () => _cell.Dispose();
+			private static Cell _pong;
 
-			Because of = () => _cell.Fire(new Ping());
+			private static bool _received;
 
-			It should_receive_response = () => _received.ShouldBeTrue();
+			private Cleanup after = () =>
+				{
+					_ping.Dispose();
+					_pong.Dispose();
+					_middleman.Dispose();
+				};
 
-			static Cell _cell;
-			static bool _received;
+			private Establish context = () =>
+				{
+					_ping = new Cell("Ping");
+					_middleman = new Cell("Middle man");
+					_pong = new Cell("Pong");
+
+					_ping.OnStream().Of<Ping>().ReactWith(_middleman);
+
+					_middleman.OnStream().Of<Ping>().ReactWith(_pong);
+					_middleman.OnStream().Of<Pong>().ReactWith(_ping);
+
+					_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+					_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+				};
+
+			private Because of = () => _ping.Fire(new Ping());
+
+			private It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 		}
 
 		[Subject(typeof(Cell), "Request")]
 		[Tags("Unit")]
 		public class when_requesting_using_concrete_handler
 		{
-			Establish context = () =>
-			{
-				_ping = new Cell();
-				_pong = new Cell();
+			private static Cell _ping;
 
-				_ping.OnStream().Of<Ping>().ReactWith(_pong);
-				_pong.OnStream().Of<Pong>().ReactWith(_ping);
+			private static Cell _pong;
 
-				_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-				_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
-			};
+			private static bool _received;
 
-			Cleanup after = () =>
-			{
-				_ping.Dispose();
-				_pong.Dispose();
-			};
+			private Cleanup after = () =>
+				{
+					_ping.Dispose();
+					_pong.Dispose();
+				};
 
-			Because of = () => _ping.Fire(new Ping());
+			private Establish context = () =>
+				{
+					_ping = new Cell();
+					_pong = new Cell();
 
-			It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
+					_ping.OnStream().Of<Ping>().ReactWith(_pong);
+					_pong.OnStream().Of<Pong>().ReactWith(_ping);
 
-			static Cell _ping;
-			static Cell _pong;
-			static bool _received;
+					_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+					_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+				};
+
+			private Because of = () => _ping.Fire(new Ping());
+
+			private It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 		}
 
 		[Subject(typeof(Cell), "Request")]
 		[Tags("Unit")]
-		public class when_requesting_using_chained_cells
+		public class when_requesting_using_single_cell
 		{
-			Establish context = () =>
-			{
-				_ping = new Cell("Ping");
-				_middleman = new Cell("Middle man");
-				_pong = new Cell("Pong");
+			private static Cell _cell;
 
-				_ping.OnStream().Of<Ping>().ReactWith(_middleman);
+			private static bool _received;
 
-				_middleman.OnStream().Of<Ping>().ReactWith(_pong);
-				_middleman.OnStream().Of<Pong>().ReactWith(_ping);
+			private Cleanup after = () => _cell.Dispose();
 
-				_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-				_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
-			};
+			private Establish context = () =>
+				{
+					_cell = new Cell();
 
-			Cleanup after = () =>
-			{
-				_ping.Dispose();
-				_pong.Dispose();
-				_middleman.Dispose();
-			};
+					_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+					_cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+				};
 
-			Because of = () => _ping.Fire(new Ping());
+			private Because of = () => _cell.Fire(new Ping());
 
-			It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
-
-			static Cell _ping;
-			static Cell _middleman;
-			static Cell _pong;
-			static bool _received;
+			private It should_receive_response = () => _received.ShouldBeTrue();
 		}
 	}
 

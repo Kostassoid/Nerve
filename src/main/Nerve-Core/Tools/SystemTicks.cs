@@ -11,13 +11,15 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-using System.Runtime.InteropServices;
-
 namespace Kostassoid.Nerve.Core.Tools
 {
-	public class SystemTicks
+	using System;
+	using System.Runtime.InteropServices;
+
+	internal class SystemTicks
 	{
+		#region Public Methods and Operators
+
 		public static UInt64 Get()
 		{
 			return GetTickCount64();
@@ -28,7 +30,13 @@ namespace Kostassoid.Nerve.Core.Tools
 			return TimeSpan.FromMilliseconds(Get());
 		}
 
+		#endregion
+
+		#region Methods
+
 		[DllImport("kernel32")]
-		extern static UInt64 GetTickCount64();		 
+		private static extern UInt64 GetTickCount64();
+
+		#endregion
 	}
 }

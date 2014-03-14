@@ -11,64 +11,90 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-
 namespace Kostassoid.Nerve.Core.Signal
 {
+	using System;
+
 	/// <summary>
-	/// Untyped signal interface
+	///   Untyped signal interface
 	/// </summary>
 	public interface ISignal
 	{
-		/// <summary>
-		/// Signal payload.
-		/// </summary>
-		object Body { get; }
+		#region Public Properties
 
 		/// <summary>
-		/// Original signal sender.
-		/// </summary>
-		ICell Sender { get; }
-
-		/// <summary>
-		/// Recorded stack trace.
-		/// </summary>
-		StackTrace StackTrace { get; }
-
-		/// <summary>
-		/// First exception encountered during signal processing.
+		///   First exception encountered during signal processing.
 		/// </summary>
 		SignalException Exception { get; }
 
 		/// <summary>
-		/// Fires back at original sender.
+		///   Signal headers.
+		/// </summary>
+		Headers Headers { get; }
+
+		/// <summary>
+		///   Signal payload.
+		/// </summary>
+		object Payload { get; }
+
+		/// <summary>
+		///   Original signal sender.
+		/// </summary>
+		ICell Sender { get; }
+
+		/// <summary>
+		///   Recorded stack trace.
+		/// </summary>
+		StackTrace StackTrace { get; }
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		/// <summary>
+		///   Clone current signal using new payload.
+		/// </summary>
+		/// <typeparam name="TTarget">New payload type.</typeparam>
+		/// <param name="payload">New payload</param>
+		/// <returns>Newly created signal.</returns>
+		ISignal<TTarget> CloneWithPayload<TTarget>(TTarget payload) where TTarget : class;
+
+		/// <summary>
+		///   Handles exception.
+		/// </summary>
+		/// <param name="exception">Original exception.</param>
+		void HandleException(Exception exception);
+
+		/// <summary>
+		///   Fires back at original sender.
 		/// </summary>
 		/// <typeparam name="TResponse">Response payload type.</typeparam>
 		/// <param name="body">Signal payload.</param>
 		void Return<TResponse>(TResponse body) where TResponse : class;
 
 		/// <summary>
-		/// Registers intermediate cell in stack trace.
+		///   Registers intermediate cell in stack trace.
 		/// </summary>
 		/// <param name="cell">Cell</param>
 		void Trace(ICell cell);
 
-		/// <summary>
-		/// Handles exception.
-		/// </summary>
-		/// <param name="exception">Original exception.</param>
-		void HandleException(Exception exception);
+		#endregion
 	}
 
 	/// <summary>
-	/// Typed signal interface.
+	///   Typed signal interface.
 	/// </summary>
 	/// <typeparam name="T">Signal payload type.</typeparam>
-	public interface ISignal<out T> : ISignal where T : class
+	public interface ISignal<out T> : ISignal
+		where T : class
 	{
+		#region Public Properties
+
 		/// <summary>
-		/// Signal payload.
+		///   Signal payload.
 		/// </summary>
-		new T Body { get; }
+		new T Payload { get; }
+
+		#endregion
 	}
 }

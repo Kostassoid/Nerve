@@ -13,15 +13,15 @@
 
 namespace Kostassoid.Nerve.Core.Linking
 {
-	public interface ILinkContinuation
+	public interface ILinkJunction
 	{
 		ILink Link { get; }
 
-		void Attach(ILinkOperator next);
+		void Attach(IHandler next);
 	}
 
-	public interface ILinkContinuation<out T> : ILinkContinuation where T : class
+	public interface ILinkJunction<out T> : ILinkJunction
+		where T : class
 	{
-		void Attach(ILinkOperator<T> next);
 	}
 }

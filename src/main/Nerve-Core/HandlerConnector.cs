@@ -11,61 +11,60 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking
+namespace Kostassoid.Nerve.Core
 {
 	using System;
 
-	using Operators;
-
 	using Signal;
 
-	internal class Link : ILink
+	using Tools.CodeContracts;
+
+	internal class HandlerConnector<T> : IHandler, IHandlerOf<T>
+		where T : class
 	{
 		#region Fields
 
-		private readonly ISignalSource _owner;
+		private readonly Func<SignalException, bool> _failureHandler;
 
-		private readonly RootOperator _root;
+		private readonly Action<ISignal> _handler;
 
 		#endregion
 
 		#region Constructors and Destructors
 
-		public Link(ISignalSource owner)
+		public HandlerConnector(IHandler handler)
 		{
-			_owner = owner;
-			_root = new RootOperator(this);
+			Requires.NotNull(handler, "handler");
+
+			_handler = handler.OnSignal;
+			_failureHandler = handler.OnFailure;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		public ILinkJunction Root
+		public HandlerConnector(IHandlerOf<T> handler)
 		{
-			get
-			{
-				return _root;
-			}
+			Requires.NotNull(handler, "handler");
+
+			_handler = s => handler.OnSignal((Signal<T>)s);
+			_failureHandler = handler.OnFailure;
 		}
 
 		#endregion
 
 		#region Public Methods and Operators
 
-		public IDisposable AttachToCell()
-		{
-			return _owner.Attach(this);
-		}
-
 		public void OnSignal(ISignal signal)
 		{
-			_root.OnSignal(signal);
+			_handler(signal);
 		}
 
 		public bool OnFailure(SignalException exception)
 		{
-			return false;
+			return _failureHandler(exception);
+		}
+
+		public void OnSignal(ISignal<T> signal)
+		{
+			_handler(signal);
 		}
 
 		#endregion

@@ -17,21 +17,45 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 	using Signal;
 
-	public abstract class AbstractOperator : ILinkOperator, ILinkContinuation
+	public abstract class AbstractOperator : IHandler, ILinkJunction
 	{
-		private ILinkOperator _next;
+		#region Fields
 
-		public ILink Link { get; private set; }
-		public ILinkOperator Next { get { return _next; }}
+		private IHandler _next;
+
+		#endregion
+
+		#region Constructors and Destructors
 
 		protected AbstractOperator(ILink link)
 		{
 			Link = link;
 		}
 
-		public void Process(ISignal signal)
+		#endregion
+
+		#region Public Properties
+
+		public IHandler Next
 		{
-			if (_next == null) return;
+			get
+			{
+				return _next;
+			}
+		}
+
+		public ILink Link { get; private set; }
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		public void OnSignal(ISignal signal)
+		{
+			if (_next == null)
+			{
+				return;
+			}
 
 			try
 			{
@@ -39,52 +63,72 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			}
 			catch (Exception ex)
 			{
-				signal.HandleException(ex);
+				var signalException = new SignalException(ex, signal);
+				if (!_next.OnFailure(signalException))
+				{
+					signal.HandleException(signalException);
+				}
 			}
 		}
 
-		public abstract void InternalProcess(ISignal signal);
+		public virtual bool OnFailure(SignalException exception)
+		{
+			return false;
+		}
 
-		public void Attach(ILinkOperator next)
+		public void Attach(IHandler next)
 		{
 			_next = next;
 		}
+
+		public abstract void InternalProcess(ISignal signal);
 
 		public override string ToString()
 		{
 			//TODO: strip Operator from name, convert '1 to generic param name
 			return string.Format("Operator [{0}]", GetType().Name);
 		}
+
+		#endregion
 	}
 
-	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, ILinkOperator<TIn>, ILinkContinuation<TOut>
-		where TIn : class
-		where TOut : class
+	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, IHandlerOf<TIn>, ILinkJunction<TOut>
+		where TIn : class where TOut : class
 	{
-		protected AbstractOperator(ILink link):base(link)
+		#region Constructors and Destructors
+
+		protected AbstractOperator(ILink link)
+			: base(link)
 		{
+		}
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		public void OnSignal(ISignal<TIn> signal)
+		{
+			if (Next == null)
+			{
+				return;
+			}
+
+			InternalProcess(signal);
 		}
 
 		public override void InternalProcess(ISignal signal)
 		{
 			var s = signal as ISignal<TIn>;
-			if (s == null) return;
+			if (s == null)
+			{
+				return;
+			}
 
 			InternalProcess(s);
 		}
 
 		public abstract void InternalProcess(ISignal<TIn> signal);
 
-		public void Process(ISignal<TIn> signal)
-		{
-			if (Next == null) return;
-
-			InternalProcess(signal);
-		}
-
-		public void Attach(ILinkOperator<TOut> next)
-		{
-			base.Attach(next);
-		}
+		#endregion
 	}
 }

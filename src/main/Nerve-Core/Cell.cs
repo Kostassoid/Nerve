@@ -11,103 +11,100 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-
 namespace Kostassoid.Nerve.Core
 {
+	using System;
 	using System.Collections.Generic;
+
 	using Linking;
+
 	using Scheduling;
+
 	using Signal;
+
 	using Tools;
 	using Tools.CodeContracts;
 
 	/// <summary>
-	/// Base Class implementation.
-	/// Relays all incoming signals through all links.
+	///   Base Class implementation.
+	///   Relays all incoming signals through all links.
 	/// </summary>
 	public class Cell : ICell
 	{
-		public string Name { get; private set; }
+		#region Fields
+
+		private readonly ISet<IHandler> _links = new HashSet<IHandler>();
+
+		private readonly IScheduler _scheduler;
+
+		#endregion
+
+		#region Constructors and Destructors
+
+		public Cell(string name, Func<IScheduler> schedulerFactory)
+		{
+			Requires.NotNull(schedulerFactory, "schedulerFactory");
+
+			Name = name;
+			_scheduler = schedulerFactory();
+		}
+
+		public Cell(string name)
+			: this(name, () => new ImmediateScheduler())
+		{
+		}
+
+		public Cell(Func<IScheduler> schedulerFactory)
+			: this(null, schedulerFactory)
+		{
+		}
+
+		public Cell()
+			: this(null, () => new ImmediateScheduler())
+		{
+		}
+
+		~Cell()
+		{
+			Dispose(false);
+		}
+
+		#endregion
+
+		#region Public Events
 
 		public event SignalExceptionHandler Failed = (cell, exception) => { };
 
-        private readonly ISet<ILink> _links = new HashSet<ILink>();
-	    private readonly IScheduler _scheduler;
+		#endregion
 
-        public Cell(string name, Func<IScheduler> schedulerFactory)
-        {
-            Requires.NotNull(schedulerFactory, "schedulerFactory");
+		#region Public Properties
 
-            Name = name;
-            _scheduler = schedulerFactory();
-        }
+		public string Name { get; private set; }
 
-        public Cell(string name)
-            : this(name, () => new ImmediateScheduler())
-        {
-        }
+		#endregion
 
-        public Cell(Func<IScheduler> schedulerFactory)
-            : this(null, schedulerFactory)
-        {
-        }
+		#region Public Methods and Operators
 
-        public Cell()
-            : this(null, () => new ImmediateScheduler())
-        {
-        }
-
-        protected virtual void Dispose(bool isDisposing)
-        {
-            if (_links != null)
-            {
-                _links.Clear();
-            }
-
-            if (_scheduler != null)
-            {
-                _scheduler.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~Cell()
-        {
-            Dispose(false);
-        }
-
-        //TODO: possible race condition?
-		IDisposable IEmitter.Attach(ILink link)
+		public void Dispose()
 		{
-			return Attach(link);
-        }
-
-		internal IDisposable Attach(ILink link)
-		{
-			Requires.NotNull(link, "link");
-
-			_links.Add(link);
-			return new DisposableAction(() => Detach(link));
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-        internal void Detach(ILink link)
-        {
-            Requires.NotNull(link, "link");
+		public void Fire<T>(T body) where T : class
+		{
+			Requires.NotNull(body, "body");
 
-            _links.Remove(link);
-        }
+			OnSignal(new Signal<T>(body, new StackTrace(this)));
+		}
 
-		protected void Relay(ISignal signal)
+		public void OnSignal(ISignal signal)
 		{
 			Requires.NotNull(signal, "signal");
 
-			_links.ForEach(l => l.Process(signal));
+			signal.Trace(this);
+
+			_scheduler.Schedule(() => Relay(signal));
 		}
 
 		public virtual bool OnFailure(SignalException exception)
@@ -117,31 +114,79 @@ namespace Kostassoid.Nerve.Core
 			return true;
 		}
 
+		public IDisposable Attach<T>(IHandlerOf<T> handler) where T : class
+		{
+			return Attach(new HandlerConnector<T>(handler) as IHandler);
+		}
+
+		public ILinkJunction OnStream()
+		{
+			return new Link(this).Root;
+		}
+
 		public override string ToString()
 		{
 			return string.Format("{0} [{1}]", GetType().Name, Name ?? "unnamed");
 		}
 
-        public void Fire<T>(T body) where T : class
-        {
-            Requires.NotNull(body, "body");
+		#endregion
 
-            Handle(new Signal<T>(body, new StackTrace(this)));
-        }
+		#region Explicit Interface Methods
 
-        public void Handle(ISignal signal)
-        {
-            Requires.NotNull(signal, "signal");
-
-            signal.Trace(this);
-
-            _scheduler.Schedule(() => Relay(signal));
-        }
-
-		public ILinkContinuation OnStream()
+		IDisposable ISignalSource.Attach(IHandler handler)
 		{
-			return new Link(this).Root;
+			return Attach(handler);
 		}
 
+		#endregion
+
+		#region Methods
+
+		internal IDisposable Attach(IHandler handler)
+		{
+			Requires.NotNull(handler, "handler");
+
+			lock (_links)
+			{
+				_links.Add(handler);
+			}
+
+			return new DisposableAction(() => Detach(handler));
+		}
+
+		internal void Detach(IHandler handler)
+		{
+			Requires.NotNull(handler, "handler");
+
+			lock (_links)
+			{
+				_links.Remove(handler);
+			}
+		}
+
+		protected virtual void Dispose(bool isDisposing)
+		{
+			if (_links != null)
+			{
+				lock (_links)
+				{
+					_links.Clear();
+				}
+			}
+
+			if (_scheduler != null)
+			{
+				_scheduler.Dispose();
+			}
+		}
+
+		protected void Relay(ISignal signal)
+		{
+			Requires.NotNull(signal, "signal");
+
+			_links.ForEach(l => l.OnSignal(signal));
+		}
+
+		#endregion
 	}
 }

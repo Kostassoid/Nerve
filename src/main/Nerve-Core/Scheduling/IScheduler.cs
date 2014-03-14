@@ -14,11 +14,21 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
+
 	using Retlang.Fibers;
 
 	public interface IScheduler : IDisposable
 	{
+		#region Public Properties
+
 		IFiber Fiber { get; }
-	    void Schedule(Action action);
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		void Schedule(Action action);
+
+		#endregion
 	}
 }

@@ -15,9 +15,9 @@ namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
 
-	using Kostassoid.Nerve.Core.Signal;
-
 	using Machine.Specifications;
+
+	using Signal;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
@@ -25,116 +25,172 @@ namespace Kostassoid.Nerve.Core.Specs
 	{
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
-		public class when_creating_signal_with_new_stacktrace
+		public class when_cloning_signal_with_new_payload
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-				_payload = new object();
-			};
+			private static ICell _cell;
 
-			Cleanup after = () => _cell.Dispose();
+			private static Headers _headers;
 
-			Because of = () => _signal = new Signal<object>(_payload, new StackTrace(_cell));
+			private static StackTrace _stack;
 
-			It should_have_sender_set = () => _signal.Sender.ShouldEqual(_cell);
+			private static ISignal _originalSignal;
 
-			It should_have_body_set = () => _signal.Sender.ShouldEqual(_cell);
+			private static ISignal _clonedSignal;
 
-			It should_have_stacktrace_set = () => _signal.StackTrace.Root.ShouldEqual(_cell);
+			private Cleanup after = () => _cell.Dispose();
 
-			It should_not_have_exception_set = () => _signal.Exception.ShouldBeNull();
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+					_headers = new Headers { { "key", "value" } };
+					_stack = new StackTrace(_cell);
+					_originalSignal = new Signal<object>(new object(), _headers, _stack);
+				};
 
-			static ICell _cell;
-			static object _payload;
-			static ISignal _signal;
+			private Because of = () => _clonedSignal = _originalSignal.CloneWithPayload("new payload");
+
+			private It should_have_headers_copied = () => _clonedSignal.Headers.ShouldNotBeTheSameAs(_headers);
+
+			private It should_have_headers_set = () => _clonedSignal.Headers.ShouldEqual(_headers);
+
+			private It should_have_payload_set = () => _clonedSignal.Payload.ShouldEqual("new payload");
+
+			private It should_have_sender_set = () => _clonedSignal.Sender.ShouldEqual(_cell);
+
+			private It should_have_stacktrace_copied = () => _clonedSignal.StackTrace.ShouldNotBeTheSameAs(_stack);
+
+			private It should_have_stacktrace_set = () => _clonedSignal.StackTrace.ShouldEqual(_stack);
+
+			private It should_have_type_parameter_as_payload = () => _clonedSignal.ShouldBeOfType<Signal<string>>();
 		}
 
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
 		public class when_creating_signal_with_existing_stacktrace
 		{
-			Establish context = () =>
-			{
-				_cellA = new Cell();
-				_cellB = new Cell();
-				_payload = new object();
-				_stackTrace = new StackTrace(_cellA);
-				_stackTrace.Push(_cellB);
-			};
+			private static ICell _cellA;
 
-			Cleanup after = () =>
+			private static ICell _cellB;
+
+			private static StackTrace _stackTrace;
+
+			private static object _payload;
+
+			private static ISignal _signal;
+
+			private Cleanup after = () =>
 				{
 					_cellA.Dispose();
 					_cellB.Dispose();
 				};
 
-			Because of = () => _signal = new Signal<object>(_payload, _stackTrace);
+			private Establish context = () =>
+				{
+					_cellA = new Cell();
+					_cellB = new Cell();
+					_payload = new object();
+					_stackTrace = new StackTrace(_cellA);
+					_stackTrace.Push(_cellB);
+				};
 
-			It should_have_sender_set_to_root_stack_cell = () => _signal.Sender.ShouldEqual(_cellA);
+			private Because of = () => _signal = new Signal<object>(_payload, _stackTrace);
 
-			static ICell _cellA;
-			static ICell _cellB;
-			static StackTrace _stackTrace;
-			static object _payload;
-			static ISignal _signal;
+			private It should_have_sender_set_to_root_stack_cell = () => _signal.Sender.ShouldEqual(_cellA);
+		}
+
+		[Subject(typeof(Signal<>))]
+		[Tags("Unit")]
+		public class when_creating_signal_with_new_stacktrace
+		{
+			private static ICell _cell;
+
+			private static object _payload;
+
+			private static Headers _headers;
+
+			private static ISignal _signal;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+					_payload = new object();
+					_headers = new Headers { { "key", "value" } };
+				};
+
+			private Because of = () => _signal = new Signal<object>(_payload, _headers, new StackTrace(_cell));
+
+			private It should_have_headers_set = () => _signal.Headers.ShouldEqual(_headers);
+
+			private It should_have_payload_set = () => _signal.Payload.ShouldEqual(_payload);
+
+			private It should_have_sender_set = () => _signal.Sender.ShouldEqual(_cell);
+
+			private It should_have_stacktrace_set = () => _signal.StackTrace.Root.ShouldEqual(_cell);
+
+			private It should_not_have_exception_set = () => _signal.Exception.ShouldBeNull();
 		}
 
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
 		public class when_handling_exception_with_signal
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
-				_signal = new Signal<object>(new object(), new StackTrace(_cell));
-			};
+			private static ICell _cell;
 
-			Cleanup after = () => _cell.Dispose();
+			private static ISignal _signal;
 
-			Because of = () => _signal.HandleException(new Exception("uh"));
+			private static bool _cellIsNotified;
 
-			It should_have_exception_set = () => _signal.Exception.ShouldNotBeNull();
+			private Cleanup after = () => _cell.Dispose();
 
-			It should_have_exception_wrapped_in_signalexception = () => _signal.Exception.ShouldBeOfType<SignalException>();
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+					_signal = new Signal<object>(new object(), new StackTrace(_cell));
+				};
 
-			It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+			private Because of = () => _signal.HandleException(new Exception("uh"));
 
-			static ICell _cell;
-			static ISignal _signal;
-			static bool _cellIsNotified;
+			private It should_have_exception_set = () => _signal.Exception.ShouldNotBeNull();
+
+			private It should_have_exception_wrapped_in_signalexception =
+				() => _signal.Exception.ShouldBeOfType<SignalException>();
+
+			private It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
 		}
 
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
 		public class when_handling_exception_with_signal_already_marked_as_faulted
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-				_signal = new Signal<object>(new object(), new StackTrace(_cell));
-				_signal.HandleException(new Exception("uh"));
-				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
-			};
+			private static ICell _cell;
 
-			Cleanup after = () => _cell.Dispose();
+			private static ISignal _signal;
 
-			Because of = () => _exception = Catch.Exception(() => _signal.HandleException(new Exception("oh")));
+			private static Exception _exception;
 
-			It should_throw_invalid_operation_exception = () => _exception.ShouldBeOfType<InvalidOperationException>();
+			private static bool _cellIsNotified;
 
-			It should_not_change_existing_exception = () => _signal.Exception.InnerException.Message.ShouldEqual("uh");
+			private Cleanup after = () => _cell.Dispose();
 
-			It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+					_signal = new Signal<object>(new object(), new StackTrace(_cell));
+					_signal.HandleException(new Exception("uh"));
+					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+				};
 
-			static ICell _cell;
-			static ISignal _signal;
-			static Exception _exception;
-			static bool _cellIsNotified;
+			private Because of = () => _exception = Catch.Exception(() => _signal.HandleException(new Exception("oh")));
+
+			private It should_not_change_existing_exception = () => _signal.Exception.InnerException.Message.ShouldEqual("uh");
+
+			private It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
+
+			private It should_throw_invalid_operation_exception = () => _exception.ShouldBeOfType<InvalidOperationException>();
 		}
-
-
 	}
 
 	// ReSharper restore InconsistentNaming

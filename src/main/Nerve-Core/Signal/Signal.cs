@@ -15,21 +15,75 @@ namespace Kostassoid.Nerve.Core.Signal
 {
 	using System;
 
-	using Kostassoid.Nerve.Core.Tools.CodeContracts;
+	using Tools.CodeContracts;
 
-	internal sealed class Signal<T> : ISignal<T> where T : class
+	internal sealed class Signal<T> : ISignal<T>
+		where T : class
 	{
-		public T Body { get; private set; }
-		object ISignal.Body { get { return Body; } }
-		public StackTrace StackTrace { get; private set; }
+		#region Constructors and Destructors
+
+		public Signal(T payload, Headers headers, StackTrace stackTrace)
+		{
+			Payload = payload;
+			Headers = headers;
+			StackTrace = stackTrace;
+		}
+
+		public Signal(T payload, StackTrace stackTrace)
+			: this(payload, Headers.Empty, stackTrace)
+		{
+		}
+
+		#endregion
+
+		#region Public Properties
+
 		public SignalException Exception { get; private set; }
 
-		public ICell Sender { get { return StackTrace.Root; } }
+		public Headers Headers { get; private set; }
 
-		public Signal(T body, StackTrace stackTrace)
+		public T Payload { get; private set; }
+
+		public ICell Sender
 		{
-			Body = body;
-			StackTrace = stackTrace;
+			get
+			{
+				return StackTrace.Root;
+			}
+		}
+
+		public StackTrace StackTrace { get; private set; }
+
+		#endregion
+
+		#region Explicit Interface Properties
+
+		object ISignal.Payload
+		{
+			get
+			{
+				return Payload;
+			}
+		}
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		public ISignal<TTarget> CloneWithPayload<TTarget>(TTarget payload) where TTarget : class
+		{
+			return new Signal<TTarget>(payload, Headers.Clone(), StackTrace.Clone());
+		}
+
+		public void HandleException(Exception exception)
+		{
+			Requires.ValidState(
+				Exception == null,
+				"Already marked as faulted with exception of type [{0}].",
+				Exception != null ? Exception.GetType().Name : "");
+
+			Exception = new SignalException(exception, this);
+			Sender.OnFailure(Exception);
 		}
 
 		public void Return<TResponse>(TResponse response) where TResponse : class
@@ -42,12 +96,6 @@ namespace Kostassoid.Nerve.Core.Signal
 			StackTrace.Push(cell);
 		}
 
-		public void HandleException(Exception exception)
-		{
-			Requires.ValidState(Exception == null, "Already marked as faulted with exception of type [{0}].", Exception != null ? Exception.GetType().Name : "");
-
-			Exception = new SignalException(exception, this);
-			Sender.OnFailure(Exception);
-		}
+		#endregion
 	}
 }

@@ -11,18 +11,28 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-using Kostassoid.Nerve.Core.Signal;
-
 namespace Kostassoid.Nerve.Core
 {
+	using System;
+
+	using Signal;
+
 	public class SignalException : Exception
 	{
-		public ISignal Signal { get; private set; }
+		#region Constructors and Destructors
 
-		public SignalException(Exception innerException, ISignal signal) : base("Unhandled exception", innerException)
+		public SignalException(Exception innerException, ISignal signal)
+			: base("Unhandled exception", innerException)
 		{
 			Signal = signal;
 		}
+
+		#endregion
+
+		#region Public Properties
+
+		public ISignal Signal { get; private set; }
+
+		#endregion
 	}
 }

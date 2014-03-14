@@ -18,6 +18,8 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Linq;
 
 	using Linking;
+	using Linking.Operators;
+
 	using Machine.Specifications;
 
 	// ReSharper disable InconsistentNaming
@@ -29,133 +31,128 @@ namespace Kostassoid.Nerve.Core.Specs
 			public int Num;
 		}
 
-		public class SubSimpleNum : SimpleNum
-		{
-			public int SubNum;
-		}
-
 		public class SimpleString
 		{
 			public string Str;
 		}
 
-		[Subject(typeof(ILinkOperator), "Of")]
-		[Tags("Unit")]
-		public class when_treating_untyped_signal_as_typed_with_exact_type_match
+		public class SubSimpleNum : SimpleNum
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-
-				_cell.OnStream()
-					.Of<SimpleNum>()
-					.ReactWith(s => _received = true);
-			};
-
-			Cleanup after = () => _cell.Dispose();
-
-			Because of = () => _cell.Fire(new SimpleNum { Num = 13 });
-
-			It should_be_received = () => _received.ShouldBeTrue();
-
-			static ICell _cell;
-			static bool _received;
+			public int SubNum;
 		}
 
-		[Subject(typeof(ILinkOperator), "Of")]
-		[Tags("Unit")]
-		public class when_treating_untyped_signal_as_typed_with_non_exact_type_match
-		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-
-				_cell.OnStream()
-					.Of<SimpleNum>()
-					.ReactWith(s => _received = true);
-			};
-
-			Cleanup after = () => _cell.Dispose();
-
-			Because of = () => _cell.Fire(new SubSimpleNum { Num = 13 });
-
-			It should_not_be_received = () => _received.ShouldBeFalse();
-
-			static ICell _cell;
-			static bool _received;
-		}
-
-		[Subject(typeof(ILinkOperator), "Cast")]
+		[Subject(typeof(ILink), "Cast")]
 		[Tags("Unit")]
 		public class when_casting_untyped_signal_as_typed_with_non_exact_type_match
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
+			private static ICell _cell;
 
-				_cell.OnStream()
-					.Cast<SimpleNum>()
-					.ReactWith(s => _received = true);
-			};
+			private static bool _received;
 
-			Cleanup after = () => _cell.Dispose();
+			private Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _cell.Fire(new SubSimpleNum { Num = 13 });
+			private Establish context = () =>
+				{
+					_cell = new Cell();
 
-			It should_be_received = () => _received.ShouldBeTrue();
+					_cell.OnStream().Cast<SimpleNum>().ReactWith(s => _received = true);
+				};
 
-			static ICell _cell;
-			static bool _received;
+			private Because of = () => _cell.Fire(new SubSimpleNum { Num = 13 });
+
+			private It should_be_received = () => _received.ShouldBeTrue();
 		}
 
-		[Subject(typeof(ILinkOperator), "Map")]
-		[Tags("Unit")]
-		public class when_translating_signal_payload
-		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-
-				_cell.OnStream()
-					.Of<SimpleNum>()
-					.Map(n => new SimpleString { Str = n.Num.ToString(CultureInfo.InvariantCulture) })
-					.ReactWith(s => _received = s.Body);
-			};
-
-			Cleanup after = () => _cell.Dispose();
-
-			Because of = () => _cell.Fire(new SimpleNum { Num = 13 });
-
-			It should_be_translated = () => _received.Str.ShouldEqual("13");
-
-			static ICell _cell;
-			static SimpleString _received;
-		}
-
-		[Subject(typeof(ILinkOperator), "Split")]
+		[Subject(typeof(ILink), "Split")]
 		[Tags("Unit")]
 		public class when_splitting_signal_payload
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
+			private static ICell _cell;
 
-				_cell.OnStream()
-					.Of<List<SimpleNum>>()
-					.Split(n => n.Select(i => i))
-					.ReactWith(s => _receivedSum += s.Body.Num);
-			};
+			private static int _receivedSum;
 
-			Cleanup after = () => _cell.Dispose();
+			private Cleanup after = () => _cell.Dispose();
 
-			Because of = () => _cell.Fire(Enumerable.Range(1, 5).Select(i => new SimpleNum { Num = i } ).ToList());
+			private Establish context = () =>
+				{
+					_cell = new Cell();
 
-			It should_produce_multiple_signals = () => _receivedSum.ShouldEqual(1 + 2 + 3 + 4 + 5);
+					_cell.OnStream().Of<List<SimpleNum>>().Split(n => n.Select(i => i)).ReactWith(s => _receivedSum += s.Payload.Num);
+				};
 
-			static ICell _cell;
-			static int _receivedSum;
+			private Because of = () => _cell.Fire(Enumerable.Range(1, 5).Select(i => new SimpleNum { Num = i }).ToList());
+
+			private It should_produce_multiple_signals = () => _receivedSum.ShouldEqual(1 + 2 + 3 + 4 + 5);
 		}
 
+		[Subject(typeof(ILink), "Map")]
+		[Tags("Unit")]
+		public class when_translating_signal_payload
+		{
+			private static ICell _cell;
+
+			private static SimpleString _received;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+
+					_cell.OnStream()
+						.Of<SimpleNum>()
+						.Map(n => new SimpleString { Str = n.Num.ToString(CultureInfo.InvariantCulture) })
+						.ReactWith(s => _received = s.Payload);
+				};
+
+			private Because of = () => _cell.Fire(new SimpleNum { Num = 13 });
+
+			private It should_be_translated = () => _received.Str.ShouldEqual("13");
+		}
+
+		[Subject(typeof(ILink), "Of")]
+		[Tags("Unit")]
+		public class when_treating_untyped_signal_as_typed_with_exact_type_match
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+
+					_cell.OnStream().Of<SimpleNum>().ReactWith(s => _received = true);
+				};
+
+			private Because of = () => _cell.Fire(new SimpleNum { Num = 13 });
+
+			private It should_be_received = () => _received.ShouldBeTrue();
+		}
+
+		[Subject(typeof(ILink), "Of")]
+		[Tags("Unit")]
+		public class when_treating_untyped_signal_as_typed_with_non_exact_type_match
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+
+					_cell.OnStream().Of<SimpleNum>().ReactWith(s => _received = true);
+				};
+
+			private Because of = () => _cell.Fire(new SubSimpleNum { Num = 13 });
+
+			private It should_not_be_received = () => _received.ShouldBeFalse();
+		}
 	}
 
 	// ReSharper restore InconsistentNaming

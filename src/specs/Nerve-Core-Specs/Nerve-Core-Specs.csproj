@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicCustomSpecs.cs" />
+    <Compile Include="StackTraceSpecs.cs" />
     <Compile Include="OperatorsSpecs.cs" />
     <Compile Include="SignalSpecs.cs" />
     <Compile Include="ErrorHandlingSpecs.cs" />

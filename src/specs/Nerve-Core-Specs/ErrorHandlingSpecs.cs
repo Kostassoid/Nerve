@@ -11,14 +11,14 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using System;
-
 namespace Kostassoid.Nerve.Core.Specs
 {
-	using Kostassoid.Nerve.Core.Linking.Operators;
+	using System;
 
-	using Linking;
+	using Linking.Operators;
+
 	using Machine.Specifications;
+
 	using Model;
 
 	// ReSharper disable InconsistentNaming
@@ -27,98 +27,107 @@ namespace Kostassoid.Nerve.Core.Specs
 	{
 		[Subject(typeof(Cell), "Error handling")]
 		[Tags("Unit")]
-		public class when_handler_throws_unhandled_exception_without_fault_handler_set
+		public class when_handler_throws_unhandled_exception_with_fault_handler_set
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.Failed += (cell, exception) => _cellIsNotified = true;
+			private static ICell _cell;
 
-				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); });
-				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
-			};
+			private static bool _received;
 
-			Cleanup after = () => _cell.Dispose();
+			private static bool _cellIsNotified;
 
-			Because of = () =>
-			{
-				try
+			private static bool _exceptionWasHandled;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
 				{
-					_cell.Fire(new Ping());
-				}
-				catch
-				{
-					_exceptionHasLeaked = true;
-				}
-			};
+					_cell = new Cell();
+					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+					_cell.OnStream()
+						.Of<Ping>()
+						.ReactWith(_ => { throw new InvalidOperationException(); }, _ => { _exceptionWasHandled = true; });
+					_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
+				};
 
-			It should_not_disrupt_another_handlers = () => _received.ShouldBeTrue();
+			private Because of = () => _cell.Fire(new Ping());
 
-			It should_swallow_exception = () => _exceptionHasLeaked.ShouldBeFalse();
+			private It should_handle_exception = () => _exceptionWasHandled.ShouldBeTrue();
 
-			It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+			private It should_not_disrupt_another_handlers = () => _received.ShouldBeTrue();
 
-			static ICell _cell;
-			static bool _received;
-			static bool _exceptionHasLeaked;
-			static bool _cellIsNotified;
+			private It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
 		}
 
 		[Subject(typeof(Cell), "Error handling")]
 		[Tags("Unit")]
-		public class when_handler_throws_unhandled_exception_with_fault_handler_set
+		public class when_handler_throws_unhandled_exception_without_fault_handler_set
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
-				_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); }, _ => { _exceptionWasHandled = true; });
-				_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
-			};
+			private static ICell _cell;
 
-			Cleanup after = () => _cell.Dispose();
+			private static bool _received;
 
-			Because of = () => _cell.Fire(new Ping());
+			private static bool _exceptionHasLeaked;
 
-			It should_not_disrupt_another_handlers = () => _received.ShouldBeTrue();
+			private static bool _cellIsNotified;
 
-			It should_handle_exception = () => _exceptionWasHandled.ShouldBeTrue();
+			private Cleanup after = () => _cell.Dispose();
 
-			It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+					_cell.Failed += (cell, exception) => _cellIsNotified = true;
 
-			static ICell _cell;
-			static bool _received;
-			static bool _cellIsNotified;
-			static bool _exceptionWasHandled;
+					_cell.OnStream().Of<Ping>().ReactWith(_ => { throw new InvalidOperationException(); });
+					_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
+				};
+
+			private Because of = () =>
+				{
+					try
+					{
+						_cell.Fire(new Ping());
+					}
+					catch
+					{
+						_exceptionHasLeaked = true;
+					}
+				};
+
+			private It should_not_disrupt_another_handlers = () => _received.ShouldBeTrue();
+
+			private It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+
+			private It should_swallow_exception = () => _exceptionHasLeaked.ShouldBeFalse();
 		}
 
 		[Subject(typeof(AbstractOperator), "Error handling")]
 		[Tags("Unit")]
 		public class when_operator_throws_exception
 		{
-			Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
-				_cell.OnStream()
-					.Of<Ping>()
-					.Where(_ => { throw new InvalidOperationException(); })
-					.ReactWith(_ => { _received = true; });
-			};
+			private static ICell _cell;
 
-			Cleanup after = () => _cell.Dispose();
+			private static bool _received;
 
-			Because of = () => _cell.Fire(new Ping());
+			private static bool _cellIsNotified;
 
-			It should_not_continue_signal_processing = () => _received.ShouldBeFalse();
+			private Cleanup after = () => _cell.Dispose();
 
-			It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+			private Establish context = () =>
+				{
+					_cell = new Cell();
+					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+					_cell.OnStream()
+						.Of<Ping>()
+						.Where(_ => { throw new InvalidOperationException(); })
+						.ReactWith(_ => { _received = true; });
+				};
 
-			static ICell _cell;
-			static bool _received;
-			static bool _cellIsNotified;
+			private Because of = () => _cell.Fire(new Ping());
+
+			private It should_not_continue_signal_processing = () => _received.ShouldBeFalse();
+
+			private It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
 		}
-
 	}
 
 	// ReSharper restore InconsistentNaming

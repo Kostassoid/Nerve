@@ -15,13 +15,45 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
+	/// <summary>
+	///   SignalException handler delegate type.
+	/// </summary>
+	/// <param name="cell">Cell which raised an exception.</param>
+	/// <param name="exception">Wrapped exception.</param>
 	public delegate void SignalExceptionHandler(ICell cell, SignalException exception);
 
-    public interface ICell : IEmitter, IConsumer, IDisposable
+	/// <summary>
+	///   Base Cell interface.
+	/// </summary>
+	public interface ICell : ISignalSource, IHandler, IDisposable
 	{
-		string Name { get; }
+		#region Public Events
+
+		/// <summary>
+		///   Unhandled exception event.
+		/// </summary>
 		event SignalExceptionHandler Failed;
 
-        void Fire<T>(T body) where T : class;
+		#endregion
+
+		#region Public Properties
+
+		/// <summary>
+		///   Cell name.
+		/// </summary>
+		string Name { get; }
+
+		#endregion
+
+		#region Public Methods and Operators
+
+		/// <summary>
+		///   Creates a new signal and schedules its execution on current Cell.
+		/// </summary>
+		/// <typeparam name="T">Signal payload type.</typeparam>
+		/// <param name="body">Signal payload body.</param>
+		void Fire<T>(T body) where T : class;
+
+		#endregion
 	}
 }

@@ -13,37 +13,42 @@
 
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
-	using Scheduling;
 	using Signal;
 
-	internal class ThroughOperator : AbstractOperator
+	public static class CastOp
 	{
-		private readonly IScheduler _scheduler;
-
-		public ThroughOperator(ILink link, IScheduler scheduler):base(link)
+		public static ILinkJunction<TOut> Cast<TOut>(this ILinkJunction step) where TOut : class
 		{
-			_scheduler = scheduler;
+			var next = new CastOperator<TOut>(step.Link);
+			step.Attach(next);
+			return next;
 		}
 
-		public override void InternalProcess(ISignal signal)
+		internal class CastOperator<TOut> : AbstractOperator, ILinkJunction<TOut>
+			where TOut : class
 		{
-			_scheduler.Fiber.Enqueue(() => Next.Process(signal));
+			#region Constructors and Destructors
+
+			public CastOperator(ILink link)
+				: base(link)
+			{
+			}
+
+			#endregion
+
+			#region Public Methods and Operators
+
+			public override void InternalProcess(ISignal signal)
+			{
+				var t = signal.Payload as TOut;
+				if (t == null)
+				{
+					return;
+				}
+				Next.OnSignal(signal.CloneWithPayload(t));
+			}
+
+			#endregion
 		}
 	}
-
-	internal class ThroughOperator<T> : ThroughOperator, ILinkContinuation<T> where T : class
-	{
-		public ThroughOperator(ILink link, IScheduler scheduler)
-			: base(link, scheduler)
-		{
-		}
-
-		public void Attach(ILinkOperator<T> next)
-		{
-			base.Attach(next);
-		}
-	}
-
-
-
 }

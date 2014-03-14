@@ -17,13 +17,22 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 	internal class RootOperator : AbstractOperator
 	{
-		public RootOperator(ILink link):base(link)
+		#region Constructors and Destructors
+
+		public RootOperator(ILink link)
+			: base(link)
 		{
 		}
 
+		#endregion
+
+		#region Public Methods and Operators
+
 		public override void InternalProcess(ISignal signal)
 		{
-			Next.Process(signal);
+			Next.OnSignal(signal);
 		}
+
+		#endregion
 	}
 }
