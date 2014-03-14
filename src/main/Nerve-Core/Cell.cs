@@ -33,7 +33,7 @@ namespace Kostassoid.Nerve.Core
 	{
 		#region Fields
 
-		private readonly ISet<IHandler> _links = new HashSet<IHandler>();
+		private readonly ISet<ISignalProcessor> _links = new HashSet<ISignalProcessor>();
 
 		private readonly IScheduler _scheduler;
 
@@ -95,7 +95,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(body, "body");
 
-			OnSignal(new Signal<T>(body, StackTrace.Empty));
+			OnSignal(new Signal<T>(body, Stacktrace.Empty));
 		}
 
 		public void OnSignal(ISignal signal)
@@ -114,9 +114,14 @@ namespace Kostassoid.Nerve.Core
 			return true;
 		}
 
-		public IDisposable Attach<T>(IHandlerOf<T> handler) where T : class
+		public IDisposable Attach(Handler.OfAny handler)
 		{
-			return Attach(new HandlerConnector<T>(handler) as IHandler);
+			return Attach(new SignalHandlerWrapper(handler));
+		}
+
+		public IDisposable Attach<T>(Handler.Of<T> handler) where T : class
+		{
+			return Attach(new SignalHandlerWrapper<T>(handler));
 		}
 
 		public ILinkJunction OnStream()
@@ -133,34 +138,34 @@ namespace Kostassoid.Nerve.Core
 
 		#region Explicit Interface Methods
 
-		IDisposable ISignalSource.Attach(IHandler handler)
+		IDisposable ISignalSource.Attach(ISignalProcessor signalProcessor)
 		{
-			return Attach(handler);
+			return Attach(signalProcessor);
 		}
 
 		#endregion
 
 		#region Methods
 
-		internal IDisposable Attach(IHandler handler)
+		internal IDisposable Attach(ISignalProcessor signalProcessor)
 		{
-			Requires.NotNull(handler, "handler");
+			Requires.NotNull(signalProcessor, "signalProcessor");
 
 			lock (_links)
 			{
-				_links.Add(handler);
+				_links.Add(signalProcessor);
 			}
 
-			return new DisposableAction(() => Detach(handler));
+			return new DisposableAction(() => Detach(signalProcessor));
 		}
 
-		internal void Detach(IHandler handler)
+		internal void Detach(ISignalProcessor signalProcessor)
 		{
-			Requires.NotNull(handler, "handler");
+			Requires.NotNull(signalProcessor, "signalProcessor");
 
 			lock (_links)
 			{
-				_links.Remove(handler);
+				_links.Remove(signalProcessor);
 			}
 		}
 
@@ -184,7 +189,10 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(signal, "signal");
 
-			_links.ForEach(l => l.OnSignal(signal));
+			lock (_links)
+			{
+				_links.ForEach(l => l.OnSignal(signal.Clone()));
+			}
 		}
 
 		#endregion

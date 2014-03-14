@@ -31,7 +31,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private static Headers _headers;
 
-			private static StackTrace _stack;
+			private static Stacktrace _stack;
 
 			private static ISignal _originalSignal;
 
@@ -43,7 +43,7 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					_cell = new Cell();
 					_headers = new Headers { { "key", "value" } };
-					_stack = new StackTrace(_cell);
+					_stack = new Stacktrace(_cell);
 					_originalSignal = new Signal<object>(new object(), _headers, _stack);
 				};
 
@@ -57,9 +57,9 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_sender_set = () => _clonedSignal.Sender.ShouldEqual(_cell);
 
-			private It should_have_stacktrace_copied = () => _clonedSignal.StackTrace.ShouldNotBeTheSameAs(_stack);
+			private It should_have_stacktrace_copied = () => _clonedSignal.Stacktrace.ShouldNotBeTheSameAs(_stack);
 
-			private It should_have_stacktrace_set = () => _clonedSignal.StackTrace.ShouldEqual(_stack);
+			private It should_have_stacktrace_set = () => _clonedSignal.Stacktrace.ShouldEqual(_stack);
 
 			private It should_have_type_parameter_as_payload = () => _clonedSignal.ShouldBeOfType<Signal<string>>();
 		}
@@ -72,7 +72,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private static ICell _cellB;
 
-			private static StackTrace _stackTrace;
+			private static Stacktrace stacktrace;
 
 			private static object _payload;
 
@@ -89,11 +89,11 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cellA = new Cell();
 					_cellB = new Cell();
 					_payload = new object();
-					_stackTrace = new StackTrace(_cellA);
-					_stackTrace.Trace(_cellB);
+					stacktrace = new Stacktrace(_cellA);
+					stacktrace.Trace(_cellB);
 				};
 
-			private Because of = () => _signal = new Signal<object>(_payload, _stackTrace);
+			private Because of = () => _signal = new Signal<object>(_payload, stacktrace);
 
 			private It should_have_sender_set_to_root_stack_cell = () => _signal.Sender.ShouldEqual(_cellA);
 		}
@@ -119,7 +119,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_headers = new Headers { { "key", "value" } };
 				};
 
-			private Because of = () => _signal = new Signal<object>(_payload, _headers, new StackTrace(_cell));
+			private Because of = () => _signal = new Signal<object>(_payload, _headers, new Stacktrace(_cell));
 
 			private It should_have_headers_set = () => _signal.Headers.ShouldEqual(_headers);
 
@@ -127,7 +127,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_sender_set = () => _signal.Sender.ShouldEqual(_cell);
 
-			private It should_have_stacktrace_set = () => _signal.StackTrace.Root.ShouldEqual(_cell);
+			private It should_have_stacktrace_set = () => _signal.Stacktrace.Root.ShouldEqual(_cell);
 
 			private It should_not_have_exception_set = () => _signal.Exception.ShouldBeNull();
 		}
@@ -148,7 +148,7 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					_cell = new Cell();
 					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
-					_signal = new Signal<object>(new object(), new StackTrace(_cell));
+					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
 				};
 
 			private Because of = () => _signal.HandleException(new Exception("uh"));
@@ -178,7 +178,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			private Establish context = () =>
 				{
 					_cell = new Cell();
-					_signal = new Signal<object>(new object(), new StackTrace(_cell));
+					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
 					_signal.HandleException(new Exception("uh"));
 					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
 				};

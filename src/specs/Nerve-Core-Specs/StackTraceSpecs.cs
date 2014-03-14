@@ -21,19 +21,19 @@ namespace Kostassoid.Nerve.Core.Specs
 	// ReSharper disable UnusedMember.Local
 	public class StackTraceSpecs
 	{
-		[Subject(typeof(StackTrace))]
+		[Subject(typeof(Stacktrace))]
 		[Tags("Unit")]
 		public class when_creating_stacktrace_from_existing_cell
 		{
 			private static ICell _cell;
 
-			private static StackTrace _stack;
+			private static Stacktrace _stack;
 
 			private Cleanup after = () => _cell.Dispose();
 
 			private Establish context = () => { _cell = new Cell(); };
 
-			private Because of = () => _stack = new StackTrace(_cell);
+			private Because of = () => _stack = new Stacktrace(_cell);
 
 			private It should_have_one_item_in_stack = () => _stack.Frames.Count().ShouldEqual(1);
 
@@ -42,19 +42,19 @@ namespace Kostassoid.Nerve.Core.Specs
 			private It should_have_top_set_to_original_cell = () => _stack.Top.ShouldEqual(_cell);
 		}
 
-		[Subject(typeof(StackTrace))]
+		[Subject(typeof(Stacktrace))]
 		[Tags("Unit")]
 		public class when_pushing_to_stacktrace
 		{
 			private static ICell _cell;
 
-			private static StackTrace _stack;
+			private static Stacktrace _stack;
 
 			private Cleanup after = () => _cell.Dispose();
 
 			private Establish context = () => { _cell = new Cell(); };
 
-			private Because of = () => _stack = new StackTrace(_cell);
+			private Because of = () => _stack = new Stacktrace(_cell);
 
 			private It should_have_one_item_in_stack = () => _stack.Frames.Count().ShouldEqual(1);
 

@@ -45,7 +45,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
 					_cell.OnStream()
 						.Of<Ping>()
-						.ReactWith(_ => { throw new InvalidOperationException(); }, _ => { _exceptionWasHandled = true; });
+						.ReactWith(_ => { throw new InvalidOperationException(); }, _ => { _exceptionWasHandled = true; return true; });
 					_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
 				};
 

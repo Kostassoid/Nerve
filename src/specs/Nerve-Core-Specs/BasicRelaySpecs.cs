@@ -108,17 +108,16 @@ namespace Kostassoid.Nerve.Core.Specs
 			private It should_receive_signal = () => _received.ShouldNotBeNull();
 
 			It should_have_all_handlers_on_stack =
-				() => _received.StackTrace.Frames
+				() => _received.Stacktrace.Frames
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
 						"Cell[a]",
-						"Operator[Root]",
 						"Operator[Of of Ping]",
 						"Cell[b]",
 						"Cell[c]",
-						"Operator[Root]",
-						"Operator[Of of Ping]"
+						"Operator[Of of Ping]",
+						"Handler[SignalHandlerWrapper of Ping]"
 					});
 		}
 
@@ -152,7 +151,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private static Cell _pong;
 
-			private static bool _received;
+			private static ISignal<Pong> _received;
 
 			private Cleanup after = () =>
 				{
@@ -162,19 +161,35 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () =>
 				{
-					_ping = new Cell();
-					_pong = new Cell();
+					_ping = new Cell("ping");
+					_pong = new Cell("pong");
 
 					_ping.OnStream().Of<Ping>().ReactWith(_pong);
 					_pong.OnStream().Of<Pong>().ReactWith(_ping);
 
 					_pong.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-					_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+					_ping.OnStream().Of<Pong>().ReactWith(s => _received = s);
 				};
 
 			private Because of = () => _ping.Fire(new Ping());
 
-			private It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
+			private It should_receive_response_on_specified_handler = () => _received.ShouldNotBeNull();
+
+			It should_have_all_handlers_on_stack =
+				() => _received.Stacktrace.Frames
+					.Select(f => f.ToString())
+					.ShouldEqual(new[]
+					{
+						"Cell[ping]",
+						"Operator[Of of Ping]",
+						"Cell[pong]",
+						"Operator[Of of Ping]",
+						"Handler[SignalHandlerWrapper of Ping]",
+						"Cell[ping]",
+						"Operator[Of of Pong]",
+						"Handler[SignalHandlerWrapper of Pong]"
+					});
+
 		}
 	}
 

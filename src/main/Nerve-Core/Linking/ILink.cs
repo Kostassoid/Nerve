@@ -15,7 +15,7 @@ namespace Kostassoid.Nerve.Core.Linking
 {
 	using System;
 
-	public interface ILink : IHandler
+	public interface ILink : ISignalProcessor
 	{
 		IDisposable AttachToCell();
 	}

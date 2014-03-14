@@ -25,7 +25,7 @@ namespace Kostassoid.Nerve.Core
 	/// <summary>
 	///   Base Cell interface.
 	/// </summary>
-	public interface ICell : ISignalSource, IHandler, IDisposable
+	public interface ICell : ISignalSource, ISignalProcessor, IDisposable
 	{
 		#region Public Events
 

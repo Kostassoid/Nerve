@@ -28,9 +28,16 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Methods and Operators
 
-		public override void InternalProcess(ISignal signal)
+		protected override void InternalProcess(ISignal signal)
 		{
 			Next.OnSignal(signal);
+		}
+
+		public override void OnSignal(ISignal signal)
+		{
+			if (Next == null) return;
+
+			InternalProcess(signal);
 		}
 
 		#endregion

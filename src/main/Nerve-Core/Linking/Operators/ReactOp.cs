@@ -19,17 +19,17 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 	public static class ReactOp
 	{
-		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IHandler handler) where T : class
+		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, ISignalProcessor signalProcessor) where T : class
 		{
-			step.Attach(handler);
+			step.Attach(signalProcessor);
 
 			//TODO: not pretty
 			return step.Link.AttachToCell();
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IHandlerOf<T> handler) where T : class
+		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, Handler.Of<T> handler) where T : class
 		{
-			step.Attach(new HandlerConnector<T>(handler));
+			step.Attach(new SignalHandlerWrapper<T>(handler));
 
 			//TODO: not pretty
 			return step.Link.AttachToCell();
@@ -38,9 +38,9 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 		public static IDisposable ReactWith<T>(
 			this ILinkJunction<T> step,
 			Action<ISignal<T>> handler,
-			Action<SignalException> failureHandler = null) where T : class
+			Func<SignalException, bool> failureHandler = null) where T : class
 		{
-			return ReactWith(step, new LambdaHandlerOf<T>(handler, failureHandler));
+			return ReactWith(step, new SignalHandlerWrapper<T>(handler, failureHandler));
 		}
 	}
 }

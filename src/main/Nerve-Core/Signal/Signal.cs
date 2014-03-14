@@ -22,15 +22,15 @@ namespace Kostassoid.Nerve.Core.Signal
 	{
 		#region Constructors and Destructors
 
-		public Signal(T payload, Headers headers, StackTrace stackTrace)
+		public Signal(T payload, Headers headers, Stacktrace stacktrace)
 		{
 			Payload = payload;
 			Headers = headers;
-			StackTrace = stackTrace;
+			Stacktrace = stacktrace;
 		}
 
-		public Signal(T payload, StackTrace stackTrace)
-			: this(payload, Headers.Empty, stackTrace)
+		public Signal(T payload, Stacktrace stacktrace)
+			: this(payload, Headers.Empty, stacktrace)
 		{
 		}
 
@@ -44,15 +44,17 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		public T Payload { get; private set; }
 
-		public IHandler Sender
-		{
+/*
+		public ISignalProcessor Sender { get; private set; }
+*/
+		public ISignalProcessor Sender {
 			get
 			{
-				return StackTrace.Root;
+				return Stacktrace.Root;
 			}
 		}
 
-		public StackTrace StackTrace { get; private set; }
+		public Stacktrace Stacktrace { get; private set; }
 
 		#endregion
 
@@ -70,9 +72,14 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		#region Public Methods and Operators
 
+		public ISignal Clone()
+		{
+			return new Signal<T>(Payload, Headers.Clone(), Stacktrace.Clone());
+		}
+
 		public ISignal<TTarget> CloneWithPayload<TTarget>(TTarget payload) where TTarget : class
 		{
-			return new Signal<TTarget>(payload, Headers.Clone(), StackTrace.Clone());
+			return new Signal<TTarget>(payload, Headers.Clone(), Stacktrace.Clone());
 		}
 
 		public void HandleException(Exception exception)
@@ -91,9 +98,12 @@ namespace Kostassoid.Nerve.Core.Signal
 			Sender.OnSignal(CloneWithPayload(response));
 		}
 
-		public void Trace(IHandler handler)
+		public void Trace(ISignalProcessor signalProcessor)
 		{
-			StackTrace.Trace(handler);
+			//TODO: this
+			//if (!NerveSettings.KeepStacktrace) return;
+
+			Stacktrace.Trace(signalProcessor);
 		}
 
 		#endregion

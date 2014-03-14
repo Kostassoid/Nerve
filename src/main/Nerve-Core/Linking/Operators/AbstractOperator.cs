@@ -18,11 +18,13 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 	using Signal;
 
-	public abstract class AbstractOperator : IHandler, ILinkJunction
+	using Tools;
+
+	public abstract class AbstractOperator : ISignalProcessor, ILinkJunction
 	{
 		#region Fields
 
-		private IHandler _next;
+		private ISignalProcessor _next;
 
 		#endregion
 
@@ -37,7 +39,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Properties
 
-		public IHandler Next
+		public ISignalProcessor Next
 		{
 			get
 			{
@@ -51,7 +53,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Methods and Operators
 
-		public void OnSignal(ISignal signal)
+		public virtual void OnSignal(ISignal signal)
 		{
 			if (_next == null)
 			{
@@ -78,47 +80,22 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			return false;
 		}
 
-		public void Attach(IHandler next)
+		public void Attach(ISignalProcessor next)
 		{
 			_next = next;
 		}
 
-		public abstract void InternalProcess(ISignal signal);
-
-		private string GetDescription()
-		{
-			var type = GetType();
-
-			var name = type.Name;
-
-			if (type.IsGenericType)
-			{
-				name = name.Remove(name.IndexOf('`'));
-			}
-
-			if (name.EndsWith("Operator"))
-			{
-				name = name.Substring(0, name.Length - "Operator".Length);
-			}
-
-			if (type.IsGenericType)
-			{
-				name += " of " + string.Join(",", type.GetGenericArguments().Select(t => t.Name));
-				return name;
-			}
-
-			return name;
-		}
+		protected abstract void InternalProcess(ISignal signal);
 
 		public override string ToString()
 		{
-			return string.Format("Operator[{0}]", GetDescription());
+			return string.Format("Operator[{0}]", GetType().BuildDescription());
 		}
 
 		#endregion
 	}
 
-	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, IHandlerOf<TIn>, ILinkJunction<TOut>
+	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, ILinkJunction<TOut>
 		where TIn : class where TOut : class
 	{
 		#region Constructors and Destructors
@@ -142,7 +119,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			InternalProcess(signal);
 		}
 
-		public override void InternalProcess(ISignal signal)
+		protected override void InternalProcess(ISignal signal)
 		{
 			var s = signal as ISignal<TIn>;
 			if (s == null)

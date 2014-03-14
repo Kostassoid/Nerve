@@ -38,7 +38,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 			#region Public Methods and Operators
 
-			public override void InternalProcess(ISignal signal)
+			protected override void InternalProcess(ISignal signal)
 			{
 				var typedSignal = signal as Signal<TOut>;
 				if (typedSignal == null)

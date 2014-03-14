@@ -18,39 +18,39 @@ namespace Kostassoid.Nerve.Core
 
 	using Tools.CodeContracts;
 
-	public class StackTrace
+	public class Stacktrace
 	{
 		#region Fields
 
-		private readonly IList<IHandler> _frames = new List<IHandler>();
+		private readonly IList<ISignalProcessor> _frames = new List<ISignalProcessor>();
 
 		#endregion
 
 		#region Constructors and Destructors
 
-		public StackTrace()
+		public Stacktrace()
 		{
 		}
 
-		public StackTrace(IHandler root)
+		public Stacktrace(ISignalProcessor root)
 		{
 			Requires.NotNull(root, "root");
 
 			_frames.Add(root);
 		}
 
-		protected StackTrace(IList<IHandler> frames)
+		protected Stacktrace(IList<ISignalProcessor> frames)
 		{
 			Requires.NotNullOrEmpty(frames, "Frames");
 
-			_frames = frames;
+			_frames = new List<ISignalProcessor>(frames);
 		}
 
 		#endregion
 
 		#region Public Properties
 
-		public IEnumerable<IHandler> Frames
+		public IEnumerable<ISignalProcessor> Frames
 		{
 			get
 			{
@@ -58,7 +58,7 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		public IHandler Root
+		public ISignalProcessor Root
 		{
 			get
 			{
@@ -66,7 +66,7 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		public IHandler Top
+		public ISignalProcessor Top
 		{
 			get
 			{
@@ -74,11 +74,11 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		public static StackTrace Empty
+		public static Stacktrace Empty
 		{
 			get
 			{
-				return new StackTrace();
+				return new Stacktrace();
 			}
 		}
 
@@ -86,9 +86,9 @@ namespace Kostassoid.Nerve.Core
 
 		#region Public Methods and Operators
 
-		public StackTrace Clone()
+		public Stacktrace Clone()
 		{
-			return new StackTrace(_frames);
+			return new Stacktrace(_frames);
 		}
 
 		public override bool Equals(object obj)
@@ -105,7 +105,7 @@ namespace Kostassoid.Nerve.Core
 			{
 				return false;
 			}
-			return Equals((StackTrace)obj);
+			return Equals((Stacktrace)obj);
 		}
 
 		public override int GetHashCode()
@@ -113,7 +113,7 @@ namespace Kostassoid.Nerve.Core
 			return (_frames != null ? _frames.GetHashCode() : 0);
 		}
 
-		public void Trace(IHandler cell)
+		public void Trace(ISignalProcessor cell)
 		{
 			Requires.NotNull(cell, "cell");
 
@@ -124,9 +124,9 @@ namespace Kostassoid.Nerve.Core
 
 		#region Methods
 
-		protected bool Equals(StackTrace other)
+		protected bool Equals(Stacktrace other)
 		{
-			return Equals(_frames, other._frames);
+			return _frames.SequenceEqual(other._frames);
 		}
 
 		#endregion

@@ -17,7 +17,7 @@ namespace Kostassoid.Nerve.Core.Linking
 	{
 		ILink Link { get; }
 
-		void Attach(IHandler next);
+		void Attach(ISignalProcessor next);
 	}
 
 	public interface ILinkJunction<out T> : ILinkJunction

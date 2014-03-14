@@ -40,16 +40,18 @@ namespace Kostassoid.Nerve.Core.Signal
 		/// <summary>
 		///   Original signal sender.
 		/// </summary>
-		IHandler Sender { get; }
+		ISignalProcessor Sender { get; }
 
 		/// <summary>
 		///   Recorded stack trace.
 		/// </summary>
-		StackTrace StackTrace { get; }
+		Stacktrace Stacktrace { get; }
 
 		#endregion
 
 		#region Public Methods and Operators
+
+		ISignal Clone();
 
 		/// <summary>
 		///   Clone current signal using new payload.
@@ -73,10 +75,10 @@ namespace Kostassoid.Nerve.Core.Signal
 		void Return<TResponse>(TResponse body) where TResponse : class;
 
 		/// <summary>
-		///   Registers intermediate handler in stack trace.
+		///   Registers intermediate signalProcessor in stack trace.
 		/// </summary>
-		/// <param name="handler">Handler</param>
-		void Trace(IHandler handler);
+		/// <param name="signalProcessor">Handler</param>
+		void Trace(ISignalProcessor signalProcessor);
 
 		#endregion
 	}

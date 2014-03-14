@@ -15,11 +15,26 @@ namespace Kostassoid.Nerve.Core
 {
 	using Signal;
 
-	public interface IHandlerOf<in T>
-		where T : class
+	public abstract class Handler
 	{
-		void OnSignal(ISignal<T> signal);
+		public interface Base
+		{
+		}
 
-		bool OnFailure(SignalException exception);
+		public interface OfFailure : Base
+		{
+			bool OnFailure(SignalException exception);
+		}
+
+		public interface Of<in T> : OfFailure
+			where T : class
+		{
+			void OnSignal(ISignal<T> signal);
+		}
+
+		public interface OfAny : OfFailure
+		{
+			void OnSignal(ISignal signal);
+		}
 	}
 }
