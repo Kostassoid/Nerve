@@ -14,7 +14,7 @@
 namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
-
+	using System.Linq;
 	using Machine.Specifications;
 
 	using Signal;
@@ -127,7 +127,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_sender_set = () => _signal.Sender.ShouldEqual(_cell);
 
-			private It should_have_stacktrace_set = () => _signal.Stacktrace.Root.ShouldEqual(_cell);
+			private It should_have_stacktrace_set = () => _signal.Stacktrace.Frames.First().ShouldEqual(_cell);
 
 			private It should_not_have_exception_set = () => _signal.Exception.ShouldBeNull();
 		}
@@ -151,7 +151,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
 				};
 
-			private Because of = () => _signal.HandleException(new Exception("uh"));
+			private Because of = () => _signal.MarkAsFaulted(new SignalException(new Exception("uh"), _signal));
 
 			private It should_have_exception_set = () => _signal.Exception.ShouldNotBeNull();
 
@@ -179,11 +179,11 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					_cell = new Cell();
 					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
-					_signal.HandleException(new Exception("uh"));
+					_signal.MarkAsFaulted(new Exception("uh"));
 					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
 				};
 
-			private Because of = () => _exception = Catch.Exception(() => _signal.HandleException(new Exception("oh")));
+			private Because of = () => _exception = Catch.Exception(() => _signal.MarkAsFaulted(new Exception("oh")));
 
 			private It should_not_change_existing_exception = () => _signal.Exception.InnerException.Message.ShouldEqual("uh");
 

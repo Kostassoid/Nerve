@@ -37,9 +37,9 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_one_item_in_stack = () => _stack.Frames.Count().ShouldEqual(1);
 
-			private It should_have_root_set_to_original_cell = () => _stack.Root.ShouldEqual(_cell);
+			private It should_have_root_set_to_original_cell = () => _stack.Frames.First().ShouldEqual(_cell);
 
-			private It should_have_top_set_to_original_cell = () => _stack.Top.ShouldEqual(_cell);
+			private It should_have_top_set_to_original_cell = () => _stack.Frames.Last().ShouldEqual(_cell);
 		}
 
 		[Subject(typeof(Stacktrace))]
@@ -58,9 +58,9 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_one_item_in_stack = () => _stack.Frames.Count().ShouldEqual(1);
 
-			private It should_have_root_set_to_original_cell = () => _stack.Root.ShouldEqual(_cell);
+			private It should_have_root_set_to_original_cell = () => _stack.Frames.First().ShouldEqual(_cell);
 
-			private It should_have_top_set_to_original_cell = () => _stack.Top.ShouldEqual(_cell);
+			private It should_have_top_set_to_original_cell = () => _stack.Frames.Last().ShouldEqual(_cell);
 		}
 	}
 

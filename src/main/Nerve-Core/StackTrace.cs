@@ -13,16 +13,15 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System.Collections.Generic;
 	using System.Linq;
-
 	using Tools.CodeContracts;
+	using Tools.Collections;
 
 	public class Stacktrace
 	{
 		#region Fields
 
-		private readonly IList<ISignalProcessor> _frames = new List<ISignalProcessor>();
+		IImmutableLinkedList<ISignalProcessor> _frames = ImmutableLinkedList<ISignalProcessor>.Empty;
 
 		#endregion
 
@@ -36,41 +35,25 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(root, "root");
 
-			_frames.Add(root);
+			_frames = _frames.Prepend(root);
 		}
 
-		protected Stacktrace(IList<ISignalProcessor> frames)
+		internal Stacktrace(IImmutableLinkedList<ISignalProcessor> frames)
 		{
-			Requires.NotNullOrEmpty(frames, "Frames");
+			Requires.NotNull(frames, "Frames");
 
-			_frames = new List<ISignalProcessor>(frames);
+			_frames = frames;
 		}
 
 		#endregion
 
 		#region Public Properties
 
-		public IEnumerable<ISignalProcessor> Frames
+		public IImmutableLinkedList<ISignalProcessor> Frames
 		{
 			get
 			{
 				return _frames;
-			}
-		}
-
-		public ISignalProcessor Root
-		{
-			get
-			{
-				return _frames.FirstOrDefault();
-			}
-		}
-
-		public ISignalProcessor Top
-		{
-			get
-			{
-				return _frames.LastOrDefault();
 			}
 		}
 
@@ -117,7 +100,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(cell, "cell");
 
-			_frames.Add(cell);
+			_frames = _frames.Prepend(cell);
 		}
 
 		#endregion

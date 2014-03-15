@@ -50,7 +50,6 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Handler.cs" />
-    <Compile Include="NerveSettings.cs" />
     <Compile Include="SignalHandlerWrapper.cs" />
     <Compile Include="Headers.cs" />
     <Compile Include="ISignalProcessor.cs" />
@@ -79,11 +78,13 @@
     <Compile Include="ISignalSource.cs" />
     <Compile Include="ICell.cs" />
     <Compile Include="Cell.cs" />
-    <Compile Include="StackTrace.cs" />
+    <Compile Include="Stacktrace.cs" />
     <Compile Include="Tools\CodeContracts\Assumes.cs" />
     <Compile Include="Tools\CodeContracts\Requires.cs" />
+    <Compile Include="Tools\Collections\IImmutableLinkedList.cs" />
     <Compile Include="Tools\DisposableAction.cs" />
     <Compile Include="Tools\EnumerableEx.cs" />
+    <Compile Include="Tools\Collections\ImmutableLinkedList.cs" />
     <Compile Include="Tools\SystemTicks.cs" />
     <Compile Include="Tools\TypeEx.cs" />
   </ItemGroup>

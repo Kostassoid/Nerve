@@ -60,17 +60,19 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 				return;
 			}
 
+			signal.Trace(this);
+
 			try
 			{
-				signal.Trace(this);
 				InternalProcess(signal);
 			}
 			catch (Exception ex)
 			{
+				signal.MarkAsFaulted(ex);
 				var signalException = new SignalException(ex, signal);
-				if (!_next.OnFailure(signalException))
+				foreach (var s in signal.Stacktrace.Frames)
 				{
-					signal.HandleException(signalException);
+					if (s.OnFailure(signalException)) return;
 				}
 			}
 		}

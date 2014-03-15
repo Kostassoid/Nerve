@@ -14,7 +14,7 @@
 namespace Kostassoid.Nerve.Core.Signal
 {
 	using System;
-
+	using System.Linq;
 	using Tools.CodeContracts;
 
 	internal sealed class Signal<T> : ISignal<T>
@@ -27,6 +27,11 @@ namespace Kostassoid.Nerve.Core.Signal
 			Payload = payload;
 			Headers = headers;
 			Stacktrace = stacktrace;
+
+			if (!stacktrace.Frames.IsEmpty)
+			{
+				Sender = stacktrace.Frames.Last();
+			}
 		}
 
 		public Signal(T payload, Stacktrace stacktrace)
@@ -38,21 +43,13 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		#region Public Properties
 
-		public SignalException Exception { get; private set; }
+		public Exception Exception { get; private set; }
 
 		public Headers Headers { get; private set; }
 
 		public T Payload { get; private set; }
 
-/*
 		public ISignalProcessor Sender { get; private set; }
-*/
-		public ISignalProcessor Sender {
-			get
-			{
-				return Stacktrace.Root;
-			}
-		}
 
 		public Stacktrace Stacktrace { get; private set; }
 
@@ -82,15 +79,14 @@ namespace Kostassoid.Nerve.Core.Signal
 			return new Signal<TTarget>(payload, Headers.Clone(), Stacktrace.Clone());
 		}
 
-		public void HandleException(Exception exception)
+		public void MarkAsFaulted(Exception exception)
 		{
 			Requires.ValidState(
 				Exception == null,
 				"Already marked as faulted with exception of type [{0}].",
 				Exception != null ? Exception.GetType().Name : "");
 
-			Exception = new SignalException(exception, this);
-			Sender.OnFailure(Exception);
+			Exception = exception;
 		}
 
 		public void Return<TResponse>(TResponse response) where TResponse : class
@@ -100,9 +96,6 @@ namespace Kostassoid.Nerve.Core.Signal
 
 		public void Trace(ISignalProcessor signalProcessor)
 		{
-			//TODO: this
-			//if (!NerveSettings.KeepStacktrace) return;
-
 			Stacktrace.Trace(signalProcessor);
 		}
 

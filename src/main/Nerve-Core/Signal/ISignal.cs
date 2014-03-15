@@ -25,7 +25,7 @@ namespace Kostassoid.Nerve.Core.Signal
 		/// <summary>
 		///   First exception encountered during signal processing.
 		/// </summary>
-		SignalException Exception { get; }
+		Exception Exception { get; }
 
 		/// <summary>
 		///   Signal headers.
@@ -65,7 +65,7 @@ namespace Kostassoid.Nerve.Core.Signal
 		///   Handles exception.
 		/// </summary>
 		/// <param name="exception">Original exception.</param>
-		void HandleException(Exception exception);
+		void MarkAsFaulted(Exception exception);
 
 		/// <summary>
 		///   Fires back at original sender.

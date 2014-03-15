@@ -33,7 +33,7 @@
 			public bool GotHaircut { get; private set; }
 
 			public Client(int id)
-				: base("Client " + id, PoolScheduler.Factory)
+				: base(id.ToString(), PoolScheduler.Factory)
 			{
 				OnStream().Of<ClientGotHaircut>().ReactWith(s => { GotHaircut = true; });
 			}
@@ -42,7 +42,7 @@
 
 		class Barber : Cell
 		{
-			public Barber() : base("Barber", ThreadScheduler.Factory)
+			public Barber() : base(ThreadScheduler.Factory)
 			{
 				OnStream().Of<ClientIsReadyForHaircut>()
 					.ReactWith(s =>
@@ -61,16 +61,16 @@
 
 			bool _seatIsTaken;
 
-			public Shop(int maxQueueSize) : base("Shop", ThreadScheduler.Factory)
+			public Shop(int maxQueueSize) : base(ThreadScheduler.Factory)
 			{
 				_maxQueueSize = maxQueueSize;
 
-				Console.WriteLine("Barber shop is open.");
+				Console.WriteLine("{0} is open.", this);
 
 				OnStream().Of<ClientEnteredTheShop>()
 					.ReactWith(s =>
 					{
-						Console.WriteLine("[{0}] entered the shop.", s.Payload.Client.Name);
+						Console.WriteLine("{0} entered the shop.", s.Payload.Client);
 
 						if (!_seatIsTaken)
 						{
@@ -84,7 +84,7 @@
 				OnStream().Of<ClientGotHaircut>()
 					.ReactWith(s =>
 					{
-						Console.WriteLine("[{0}] got haircut.", s.Payload.Client.Name);
+						Console.WriteLine("{0} got haircut.", s.Payload.Client);
 						
 						_seatIsTaken = false;
 						s.Payload.Client.OnSignal(s); //TODO: doesn't feel right
@@ -102,7 +102,7 @@
 			private void SendToBarber(Client client)
 			{
 				_seatIsTaken = true;
-				Console.WriteLine("[{0}] is getting a haircut.", client.Name);
+				Console.WriteLine("{0} is getting a haircut.", client);
 				Fire(new ClientIsReadyForHaircut { Client = client });
 			}
 
@@ -110,18 +110,18 @@
 			{
 				if (_queue.Count < _maxQueueSize)
 				{
-					Console.WriteLine("[{0}] is waiting in queue.", client.Name);
+					Console.WriteLine("{0} is waiting in queue.", client);
 					_queue.Enqueue(client);
 				}
 				else
 				{
-					Console.WriteLine("[{0}] is rejected.", client.Name);
+					Console.WriteLine("{0} is rejected.", client);
 				}
 			}
 
 			protected override void Dispose(bool isDisposing)
 			{
-				Console.WriteLine("Barber shop is closed.");
+				Console.WriteLine("{0} is closed.", this);
 				base.Dispose(isDisposing);
 			}
 		}
@@ -134,7 +134,7 @@
 
 			shop.Attach(barber);
 
-			foreach (var client in clients.OrderBy(_ => Guid.NewGuid()))
+			foreach (var client in clients)
 			{
 				Thread.Sleep(Random.Next(10, 200));
 				shop.Fire(new ClientEnteredTheShop { Client = client });
