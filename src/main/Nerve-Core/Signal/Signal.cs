@@ -15,6 +15,7 @@ namespace Kostassoid.Nerve.Core.Signal
 {
 	using System;
 	using System.Linq;
+	using Tools;
 	using Tools.CodeContracts;
 
 	internal sealed class Signal<T> : ISignal<T>
@@ -97,6 +98,16 @@ namespace Kostassoid.Nerve.Core.Signal
 		public void Trace(ISignalProcessor signalProcessor)
 		{
 			Stacktrace.Trace(signalProcessor);
+		}
+
+		public ISignal<TOut> CastTo<TOut>() where TOut : class
+		{
+			var s = this as ISignal<TOut>;
+			if (s == null)
+			{
+				throw new InvalidCastException(string.Format("Expected [Signal of {0}] but got [{1}].", typeof(TOut).Name, GetType().BuildDescription()));
+			}
+			return s;
 		}
 
 		#endregion

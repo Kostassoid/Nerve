@@ -14,13 +14,11 @@
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
-	using System.Linq;
-
 	using Signal;
 
 	using Tools;
 
-	public abstract class AbstractOperator : ISignalProcessor, ILinkJunction
+	public abstract class AbstractOperator : SignalProcessor, ILinkJunction
 	{
 		#region Fields
 
@@ -53,41 +51,10 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Methods and Operators
 
-		public virtual void OnSignal(ISignal signal)
-		{
-			if (_next == null)
-			{
-				return;
-			}
-
-			signal.Trace(this);
-
-			try
-			{
-				InternalProcess(signal);
-			}
-			catch (Exception ex)
-			{
-				signal.MarkAsFaulted(ex);
-				var signalException = new SignalException(ex, signal);
-				foreach (var s in signal.Stacktrace.Frames)
-				{
-					if (s.OnFailure(signalException)) return;
-				}
-			}
-		}
-
-		public virtual bool OnFailure(SignalException exception)
-		{
-			return false;
-		}
-
 		public void Attach(ISignalProcessor next)
 		{
 			_next = next;
 		}
-
-		protected abstract void InternalProcess(ISignal signal);
 
 		public override string ToString()
 		{
@@ -111,25 +78,9 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Methods and Operators
 
-		public void OnSignal(ISignal<TIn> signal)
-		{
-			if (Next == null)
-			{
-				return;
-			}
-
-			InternalProcess(signal);
-		}
-
 		protected override void InternalProcess(ISignal signal)
 		{
-			var s = signal as ISignal<TIn>;
-			if (s == null)
-			{
-				return;
-			}
-
-			InternalProcess(s);
+			InternalProcess(signal.CastTo<TIn>());
 		}
 
 		public abstract void InternalProcess(ISignal<TIn> signal);

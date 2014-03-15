@@ -46,21 +46,30 @@ namespace Kostassoid.Nerve.Core.Specs
 		[Tags("Unit")]
 		public class when_pushing_to_stacktrace
 		{
-			private static ICell _cell;
+			private static ICell _cellA;
+			private static ICell _cellB;
 
 			private static Stacktrace _stack;
 
-			private Cleanup after = () => _cell.Dispose();
+			private Cleanup after = () =>
+									{
+										_cellA.Dispose();
+										_cellB.Dispose();
+									};
 
-			private Establish context = () => { _cell = new Cell(); };
+			private Establish context = () =>
+										{
+											_cellA = new Cell();
+											_cellB = new Cell();
+											_stack = new Stacktrace(_cellA);
+										};
 
-			private Because of = () => _stack = new Stacktrace(_cell);
+			private Because of = () => _stack.Trace(_cellB);
 
-			private It should_have_one_item_in_stack = () => _stack.Frames.Count().ShouldEqual(1);
+			private It should_have_all_items_in_stack = () => _stack.Frames.Count().ShouldEqual(2);
 
-			private It should_have_root_set_to_original_cell = () => _stack.Frames.First().ShouldEqual(_cell);
-
-			private It should_have_top_set_to_original_cell = () => _stack.Frames.Last().ShouldEqual(_cell);
+			It should_have_items_in_last_to_first_order = () =>
+				_stack.Frames.ToArray().ShouldEqual(new ISignalProcessor[] { _cellB, _cellA });
 		}
 	}
 

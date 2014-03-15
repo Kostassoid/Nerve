@@ -80,6 +80,8 @@ namespace Kostassoid.Nerve.Core.Signal
 		/// <param name="signalProcessor">Handler</param>
 		void Trace(ISignalProcessor signalProcessor);
 
+		ISignal<T> CastTo<T>() where T : class;
+
 		#endregion
 	}
 

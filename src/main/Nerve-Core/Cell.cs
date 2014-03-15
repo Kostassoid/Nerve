@@ -29,7 +29,7 @@ namespace Kostassoid.Nerve.Core
 	///   Base Class implementation.
 	///   Relays all incoming signals through all links.
 	/// </summary>
-	public class Cell : ICell
+	public class Cell : SignalProcessor, ICell
 	{
 		#region Fields
 
@@ -73,7 +73,7 @@ namespace Kostassoid.Nerve.Core
 
 		#region Public Events
 
-		public event SignalExceptionHandler Failed = (cell, exception) => { };
+		public event SignalExceptionHandler Failed;
 
 		#endregion
 
@@ -98,20 +98,20 @@ namespace Kostassoid.Nerve.Core
 			OnSignal(new Signal<T>(body, Stacktrace.Empty));
 		}
 
-		public void OnSignal(ISignal signal)
+		public override bool OnFailure(SignalException exception)
 		{
-			Requires.NotNull(signal, "signal");
+			if (Failed == null)
+			{
+				return base.OnFailure(exception);
+			}
 
-			signal.Trace(this);
-
-			_scheduler.Schedule(() => Relay(signal));
+			Failed(this, exception);
+			return true;
 		}
 
-		public virtual bool OnFailure(SignalException exception)
+		protected override void InternalProcess(ISignal signal)
 		{
-			Failed(this, exception);
-
-			return true;
+			_scheduler.Schedule(() => Relay(signal));
 		}
 
 		public IDisposable Attach(Handler.OfAny handler)

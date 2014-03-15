@@ -134,44 +134,34 @@ namespace Kostassoid.Nerve.Core.Specs
 
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
-		public class when_handling_exception_with_signal
+		public class when_marking_signal_as_faulted
 		{
 			private static ICell _cell;
 
 			private static ISignal _signal;
-
-			private static bool _cellIsNotified;
 
 			private Cleanup after = () => _cell.Dispose();
 
 			private Establish context = () =>
 				{
 					_cell = new Cell();
-					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
 					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
 				};
 
-			private Because of = () => _signal.MarkAsFaulted(new SignalException(new Exception("uh"), _signal));
+			private Because of = () => _signal.MarkAsFaulted(new Exception("uh"));
 
 			private It should_have_exception_set = () => _signal.Exception.ShouldNotBeNull();
-
-			private It should_have_exception_wrapped_in_signalexception =
-				() => _signal.Exception.ShouldBeOfType<SignalException>();
-
-			private It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
 		}
 
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
-		public class when_handling_exception_with_signal_already_marked_as_faulted
+		public class when_marking_faulted_signal_already_marked_as_faulted
 		{
 			private static ICell _cell;
 
 			private static ISignal _signal;
 
 			private static Exception _exception;
-
-			private static bool _cellIsNotified;
 
 			private Cleanup after = () => _cell.Dispose();
 
@@ -180,16 +170,55 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell = new Cell();
 					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
 					_signal.MarkAsFaulted(new Exception("uh"));
-					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
 				};
 
 			private Because of = () => _exception = Catch.Exception(() => _signal.MarkAsFaulted(new Exception("oh")));
 
-			private It should_not_change_existing_exception = () => _signal.Exception.InnerException.Message.ShouldEqual("uh");
-
-			private It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
+			private It should_not_change_existing_exception = () => _signal.Exception.Message.ShouldEqual("uh");
 
 			private It should_throw_invalid_operation_exception = () => _exception.ShouldBeOfType<InvalidOperationException>();
+		}
+
+		[Subject(typeof(Signal<>))]
+		[Tags("Unit")]
+		public class when_casting_signal_to_supported_type
+		{
+			class A { }
+			class AA : A { }
+
+			private static ISignal _signal;
+
+			private static Exception _exception;
+
+			private Establish context = () =>
+			{
+				_signal = new Signal<AA>(new AA(), Stacktrace.Empty);
+			};
+
+			private Because of = () => _exception = Catch.Exception(() => _signal.CastTo<A>());
+
+			private It should_not_throw_exception = () => _exception.ShouldBeNull();
+		}
+
+		[Subject(typeof(Signal<>))]
+		[Tags("Unit")]
+		public class when_casting_signal_to_unsupported_type
+		{
+			class A { }
+			class B { }
+
+			private static ISignal _signal;
+
+			private static Exception _exception;
+
+			private Establish context = () =>
+			{
+				_signal = new Signal<A>(new A(), Stacktrace.Empty);
+			};
+
+			private Because of = () => _exception = Catch.Exception(() => _signal.CastTo<B>());
+
+			private It should_throw_invalid_cast_exception = () => _exception.ShouldBeOfType<InvalidCastException>();
 		}
 	}
 
