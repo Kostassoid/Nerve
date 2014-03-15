@@ -147,7 +147,7 @@ namespace Kostassoid.Nerve.Core
 
 		#region Methods
 
-		internal IDisposable Attach(ISignalProcessor signalProcessor)
+		public IDisposable Attach(ISignalProcessor signalProcessor)
 		{
 			Requires.NotNull(signalProcessor, "signalProcessor");
 
