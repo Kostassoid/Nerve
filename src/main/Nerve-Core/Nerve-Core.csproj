@@ -50,6 +50,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Handler.cs" />
+    <Compile Include="Linking\Operators\WhereOp.cs" />
     <Compile Include="SignalHandlerWrapper.cs" />
     <Compile Include="Headers.cs" />
     <Compile Include="ISignalProcessor.cs" />
@@ -64,7 +65,7 @@
     <Compile Include="Linking\Operators\RootOperator.cs" />
     <Compile Include="Linking\Operators\ReactOp.cs" />
     <Compile Include="Linking\Operators\MapOp.cs" />
-    <Compile Include="Linking\Operators\WhereOp.cs" />
+    <Compile Include="Linking\Operators\HandleExceptionOp.cs" />
     <Compile Include="Linking\ILinkJunction.cs" />
     <Compile Include="Linking\Link.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />

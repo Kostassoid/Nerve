@@ -13,6 +13,7 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Linq;
@@ -153,6 +154,43 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_not_be_received = () => _received.ShouldBeFalse();
 		}
+
+		[Subject(typeof(ILink), "HandleException")]
+		[Tags("Unit")]
+		public class when_exception_occured_with_exception_handler_is_set_on_link
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+			private static bool _handledException;
+			private static bool _cellIsNotified;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+
+				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+
+				_cell.OnStream()
+					.Of<SimpleString>()
+					.HandleException(_ => { _handledException = true; return true; })
+					.Where(s => s.Str != null)
+					.Map(s => new SimpleNum { Num = Int32.Parse(s.Str) })
+					.ReactWith(s => _received = true);
+			};
+
+			private Because of = () => _cell.Fire(new SimpleString { Str = "thirteen" });
+
+			private It should_invoke_the_handler = () => _handledException.ShouldBeTrue();
+
+			private It should_stop_processing = () => _received.ShouldBeFalse();
+
+			private It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
+		}
+
+
 	}
 
 	// ReSharper restore InconsistentNaming
