@@ -15,22 +15,9 @@ namespace Kostassoid.Nerve.Core
 {
 	using Signal;
 
-	/// <summary>
-	/// Signal processor interface.
-	/// </summary>
-	public interface ISignalProcessor
+	public interface IHandlerOf<in T> : IHandlerBase
+		where T : class
 	{
-		/// <summary>
-		/// Signal processing entry point.
-		/// </summary>
-		/// <param name="signal">Incoming signal.</param>
-		void OnSignal(ISignal signal);
-
-		/// <summary>
-		/// Signal processing failure handler.
-		/// </summary>
-		/// <param name="exception">Wrapped exception.</param>
-		/// <returns>True if exception was handled.</returns>
-		bool OnFailure(SignalException exception);
+		void OnSignal(ISignal<T> signal);
 	}
 }

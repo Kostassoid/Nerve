@@ -16,15 +16,14 @@ namespace Kostassoid.Nerve.Core
 	using System;
 
 	using Signal;
-
 	using Tools;
 	using Tools.CodeContracts;
 
-	internal class SignalHandlerWrapper : ISignalProcessor, Handler.Base
+	internal class SignalHandlerWrapper : ISignalProcessor, IHandlerBase
 	{
 		#region Fields
 
-		protected Handler.Base Original { get; set; }
+		protected IHandlerBase Original { get; set; }
 
 		protected readonly Func<SignalException, bool> FailureHandler;
 
@@ -43,7 +42,7 @@ namespace Kostassoid.Nerve.Core
 			Original = this;
 		}
 
-		public SignalHandlerWrapper(Handler.OfAny handler):this(handler.OnSignal, handler.OnFailure)
+		public SignalHandlerWrapper(IHandler handler):this(handler.OnSignal, handler.OnFailure)
 		{
 			Original = handler;
 		}
@@ -78,11 +77,11 @@ namespace Kostassoid.Nerve.Core
 	{
 		#region Constructors and Destructors
 
-		public SignalHandlerWrapper(Handler.OfAny handler):base(handler)
+		public SignalHandlerWrapper(IHandler handler):base(handler)
 		{
 		}
 
-		public SignalHandlerWrapper(Handler.Of<T> handler)
+		public SignalHandlerWrapper(IHandlerOf<T> handler)
 			: base(s => handler.OnSignal((Signal<T>)s), handler.OnFailure)
 		{
 			Original = handler;

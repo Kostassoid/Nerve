@@ -3,7 +3,6 @@ properties {
     $OutputPath = "$BaseDir\output"
     $SolutionPath = "$BaseDir\src\Nerve.sln"
     $Configuration = "Release"
-    $Version = "0.1.0.0"
 }
 
 task default -depends Build
@@ -22,7 +21,7 @@ task Test -depends Build {
 	    | where { $_.Name.EndsWith("-Specs.dll") } `
 	    | foreach { $_.FullName }
 
-	Exec { & ".\src\packages\Machine.Specifications.0.6.2\tools\mspec-clr4.exe" $TestDlls }
+	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls }
 }
 
 task Build -depends Clean {

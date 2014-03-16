@@ -3,7 +3,7 @@
 	using System;
 	using System.Linq;
 
-	public static class TypeEx
+	internal static class TypeEx
 	{
 		public static string BuildDescription(this Type type)
 		{

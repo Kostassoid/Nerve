@@ -21,8 +21,8 @@ namespace Kostassoid.Nerve.Core
 	{
 		IDisposable Attach(ISignalProcessor signalProcessor);
 
-		IDisposable Attach(Handler.OfAny handler);
-		IDisposable Attach<T>(Handler.Of<T> handler) where T : class;
+		IDisposable Attach(IHandler handler);
+		IDisposable Attach<T>(IHandlerOf<T> handler) where T : class;
 
 		//TODO: refactor
 		ILinkJunction OnStream();

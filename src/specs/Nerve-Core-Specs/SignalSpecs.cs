@@ -61,7 +61,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_stacktrace_set = () => _clonedSignal.Stacktrace.ShouldEqual(_stack);
 
-			private It should_have_type_parameter_as_payload = () => _clonedSignal.ShouldBeOfType<Signal<string>>();
+			private It should_have_type_parameter_as_payload = () => _clonedSignal.ShouldBeOfExactType<Signal<string>>();
 		}
 
 		[Subject(typeof(Signal<>))]
@@ -176,7 +176,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_not_change_existing_exception = () => _signal.Exception.Message.ShouldEqual("uh");
 
-			private It should_throw_invalid_operation_exception = () => _exception.ShouldBeOfType<InvalidOperationException>();
+			private It should_throw_invalid_operation_exception = () => _exception.ShouldBeOfExactType<InvalidOperationException>();
 		}
 
 		[Subject(typeof(Signal<>))]
@@ -218,7 +218,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Because of = () => _exception = Catch.Exception(() => _signal.CastTo<B>());
 
-			private It should_throw_invalid_cast_exception = () => _exception.ShouldBeOfType<InvalidCastException>();
+			private It should_throw_invalid_cast_exception = () => _exception.ShouldBeOfExactType<InvalidCastException>();
 		}
 	}
 

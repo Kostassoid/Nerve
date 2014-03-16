@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			return step.Link.AttachToCell();
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, Handler.Of<T> handler) where T : class
+		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IHandlerOf<T> handler) where T : class
 		{
 			step.Attach(new SignalHandlerWrapper<T>(handler));
 

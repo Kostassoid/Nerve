@@ -12,11 +12,9 @@
 // specific language governing permissions and limitations under the License.
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 #if DEBUG
-
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]
@@ -29,7 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Nerve")]
-[assembly: AssemblyCopyright("© 2014 https://github.com/Kostassoid/Nerve")]
+[assembly: AssemblyCopyright("Copyright (c) 2014 by Konstantin Alexandroff")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -52,6 +50,8 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
-//[assembly: AssemblyKeyFile("Nerve.snk")]
 
-[assembly: InternalsVisibleTo("Nerve-Core-Specs")]
+// disable warning about using /keyfile instead of AssemblyKeyFile
+#pragma warning disable 1699
+[assembly: AssemblyKeyFile(@"..\..\Nerve.snk")]
+#pragma warning restore 1699

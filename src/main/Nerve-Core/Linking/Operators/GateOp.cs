@@ -66,7 +66,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 			#region Public Methods and Operators
 
-			protected override void InternalProcess(ISignal signal)
+			protected override void Process(ISignal signal)
 			{
 				ulong last = SystemTicks.Get();
 				_ticks.Add(last);

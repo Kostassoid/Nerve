@@ -17,14 +17,22 @@ namespace Kostassoid.Nerve.Core
 	using Signal;
 	using Tools;
 
+	/// <summary>
+	/// Base signal processor code.
+	/// </summary>
 	public abstract class SignalProcessor : ISignalProcessor
 	{
 		#region Public Methods and Operators
 
+		/// <summary>
+		/// Signal processing entry point.
+		/// </summary>
+		/// <param name="signal"></param>
 		public virtual void OnSignal(ISignal signal)
 		{
 			try
 			{
+				signal.Trace(this);
 				Process(signal);
 			}
 			catch (Exception ex)
@@ -35,21 +43,25 @@ namespace Kostassoid.Nerve.Core
 				{
 					if (s.OnFailure(signalException)) return;
 				}
+				throw signalException;
 			}
 		}
 
-		protected void Process(ISignal signal)
-		{
-			signal.Trace(this);
-			InternalProcess(signal);
-		}
-
+		/// <summary>
+		/// Processing failure handler.
+		/// </summary>
+		/// <param name="exception">Wrapped exception.</param>
+		/// <returns>True if exception was handled.</returns>
 		public virtual bool OnFailure(SignalException exception)
 		{
 			return false;
 		}
 
-		protected abstract void InternalProcess(ISignal signal);
+		/// <summary>
+		/// Processor logic.
+		/// </summary>
+		/// <param name="signal"></param>
+		protected abstract void Process(ISignal signal);
 
 		public override string ToString()
 		{

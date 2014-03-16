@@ -28,7 +28,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Methods and Operators
 
-		protected override void InternalProcess(ISignal signal)
+		protected override void Process(ISignal signal)
 		{
 			Next.OnSignal(signal);
 		}
@@ -37,7 +37,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 		{
 			if (Next == null) return;
 
-			InternalProcess(signal);
+			Process(signal);
 		}
 
 		#endregion

@@ -109,17 +109,17 @@ namespace Kostassoid.Nerve.Core
 			return true;
 		}
 
-		protected override void InternalProcess(ISignal signal)
+		protected override void Process(ISignal signal)
 		{
 			_scheduler.Schedule(() => Relay(signal));
 		}
 
-		public IDisposable Attach(Handler.OfAny handler)
+		public IDisposable Attach(IHandler handler)
 		{
 			return Attach(new SignalHandlerWrapper(handler));
 		}
 
-		public IDisposable Attach<T>(Handler.Of<T> handler) where T : class
+		public IDisposable Attach<T>(IHandlerOf<T> handler) where T : class
 		{
 			return Attach(new SignalHandlerWrapper<T>(handler));
 		}
