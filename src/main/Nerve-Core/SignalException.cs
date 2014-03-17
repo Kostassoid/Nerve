@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
-	using Signal;
-
 	public class SignalException : Exception
 	{
 		#region Constructors and Destructors

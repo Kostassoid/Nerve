@@ -17,8 +17,6 @@ namespace Kostassoid.Nerve.Core.Linking
 
 	using Operators;
 
-	using Signal;
-
 	internal class Link : ILink
 	{
 		#region Fields

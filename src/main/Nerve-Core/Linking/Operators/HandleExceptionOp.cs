@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
 
-	using Signal;
-
 	public static class HandleExceptionOp
 	{
 		public static ILinkJunction HandleException(this ILinkJunction step, Func<SignalException, bool> failureHandlerFunc)

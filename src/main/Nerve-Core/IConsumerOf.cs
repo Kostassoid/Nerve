@@ -13,8 +13,6 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using Signal;
-
 	public interface IConsumerOf<in T> : IConsumerBase
 		where T : class
 	{

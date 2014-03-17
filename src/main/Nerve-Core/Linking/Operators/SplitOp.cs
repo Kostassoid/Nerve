@@ -16,8 +16,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 	using System;
 	using System.Collections.Generic;
 
-	using Signal;
-
 	using Tools;
 
 	public static class SplitOp

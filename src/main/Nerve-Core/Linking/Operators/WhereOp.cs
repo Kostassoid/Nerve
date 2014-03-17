@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
 
-	using Signal;
-
 	public static class WhereOp
 	{
 		public static ILinkJunction Where(this ILinkJunction step, Func<object, bool> predicateFunc)

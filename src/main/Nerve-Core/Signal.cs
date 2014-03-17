@@ -11,18 +11,35 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Signal
+namespace Kostassoid.Nerve.Core
 {
 	using System;
 	using System.Linq;
+
 	using Tools;
 	using Tools.CodeContracts;
+
+	/// <summary>
+	/// Static Signal builder.
+	/// </summary>
+	public static class Signal
+	{
+		/// <summary>
+		/// Builds typed Signal from payload with empty headers and stacktrace.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="payload">Payload body.</param>
+		/// <returns>New typed signal.</returns>
+		public static ISignal<T> From<T>(T payload) where T : class
+		{
+			return new Signal<T>(payload);
+		}
+		
+	}
 
 	internal sealed class Signal<T> : ISignal<T>
 		where T : class
 	{
-		#region Constructors and Destructors
-
 		public Signal(T payload, Headers headers, Stacktrace stacktrace)
 		{
 			Payload = payload;
@@ -40,7 +57,10 @@ namespace Kostassoid.Nerve.Core.Signal
 		{
 		}
 
-		#endregion
+		public Signal(T payload)
+			: this(payload, Headers.Empty, Stacktrace.Empty)
+		{
+		}
 
 		#region Public Properties
 

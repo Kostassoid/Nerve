@@ -13,8 +13,6 @@
 
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
-	using Signal;
-
 	internal class RootOperator : AbstractOperator
 	{
 		#region Constructors and Destructors

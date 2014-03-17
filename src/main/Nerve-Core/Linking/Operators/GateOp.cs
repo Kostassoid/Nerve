@@ -17,8 +17,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Signal;
-
 	using Tools;
 	using Tools.CodeContracts;
 

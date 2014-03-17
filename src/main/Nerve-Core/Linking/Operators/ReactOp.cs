@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
 
-	using Signal;
-
 	public static class ReactOp
 	{
 		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, ISignalProcessor signalProcessor) where T : class

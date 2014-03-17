@@ -13,8 +13,6 @@
 
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
-	using Signal;
-
 	public static class OfOp
 	{
 		public static ILinkJunction<TOut> Of<TOut>(this ILinkJunction step) where TOut : class

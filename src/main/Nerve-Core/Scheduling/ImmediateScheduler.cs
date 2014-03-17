@@ -15,7 +15,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
 
-	using Retlang.Fibers;
+	using Fibers;
 
 	public class ImmediateScheduler : AbstractScheduler
 	{

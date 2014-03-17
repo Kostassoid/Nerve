@@ -56,16 +56,24 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="BasicCustomSpecs.cs" />
-    <Compile Include="StackTraceSpecs.cs" />
-    <Compile Include="OperatorsSpecs.cs" />
-    <Compile Include="SignalSpecs.cs" />
-    <Compile Include="ErrorHandlingSpecs.cs" />
+    <Compile Include="Cell\BasicCustomSpecs.cs" />
+    <Compile Include="Cell\StackTraceSpecs.cs" />
+    <Compile Include="Cell\OperatorsSpecs.cs" />
+    <Compile Include="Cell\SignalSpecs.cs" />
+    <Compile Include="Cell\ErrorHandlingSpecs.cs" />
+    <None Include="Fibers\BoundedQueueTests.cs" />
+    <None Include="Fibers\PerfBug.cs" />
+    <None Include="Fibers\PerfSettings.cs" />
+    <None Include="Fibers\PerfTimer.cs" />
+    <None Include="Fibers\PoolFiberTests.cs" />
+    <None Include="Fibers\StubFiberTests.cs" />
+    <None Include="Fibers\ThreadFiberTests.cs" />
+    <None Include="Fibers\TimerActionTests.cs" />
     <Compile Include="Model\Num.cs" />
-    <Compile Include="SchedulingSpecs.cs" />
-    <Compile Include="PerformanceSpecs.cs" />
-    <Compile Include="RequestResponseSpecs.cs" />
-    <Compile Include="BasicRelaySpecs.cs" />
+    <Compile Include="Cell\SchedulingSpecs.cs" />
+    <Compile Include="Cell\PerformanceSpecs.cs" />
+    <Compile Include="Cell\RequestResponseSpecs.cs" />
+    <Compile Include="Cell\BasicRelaySpecs.cs" />
     <Compile Include="Model\Ping.cs" />
     <Compile Include="Model\Pong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

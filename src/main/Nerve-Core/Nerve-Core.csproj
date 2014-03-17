@@ -40,10 +40,6 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Retlang, Version=1.0.6.0, Culture=neutral, PublicKeyToken=a99b3bce1dc72e93, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\retlang.1.0.6.0\lib\Net40\Retlang.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,11 +47,44 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Fibers\Core\BoundedQueue.cs" />
+    <Compile Include="Fibers\Core\BusyWaitQueue.cs" />
+    <Compile Include="Fibers\Core\DefaultExecutor.cs" />
+    <Compile Include="Fibers\Core\DefaultQueue.cs" />
+    <Compile Include="Fibers\Core\DefaultThreadPool.cs" />
+    <Compile Include="Fibers\Core\IExecutionContext.cs" />
+    <Compile Include="Fibers\Core\IExecutor.cs" />
+    <Compile Include="Fibers\Core\IPendingEvent.cs" />
+    <Compile Include="Fibers\Core\IQueue.cs" />
+    <Compile Include="Fibers\Core\IScheduler.cs" />
+    <Compile Include="Fibers\Core\ISchedulerRegistry.cs" />
+    <Compile Include="Fibers\Core\ISubscriptionRegistry.cs" />
+    <Compile Include="Fibers\Core\IThreadPool.cs" />
+    <Compile Include="Fibers\Core\Lists.cs" />
+    <Compile Include="Fibers\Core\PendingAction.cs" />
+    <Compile Include="Fibers\Core\QueueFullException.cs" />
+    <Compile Include="Fibers\Core\RecurringEvent.cs" />
+    <Compile Include="Fibers\Core\Scheduler.cs" />
+    <Compile Include="Fibers\Core\SingleEvent.cs" />
+    <Compile Include="Fibers\Core\Subscriptions.cs" />
+    <Compile Include="Fibers\Core\TimerAction.cs" />
+    <Compile Include="Fibers\DispatcherAdapter.cs" />
+    <Compile Include="Fibers\DispatcherFiber.cs" />
+    <Compile Include="Fibers\ExecutionState.cs" />
+    <Compile Include="Fibers\FormAdapter.cs" />
+    <Compile Include="Fibers\FormFiber.cs" />
+    <Compile Include="Fibers\GuiFiber.cs" />
+    <Compile Include="Fibers\IFiber.cs" />
+    <Compile Include="Fibers\PoolFiber.cs" />
+    <Compile Include="Fibers\StubFiber.cs" />
+    <Compile Include="Fibers\StubScheduledAction.cs" />
+    <Compile Include="Fibers\ThreadFiber.cs" />
     <Compile Include="IConsumer.cs" />
     <Compile Include="IConsumerBase.cs" />
     <Compile Include="IConsumerOf.cs" />
@@ -85,8 +114,8 @@
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />
     <Compile Include="SignalException.cs" />
-    <Compile Include="Signal\ISignal.cs" />
-    <Compile Include="Signal\Signal.cs" />
+    <Compile Include="ISignal.cs" />
+    <Compile Include="Signal.cs" />
     <Compile Include="ISignalSource.cs" />
     <Compile Include="ICell.cs" />
     <Compile Include="Cell.cs" />
@@ -99,9 +128,6 @@
     <Compile Include="Tools\Collections\ImmutableLinkedList.cs" />
     <Compile Include="Tools\SystemTicks.cs" />
     <Compile Include="Tools\TypeEx.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Diagnostics\" />

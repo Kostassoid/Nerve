@@ -11,13 +11,14 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Specs
+namespace Kostassoid.Nerve.Core.Specs.Cell
 {
 	using System;
 	using System.Linq;
+
 	using Machine.Specifications;
 
-	using Signal;
+	using Cell = Core.Cell;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local

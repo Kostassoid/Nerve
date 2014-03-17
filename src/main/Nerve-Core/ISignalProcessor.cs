@@ -13,8 +13,6 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using Signal;
-
 	/// <summary>
 	/// Signal processor interface.
 	/// </summary>

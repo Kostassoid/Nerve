@@ -20,8 +20,6 @@ namespace Kostassoid.Nerve.Core
 
 	using Scheduling;
 
-	using Signal;
-
 	using Tools;
 	using Tools.CodeContracts;
 
@@ -95,7 +93,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(body, "body");
 
-			OnSignal(new Signal<T>(body, Stacktrace.Empty));
+			OnSignal(Signal.From(body));
 		}
 
 		public override bool OnFailure(SignalException exception)

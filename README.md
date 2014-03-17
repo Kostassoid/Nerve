@@ -74,3 +74,5 @@ This project is started as an experiment and I will continue to treat it this wa
 License
 -------
 Licensed under Apache 2.0 License.
+
+Using portions of [Retlang project](https://code.google.com/p/retlang/) licensed under [New BSD License](http://opensource.org/licenses/BSD-3-Clause).

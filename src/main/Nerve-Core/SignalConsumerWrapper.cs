@@ -15,7 +15,6 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
-	using Signal;
 	using Tools;
 	using Tools.CodeContracts;
 

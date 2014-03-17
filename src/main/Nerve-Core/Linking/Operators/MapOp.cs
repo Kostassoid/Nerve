@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
 
-	using Signal;
-
 	public static class MapOp
 	{
 		public static ILinkJunction<TOut> Map<TIn, TOut>(this ILinkJunction<TIn> step, Func<TIn, TOut> mapFunc)

@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using Scheduling;
 
-	using Signal;
-
 	public static class ThroughOp
 	{
 		public static ILinkJunction<T> Through<T>(this ILinkJunction<T> step, IScheduler scheduler) where T : class

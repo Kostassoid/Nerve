@@ -13,9 +13,6 @@
 
 namespace Kostassoid.Nerve.Core.Linking.Operators
 {
-	using System;
-	using Signal;
-
 	using Tools;
 
 	public abstract class AbstractOperator : SignalProcessor, ILinkJunction
