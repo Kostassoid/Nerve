@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\..\packages\FakeItEasy.1.18.0\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
     <Reference Include="Machine.Specifications, Version=0.7.0.0, Culture=neutral, PublicKeyToken=5c474de7a495cff1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Machine.Specifications-Signed.0.7.0\lib\net40\Machine.Specifications.dll</HintPath>
@@ -56,24 +59,24 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Cell\BasicCustomSpecs.cs" />
-    <Compile Include="Cell\StackTraceSpecs.cs" />
-    <Compile Include="Cell\OperatorsSpecs.cs" />
-    <Compile Include="Cell\SignalSpecs.cs" />
-    <Compile Include="Cell\ErrorHandlingSpecs.cs" />
-    <None Include="Fibers\BoundedQueueTests.cs" />
+    <Compile Include="BasicCustomSpecs.cs" />
+    <Compile Include="StackTraceSpecs.cs" />
+    <Compile Include="Operators\OperatorsSpecs.cs" />
+    <Compile Include="SignalSpecs.cs" />
+    <Compile Include="ErrorHandlingSpecs.cs" />
+    <Compile Include="Fibers\BoundedQueueSpecs.cs" />
     <None Include="Fibers\PerfBug.cs" />
-    <None Include="Fibers\PerfSettings.cs" />
-    <None Include="Fibers\PerfTimer.cs" />
-    <None Include="Fibers\PoolFiberTests.cs" />
-    <None Include="Fibers\StubFiberTests.cs" />
-    <None Include="Fibers\ThreadFiberTests.cs" />
+    <Compile Include="Fibers\PerfSettings.cs" />
+    <Compile Include="Fibers\PerfTimer.cs" />
+    <Compile Include="Fibers\PoolFiberSpecs.cs" />
+    <Compile Include="Fibers\StubFiberSpecs.cs" />
+    <Compile Include="Fibers\ThreadFiberSpecs.cs" />
     <None Include="Fibers\TimerActionTests.cs" />
     <Compile Include="Model\Num.cs" />
-    <Compile Include="Cell\SchedulingSpecs.cs" />
-    <Compile Include="Cell\PerformanceSpecs.cs" />
-    <Compile Include="Cell\RequestResponseSpecs.cs" />
-    <Compile Include="Cell\BasicRelaySpecs.cs" />
+    <Compile Include="SchedulingSpecs.cs" />
+    <Compile Include="PerformanceSpecs.cs" />
+    <Compile Include="RequestResponseSpecs.cs" />
+    <Compile Include="BasicRelaySpecs.cs" />
     <Compile Include="Model\Ping.cs" />
     <Compile Include="Model\Pong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
