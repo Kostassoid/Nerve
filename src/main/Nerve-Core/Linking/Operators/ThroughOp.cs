@@ -53,7 +53,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 			protected override void Process(ISignal signal)
 			{
-				_scheduler.Fiber.Enqueue(() => Next.OnSignal(signal));
+				_scheduler.Schedule(() => Next.OnSignal(signal));
 			}
 
 			#endregion

@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// A scheduled event.
     /// </summary>
-    public interface IPendingEvent : IDisposable
+    internal interface IPendingEvent : IDisposable
     {
         /// <summary>
         /// Time of expiration for this event

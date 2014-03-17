@@ -6,7 +6,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Executes pending action(s).
     /// </summary>
-    public interface IExecutor
+    internal interface IExecutor
     {
         /// <summary>
         /// Executes all actions.

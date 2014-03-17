@@ -9,7 +9,7 @@ namespace Kostassoid.Nerve.Core.Fibers
     /// Fiber implementation backed by a dedicated thread.
     /// <see cref="IFiber"/>
     /// </summary>
-    public class ThreadFiber : IFiber
+    internal class ThreadFiber : IFiber
     {
         private static int THREAD_COUNT;
         private readonly Subscriptions _subscriptions = new Subscriptions();

@@ -3,7 +3,7 @@ namespace Kostassoid.Nerve.Core.Fibers
     ///<summary>
     /// Fiber execution state management
     ///</summary>
-    public enum ExecutionState
+    internal enum ExecutionState
     {
         ///<summary>
         /// Created but not running

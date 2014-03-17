@@ -5,7 +5,7 @@
 	///<summary>
     /// Allows for the registration and deregistration of subscriptions
     ///</summary>
-    public interface ISubscriptionRegistry
+    internal interface ISubscriptionRegistry
     {
         ///<summary>
         /// Register subscription to be unsubcribed from when the fiber is disposed.

@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Context of execution.
     /// </summary>
-    public interface IExecutionContext
+    internal interface IExecutionContext
     {
         /// <summary>
         /// Enqueue a single action.

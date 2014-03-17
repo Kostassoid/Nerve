@@ -7,7 +7,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Default implementation.
     /// </summary>
-    public class DefaultQueue : IQueue
+    internal class DefaultQueue : IQueue
     {
         private readonly object _lock = new object();
         private readonly IExecutor _executor;

@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// A thread pool for executing asynchronous actions.
     /// </summary>
-    public interface IThreadPool
+    internal interface IThreadPool
     {
         /// <summary>
         /// Enqueue action for execution.

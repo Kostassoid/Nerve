@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Holds on to actions until the execution context can process them.
     /// </summary>
-    public interface IQueue
+    internal interface IQueue
     {
         ///<summary>
         /// Enqueues action for execution context to process.

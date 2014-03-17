@@ -9,7 +9,7 @@ namespace Kostassoid.Nerve.Core.Fibers
 	/// <summary>
     /// Fiber that uses a thread pool for execution.
     /// </summary>
-    public class PoolFiber : IFiber
+    internal class PoolFiber : IFiber
     {
         private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();

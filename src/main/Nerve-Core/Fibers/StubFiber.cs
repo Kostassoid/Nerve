@@ -12,7 +12,7 @@ namespace Kostassoid.Nerve.Core.Fibers
     /// The class is typically used for testing asynchronous code to make it completely synchronous and
     /// deterministic.
     /// </summary>
-    public class StubFiber : IFiber
+    internal class StubFiber : IFiber
     {
         private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
         private readonly List<Action> _pending = new List<Action>();

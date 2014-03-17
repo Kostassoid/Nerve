@@ -8,7 +8,7 @@
 	/// <summary>
     /// Busy waits on lock to execute.  Can improve performance in certain situations.
     /// </summary>
-    public class BusyWaitQueue : IQueue
+    internal class BusyWaitQueue : IQueue
     {
         private readonly object _lock = new object();
         private readonly IExecutor _executor;

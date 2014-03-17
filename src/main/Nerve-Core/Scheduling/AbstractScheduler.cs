@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		#region Public Properties
 
-		public IFiber Fiber
+		internal IFiber Fiber
 		{
 			get
 			{
@@ -64,7 +64,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		#region Methods
 
-		protected abstract IFiber BuildFiber();
+		internal abstract IFiber BuildFiber();
 
 		#endregion
 	}

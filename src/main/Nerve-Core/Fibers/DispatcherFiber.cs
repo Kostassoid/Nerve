@@ -7,7 +7,7 @@
 	/// <summary>
     /// Adapts Dispatcher to a Fiber. Transparently moves actions onto the Dispatcher thread.
     /// </summary>
-    public class DispatcherFiber : GuiFiber
+    internal class DispatcherFiber : GuiFiber
     {
         /// <summary>
         /// Constructs a Fiber that executes on dispatcher thread.

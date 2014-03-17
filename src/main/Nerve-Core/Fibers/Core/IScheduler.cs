@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Methods for scheduling actions that will be executed in the future.
     /// </summary>
-    public interface IScheduler
+    internal interface IScheduler
     {
         /// <summary>
         /// Schedules an action to be executed once.

@@ -7,7 +7,7 @@
 	///<summary>
     /// Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
     ///</summary>
-    public class FormFiber : GuiFiber
+    internal class FormFiber : GuiFiber
     {
         /// <summary>
         /// Creates an instance.

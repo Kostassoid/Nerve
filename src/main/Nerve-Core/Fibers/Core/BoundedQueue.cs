@@ -7,7 +7,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Queue with bounded capacity.  Will throw exception if capacity does not recede prior to wait time.
     /// </summary>
-    public class BoundedQueue : IQueue
+    internal class BoundedQueue : IQueue
     {
         private readonly object _lock = new object();
         private readonly IExecutor _executor;

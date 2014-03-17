@@ -10,7 +10,7 @@
 	///<summary>
     /// Allows interaction with Windows Forms.  Transparently moves actions onto the Form's thread.
     ///</summary>
-    public class GuiFiber : IFiber
+    internal class GuiFiber : IFiber
     {
         private readonly Subscriptions _subscriptions = new Subscriptions();
         private readonly object _lock = new object();

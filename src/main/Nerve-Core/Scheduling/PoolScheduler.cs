@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		#region Methods
 
-		protected override IFiber BuildFiber()
+		internal override IFiber BuildFiber()
 		{
 			return new PoolFiber();
 		}

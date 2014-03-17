@@ -6,7 +6,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Default executor.
     /// </summary>
-    public class DefaultExecutor : IExecutor
+    internal class DefaultExecutor : IExecutor
     {
         private bool _running = true;
 

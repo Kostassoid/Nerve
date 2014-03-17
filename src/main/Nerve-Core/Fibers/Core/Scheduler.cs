@@ -7,7 +7,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	///<summary>
     /// Enqueues actions on to context after schedule elapses.  
     ///</summary>
-    public class Scheduler : ISchedulerRegistry, IScheduler, IDisposable
+    internal class Scheduler : ISchedulerRegistry, IScheduler, IDisposable
     {
         private volatile bool _running = true;
         private readonly IExecutionContext _executionContext;

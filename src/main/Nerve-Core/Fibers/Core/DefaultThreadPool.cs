@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Default implementation that uses the .NET thread pool.
     /// </summary>
-    public class DefaultThreadPool : IThreadPool
+    internal class DefaultThreadPool : IThreadPool
     {
         /// <summary>
         /// Enqueues action.

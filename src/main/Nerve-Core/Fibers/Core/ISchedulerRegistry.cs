@@ -5,7 +5,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Enqueues actions and 
     /// </summary>
-    public interface ISchedulerRegistry
+    internal interface ISchedulerRegistry
     {
         /// <summary>
         /// Enqueue action to target fiber.
