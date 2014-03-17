@@ -27,9 +27,9 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			return step.Link.AttachToCell();
 		}
 
-		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IHandlerOf<T> handler) where T : class
+		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IConsumerOf<T> consumer) where T : class
 		{
-			step.Attach(new SignalHandlerWrapper<T>(handler));
+			step.Attach(new SignalConsumerWrapper<T>(consumer));
 
 			//TODO: not pretty
 			return step.Link.AttachToCell();
@@ -40,7 +40,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			Action<ISignal<T>> handler,
 			Func<SignalException, bool> failureHandler = null) where T : class
 		{
-			return ReactWith(step, new SignalHandlerWrapper<T>(handler, failureHandler));
+			return ReactWith(step, new SignalConsumerWrapper<T>(handler, failureHandler));
 		}
 	}
 }

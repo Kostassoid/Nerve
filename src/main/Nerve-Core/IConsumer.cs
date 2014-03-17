@@ -15,9 +15,8 @@ namespace Kostassoid.Nerve.Core
 {
 	using Signal;
 
-	public interface IHandlerOf<in T> : IHandlerBase
-		where T : class
+	public interface IConsumer : IConsumerBase
 	{
-		void OnSignal(ISignal<T> signal);
+		void OnSignal(ISignal signal);
 	}
 }

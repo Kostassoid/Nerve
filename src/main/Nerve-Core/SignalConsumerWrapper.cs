@@ -19,11 +19,11 @@ namespace Kostassoid.Nerve.Core
 	using Tools;
 	using Tools.CodeContracts;
 
-	internal class SignalHandlerWrapper : ISignalProcessor, IHandlerBase
+	internal class SignalConsumerWrapper : ISignalProcessor, IConsumerBase
 	{
 		#region Fields
 
-		protected IHandlerBase Original { get; set; }
+		protected IConsumerBase Original { get; set; }
 
 		protected readonly Func<SignalException, bool> FailureHandler;
 
@@ -33,7 +33,7 @@ namespace Kostassoid.Nerve.Core
 
 		#region Constructors and Destructors
 
-		protected SignalHandlerWrapper(Action<ISignal> handler, Func<SignalException, bool> failureHandler)
+		protected SignalConsumerWrapper(Action<ISignal> handler, Func<SignalException, bool> failureHandler)
 		{
 			Requires.NotNull(handler, "signalProcessor");
 
@@ -42,9 +42,9 @@ namespace Kostassoid.Nerve.Core
 			Original = this;
 		}
 
-		public SignalHandlerWrapper(IHandler handler):this(handler.OnSignal, handler.OnFailure)
+		public SignalConsumerWrapper(IConsumer consumer):this(consumer.OnSignal, consumer.OnFailure)
 		{
-			Original = handler;
+			Original = consumer;
 		}
 
 		#endregion
@@ -72,22 +72,22 @@ namespace Kostassoid.Nerve.Core
 		#endregion
 	}
 
-	internal class SignalHandlerWrapper<T> : SignalHandlerWrapper
+	internal class SignalConsumerWrapper<T> : SignalConsumerWrapper
 		where T : class
 	{
 		#region Constructors and Destructors
 
-		public SignalHandlerWrapper(IHandler handler):base(handler)
+		public SignalConsumerWrapper(IConsumer consumer):base(consumer)
 		{
 		}
 
-		public SignalHandlerWrapper(IHandlerOf<T> handler)
-			: base(s => handler.OnSignal((Signal<T>)s), handler.OnFailure)
+		public SignalConsumerWrapper(IConsumerOf<T> consumer)
+			: base(s => consumer.OnSignal((Signal<T>)s), consumer.OnFailure)
 		{
-			Original = handler;
+			Original = consumer;
 		}
 
-		public SignalHandlerWrapper(Action<ISignal<T>> handler, Func<SignalException, bool> failureHandler)
+		public SignalConsumerWrapper(Action<ISignal<T>> handler, Func<SignalException, bool> failureHandler)
 			: base(s => handler((Signal<T>)s), failureHandler)
 		{
 		}

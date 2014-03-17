@@ -20,9 +20,8 @@ namespace Kostassoid.Nerve.Core
 	public interface ISignalSource
 	{
 		IDisposable Attach(ISignalProcessor signalProcessor);
-
-		IDisposable Attach(IHandler handler);
-		IDisposable Attach<T>(IHandlerOf<T> handler) where T : class;
+		IDisposable Attach(IConsumer consumer);
+		IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class;
 
 		//TODO: refactor
 		ILinkJunction OnStream();

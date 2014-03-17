@@ -114,14 +114,14 @@ namespace Kostassoid.Nerve.Core
 			_scheduler.Schedule(() => Relay(signal));
 		}
 
-		public IDisposable Attach(IHandler handler)
+		public IDisposable Attach(IConsumer consumer)
 		{
-			return Attach(new SignalHandlerWrapper(handler));
+			return Attach(new SignalConsumerWrapper(consumer));
 		}
 
-		public IDisposable Attach<T>(IHandlerOf<T> handler) where T : class
+		public IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class
 		{
-			return Attach(new SignalHandlerWrapper<T>(handler));
+			return Attach(new SignalConsumerWrapper<T>(consumer));
 		}
 
 		public ILinkJunction OnStream()

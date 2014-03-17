@@ -48,7 +48,11 @@
 					.ReactWith(s =>
 							   {
 								   Thread.Sleep(Random.Next(10, 200));
-								   s.Return(new ClientGotHaircut { Client = s.Payload.Client });
+								   var gotHaircutEvent = new ClientGotHaircut { Client = s.Payload.Client };
+
+								   //TODO: not sure if I like this
+								   s.Payload.Client.Fire(gotHaircutEvent);
+								   s.Return(gotHaircutEvent);
 							   });
 			}
 
@@ -87,7 +91,6 @@
 						Console.WriteLine("{0} got haircut.", s.Payload.Client);
 						
 						_seatIsTaken = false;
-						s.Payload.Client.OnSignal(s); //TODO: doesn't feel right
 						if (_queue.Count == 0)
 						{
 							Console.WriteLine("[Barber] is sleeping...");
