@@ -3,13 +3,20 @@ Nerve
 
 ![Nerve logo](http://i.kostassoid.com/nerve/logo.png)
 
-Nerve is a federated event driven integration library for .NET which allows for fast and easy concurrent message routing and processing. It is based on personal experience and ideas from various sources.
+Nerve is a federated message bus for .NET. It allows for fast and easy concurrent message routing and processing without thread synchronization.
 
 To name a few:
 * [Event Aggregator](http://martinfowler.com/eaaDev/EventAggregator.html)
 * [Actor Model](http://en.wikipedia.org/wiki/Actor_model)
 * [Reactive Extensions](https://rx.codeplex.com/)
 * [Apache Camel](https://camel.apache.org/)
+
+Installation
+------------
+
+The easiest way is to use NuGet:
+
+    Install-Package Nerve-Core
 
 Basic usage
 -----------
@@ -69,7 +76,7 @@ Each message (called Signals) passing through some route attached to a Cell trav
 Current State
 -------------
 
-This project is started as an experiment and I will continue to treat it this way for the time being. Meaning there'll be lots of breaking changes in the near future. And no NuGet distribution. But I'm open to ideas/pull requests, perhaps the project will grow into something useful.
+This project is early in development. I'm open to ideas/pull requests.
 
 License
 -------

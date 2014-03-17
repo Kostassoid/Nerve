@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Nerve-Core</id>
+    <title>Nerve-Core</title>
+    <version>$version$</version>
+    <authors>Konstantin Alexandroff</authors>
+    <owners>Konstantin Alexandroff</owners>
+    <projectUrl>https://github.com/Kostassoid/Nerve</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/Kostassoid/Nerve/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <language>en-US</language>
+    <summary>Nerve - a federated message bus.</summary>
+    <description>Nerve is a federated message bus for .NET. It allows for fast and easy concurrent message routing and processing without thread synchronization.</description>
+    <copyright>Copyright 2014</copyright>
+    <tags>event message bus messaging integration actors</tags>
+  </metadata>
+  <files>
+    <file src="..\output\*.*" target="lib\net40\" />
+  </files>
+</package>

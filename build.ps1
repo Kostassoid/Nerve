@@ -3,6 +3,7 @@ properties {
     $OutputPath = "$BaseDir\output"
     $SolutionPath = "$BaseDir\src\Nerve.sln"
     $Configuration = "Release"
+    $Version = "0.1.0.0"
 }
 
 task default -depends Build
@@ -22,6 +23,10 @@ task Test -depends Build {
 	    | foreach { $_.FullName }
 
 	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls }
+}
+
+task Pack -depends Test {
+	Exec { & ".\src\.nuget\nuget.exe" pack nuget\Nerve-Core.nuspec -version $Version -OutputDirectory $OutputPath }
 }
 
 task Build -depends Clean {
