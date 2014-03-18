@@ -36,16 +36,16 @@ You can treat each Cells as an event bus instance, effectively decoupling produc
     var bus = new Cell();
     
     // subscribing to Ping signals
-    bus.OnStream().Of<Ping>().ReactWith(s => bus.Fire(new Pong()));
+    bus.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
     
     // subscribing to Pong signals
     bus.OnStream().Of<Pong>().ReactWith(_ => _received = true);
     
     // firing (publishing) a signal
-    _cell.Fire(new Ping());
+    bus.Fire(new Ping());
     
     // disposing the cell
-    _cell.Dispose();
+    bus.Dispose();
     
 Or, you can use Cell as a base class for implementing different business entities interacting via message passing (like Actors):
 
@@ -54,8 +54,8 @@ Or, you can use Cell as a base class for implementing different business entitie
     {
         public PingActor()
         {
-            // subscribing to ping messages
-            OnStream().Of<Ping>().ReactWith(s => pongActor.Fire(new Pong());
+            // subscribing to pong messages
+            OnStream().Of<Pong>().ReactWith(s => Console.WriteLine("Received pong!"));
         }
     }
 
@@ -64,13 +64,20 @@ Or, you can use Cell as a base class for implementing different business entitie
     {
         public PongActor(PingActor pingActor)
         {
-            // subscribing to pong messages
-            OnStream().Of<Pong>().ReactWith(s => Console.WriteLine("Received pong!"));
-
-            // firing ping message
-            pingActor.Fire(new Ping());
+            // subscribing to ping messages
+            OnStream().Of<Ping>().ReactWith(s => pingActor.Fire(new Pong());
         }
     }
+    
+    var pinger = new PingActor();
+    var ponger = new PongActor(pinger);
+    
+    // firing ping message
+    ponger.Fire(new Ping());
+    
+    // disposing cells
+    pinger.Dispose();
+    ponger.Dispose();
 
 Operators
 ---------
