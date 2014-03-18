@@ -31,110 +31,119 @@ Event bus vs Actor programming style
 Nerve supports different approaches to consurrent message processing.
 
 You can treat each Cells as an event bus instance, effectively decoupling producers from consumers:
+```csharp
+// creating a new cell
+var bus = new Cell();
+    
+// subscribing to Ping signals
+bus.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+    
+// subscribing to Pong signals
+bus.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+    
+// firing (publishing) a signal
+bus.Fire(new Ping());
+    
+// disposing the cell
+bus.Dispose();
+```
 
-    // creating a new cell
-    var bus = new Cell();
-    
-    // subscribing to Ping signals
-    bus.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-    
-    // subscribing to Pong signals
-    bus.OnStream().Of<Pong>().ReactWith(_ => _received = true);
-    
-    // firing (publishing) a signal
-    bus.Fire(new Ping());
-    
-    // disposing the cell
-    bus.Dispose();
-    
 Or, you can use Cell as a base class for implementing different business entities interacting via message passing (like Actors):
 
-    // defining ping actor object
-    public class PingActor : Cell
+```csharp
+// defining ping actor object
+public class PingActor : Cell
+{
+    public PingActor()
     {
-        public PingActor()
-        {
-            // subscribing to pong messages
-            OnStream().Of<Pong>().ReactWith(s => Console.WriteLine("Received pong!"));
-        }
+        // subscribing to pong messages
+        OnStream().Of<Pong>().ReactWith(s => Console.WriteLine("Received pong!"));
     }
+}
 
-    // defining pong actor object
-    public class PongActor : Cell
+// defining pong actor object
+public class PongActor : Cell
+{
+    public PongActor(PingActor pingActor)
     {
-        public PongActor(PingActor pingActor)
-        {
-            // subscribing to ping messages
-            OnStream().Of<Ping>().ReactWith(s => pingActor.Fire(new Pong());
-        }
+        // subscribing to ping messages
+        OnStream().Of<Ping>().ReactWith(s => pingActor.Fire(new Pong());
     }
+}
     
-    var pinger = new PingActor();
-    var ponger = new PongActor(pinger);
+var pinger = new PingActor();
+var ponger = new PongActor(pinger);
     
-    // firing ping message
-    ponger.Fire(new Ping());
+// firing ping message
+ponger.Fire(new Ping());
     
-    // disposing cells
-    pinger.Dispose();
-    ponger.Dispose();
+// disposing cells
+pinger.Dispose();
+ponger.Dispose();
+```
 
 Operators
 ---------
 
 Nerve allows you to define a processing pipeline for messages passing through Cells. This allows for great flexibility.
 
-     cell.OnStream()
-         // filter by signal body type
-         .Of<Ping>()
-         // filter by content
-         .Where(p => p.ShouldBeProcessed)
-         // map to string
-         .Map(p => p.ToString())
-         // split incoming signal of string to multiple signals of char
-         .Split(s => s.ToCharArray())
-         // write each char to console
-         .ReactWith(c => Console.WriteLine("Ping got : {0}", c));
+```csharp
+cell.OnStream()
+    // filter by signal body type
+    .Of<Ping>()
+    // filter by content
+    .Where(p => p.ShouldBeProcessed)
+    // map to string
+    .Map(p => p.ToString())
+    // split incoming signal of string to multiple signals of char
+    .Split(s => s.ToCharArray())
+    // write each char to console
+    .ReactWith(c => Console.WriteLine("Ping got : {0}", c));
+```
 
 Federation
 ----------
 
 Each Cell can also be a message consumer itself. It can be subscribed to a stream of messages fired from another cells.
 
-    // creating cells
-    var pinger = new Cell();
-    var ponger = new Cell();
+```csharp
+// creating cells
+var pinger = new Cell();
+var ponger = new Cell();
 
-    // subscribing cells to signals from each other
-    pinger.OnStream().Of<Ping>().ReactWith(ponger);
-    ponger.OnStream().Of<Pong>().ReactWith(pinger);
+// subscribing cells to signals from each other
+pinger.OnStream().Of<Ping>().ReactWith(ponger);
+ponger.OnStream().Of<Pong>().ReactWith(pinger);
 
-    // defining handlers on each cell
-    ponger.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
-    pinger.OnStream().Of<Pong>().ReactWith(_ => _received = true);
+// defining handlers on each cell
+ponger.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+pinger.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 
-    // firing (publishing) a signal
-    pinger.Fire(new Ping());
+// firing (publishing) a signal
+pinger.Fire(new Ping());
     
-    // disposing cells
-    pinger.Dispose();
-    ponger.Dispose();
+// disposing cells
+pinger.Dispose();
+ponger.Dispose();
+```
 
 Scheduling
 ----------
 
 Each Cell processes messages (called Signals) using specific message scheduler. Scheduler decide how a signal will be processed. By default, incoming signals are processed on the same thread they were dispatched on. But there are other implementations, allowing to use dedicated thread or a thread pool.
 
-    // a dedicated thread will be started with the Cell
-    var cell = new Cell(ThreadScheduler.Factory);
+```csharp
+// a dedicated thread will be started with the Cell
+var cell = new Cell(ThreadScheduler.Factory);
 
-    //...
+//...
 
-    // Ping will be handled on another thread
-    cell.Fire(new Ping());
+// Ping will be handled on another thread
+cell.Fire(new Ping());
 
-    // disposing cell and underlying thread
-    cell.Dispose();
+// disposing cell and underlying thread
+cell.Dispose();
+```
 
 Current State
 -------------
