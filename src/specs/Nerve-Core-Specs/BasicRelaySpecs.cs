@@ -43,7 +43,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 				};
 
-			private Because of = () => _cell.Fire(new Ping());
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_be_handled = () => _received.ShouldBeTrue();
 		}
@@ -66,7 +66,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					subscription.Dispose();
 				};
 
-			private Because of = () => _cell.Fire(new Ping());
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_not_be_handled = () => _received.ShouldBeFalse();
 		}
@@ -101,7 +101,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_c.OnStream().Of<Ping>().ReactWith(s => _received = s);
 				};
 
-			private Because of = () => _a.Fire(new Ping());
+			private Because of = () => _a.Send(new Ping());
 
 			private It should_receive_signal = () => _received.ShouldNotBeNull();
 
@@ -136,7 +136,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
 				};
 
-			private Because of = () => _cell.Fire(new Pong());
+			private Because of = () => _cell.Send(new Pong());
 
 			private It should_not_be_handled = () => _received.ShouldBeFalse();
 		}
@@ -169,7 +169,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_ping.OnStream().Of<Pong>().ReactWith(s => _received = s);
 				};
 
-			private Because of = () => _ping.Fire(new Ping());
+			private Because of = () => _ping.Send(new Ping());
 
 			private It should_receive_response_on_specified_handler = () => _received.ShouldNotBeNull();
 

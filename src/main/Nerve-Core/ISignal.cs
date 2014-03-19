@@ -20,8 +20,6 @@ namespace Kostassoid.Nerve.Core
 	/// </summary>
 	public interface ISignal
 	{
-		#region Public Properties
-
 		/// <summary>
 		///   First exception encountered during signal processing.
 		/// </summary>
@@ -46,10 +44,6 @@ namespace Kostassoid.Nerve.Core
 		///   Recorded stack trace.
 		/// </summary>
 		Stacktrace Stacktrace { get; }
-
-		#endregion
-
-		#region Public Methods and Operators
 
 		ISignal Clone();
 
@@ -81,8 +75,6 @@ namespace Kostassoid.Nerve.Core
 		void Trace(ISignalProcessor signalProcessor);
 
 		ISignal<T> CastTo<T>() where T : class;
-
-		#endregion
 	}
 
 	/// <summary>

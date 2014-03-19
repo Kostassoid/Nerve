@@ -27,33 +27,21 @@ namespace Kostassoid.Nerve.Core
 	/// </summary>
 	public interface ICell : ISignalSource, ISignalProcessor, IDisposable
 	{
-		#region Public Events
-
 		/// <summary>
 		///   Unhandled exception event.
 		/// </summary>
 		event SignalExceptionHandler Failed;
-
-		#endregion
-
-		#region Public Properties
 
 		/// <summary>
 		///   Cell name.
 		/// </summary>
 		string Name { get; }
 
-		#endregion
-
-		#region Public Methods and Operators
-
 		/// <summary>
 		///   Creates a new signal and schedules its execution on current Cell.
 		/// </summary>
 		/// <typeparam name="T">Signal payload type.</typeparam>
-		/// <param name="body">Signal payload body.</param>
-		void Fire<T>(T body) where T : class;
-
-		#endregion
+		/// <param name="payload">Signal payload body.</param>
+		void Send<T>(T payload) where T : class;
 	}
 }

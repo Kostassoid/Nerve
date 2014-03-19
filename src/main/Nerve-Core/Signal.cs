@@ -62,8 +62,6 @@ namespace Kostassoid.Nerve.Core
 		{
 		}
 
-		#region Public Properties
-
 		public Exception Exception { get; private set; }
 
 		public Headers Headers { get; private set; }
@@ -73,8 +71,6 @@ namespace Kostassoid.Nerve.Core
 		public ISignalProcessor Sender { get; private set; }
 
 		public Stacktrace Stacktrace { get; private set; }
-
-		#endregion
 
 		#region Explicit Interface Properties
 

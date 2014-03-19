@@ -51,7 +51,7 @@
 								   var gotHaircutEvent = new ClientGotHaircut { Client = s.Payload.Client };
 
 								   //TODO: not sure if I like this
-								   s.Payload.Client.Fire(gotHaircutEvent);
+								   s.Payload.Client.Send(gotHaircutEvent);
 								   s.Return(gotHaircutEvent);
 							   });
 			}
@@ -106,7 +106,7 @@
 			{
 				_seatIsTaken = true;
 				Console.WriteLine("{0} is getting a haircut.", client);
-				Fire(new ClientIsReadyForHaircut { Client = client });
+				Send(new ClientIsReadyForHaircut { Client = client });
 			}
 
 			private void SendToQueue(Client client)
@@ -140,7 +140,7 @@
 			foreach (var client in clients)
 			{
 				Thread.Sleep(Random.Next(10, 200));
-				shop.Fire(new ClientEnteredTheShop { Client = client });
+				shop.Send(new ClientEnteredTheShop { Client = client });
 			}
 
 			Thread.Sleep(1000);

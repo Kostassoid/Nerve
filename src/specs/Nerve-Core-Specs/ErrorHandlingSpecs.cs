@@ -49,7 +49,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
 				};
 
-			private Because of = () => _cell.Fire(new Ping());
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_handle_exception = () => _exceptionWasHandled.ShouldBeTrue();
 
@@ -85,7 +85,7 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					try
 					{
-						_cell.Fire(new Ping());
+						_cell.Send(new Ping());
 					}
 					catch
 					{
@@ -122,7 +122,7 @@ namespace Kostassoid.Nerve.Core.Specs
 						.ReactWith(_ => { _received = true; });
 				};
 
-			private Because of = () => _cell.Fire(new Ping());
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_not_continue_signal_processing = () => _received.ShouldBeFalse();
 

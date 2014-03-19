@@ -57,7 +57,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 				};
 
-			private Because of = () => _ping.Fire(new Ping());
+			private Because of = () => _ping.Send(new Ping());
 
 			private It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 		}
@@ -90,7 +90,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_ping.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 				};
 
-			private Because of = () => _ping.Fire(new Ping());
+			private Because of = () => _ping.Send(new Ping());
 
 			private It should_receive_response_on_specified_handler = () => _received.ShouldBeTrue();
 		}
@@ -113,7 +113,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 				};
 
-			private Because of = () => _cell.Fire(new Ping());
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_receive_response = () => _received.ShouldBeTrue();
 		}

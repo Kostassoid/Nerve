@@ -59,7 +59,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 					_cell.OnStream().Cast<SimpleNum>().ReactWith(s => _received = true);
 				};
 
-			private Because of = () => _cell.Fire(new SubSimpleNum { Num = 13 });
+			private Because of = () => _cell.Send(new SubSimpleNum { Num = 13 });
 
 			private It should_be_received = () => _received.ShouldBeTrue();
 		}
@@ -81,7 +81,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 					_cell.OnStream().Of<List<SimpleNum>>().Split(n => n.Select(i => i)).ReactWith(s => _receivedSum += s.Payload.Num);
 				};
 
-			private Because of = () => _cell.Fire(Enumerable.Range(1, 5).Select(i => new SimpleNum { Num = i }).ToList());
+			private Because of = () => _cell.Send(Enumerable.Range(1, 5).Select(i => new SimpleNum { Num = i }).ToList());
 
 			private It should_produce_multiple_signals = () => _receivedSum.ShouldEqual(1 + 2 + 3 + 4 + 5);
 		}
@@ -106,7 +106,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 						.ReactWith(s => _received = s.Payload);
 				};
 
-			private Because of = () => _cell.Fire(new SimpleNum { Num = 13 });
+			private Because of = () => _cell.Send(new SimpleNum { Num = 13 });
 
 			private It should_be_translated = () => _received.Str.ShouldEqual("13");
 		}
@@ -128,7 +128,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 					_cell.OnStream().Of<SimpleNum>().ReactWith(s => _received = true);
 				};
 
-			private Because of = () => _cell.Fire(new SimpleNum { Num = 13 });
+			private Because of = () => _cell.Send(new SimpleNum { Num = 13 });
 
 			private It should_be_received = () => _received.ShouldBeTrue();
 		}
@@ -150,7 +150,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 					_cell.OnStream().Of<SimpleNum>().ReactWith(s => _received = true);
 				};
 
-			private Because of = () => _cell.Fire(new SubSimpleNum { Num = 13 });
+			private Because of = () => _cell.Send(new SubSimpleNum { Num = 13 });
 
 			private It should_not_be_received = () => _received.ShouldBeFalse();
 		}
@@ -181,7 +181,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 					.ReactWith(s => _received = true);
 			};
 
-			private Because of = () => _cell.Fire(new SimpleString { Str = "thirteen" });
+			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" });
 
 			private It should_invoke_the_handler = () => _handledException.ShouldBeTrue();
 

@@ -21,13 +21,13 @@
 				_ =>
 					{
 						Console.WriteLine("\n[Patient]: Suffering.");
-						nurse.Fire(new Scream());
+						nurse.Send(new Scream());
 					});
 			nurse.OnStream().Of<Scream>().Gate(3, TimeSpan.FromSeconds(1)).ReactWith(
 				_ =>
 					{
 						Console.WriteLine("[Nurse]: Administering morphine.");
-						tumor.Fire(new Morphine());
+						tumor.Send(new Morphine());
 					});
 			tumor.OnStream().Of<Morphine>().ReactWith(
 				_ =>
@@ -47,7 +47,7 @@
 						else
 						{
 							Console.Write("*");
-							tumor.Fire(new Pain());
+							tumor.Send(new Pain());
 						}
 					});
 			timer.Change(TimeSpan.FromSeconds(0), TimeSpan.FromMilliseconds(100));

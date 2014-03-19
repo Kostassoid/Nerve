@@ -51,7 +51,7 @@ namespace Kostassoid.Nerve.Core.Specs
 								countdown.Signal();
 							});
 
-					Enumerable.Range(1, 10).ForEach(i => Cell.Fire(new Num(i)));
+					Enumerable.Range(1, 10).ForEach(i => Cell.Send(new Num(i)));
 
 					countdown.Wait();
 
@@ -88,7 +88,7 @@ namespace Kostassoid.Nerve.Core.Specs
 				};
 
 			private Because of =
-				() => Enumerable.Range(0, _count).ForEach(i => Task.Factory.StartNew(() => _cell.Fire(new Num(i))));
+				() => Enumerable.Range(0, _count).ForEach(i => Task.Factory.StartNew(() => _cell.Send(new Num(i))));
 
 			private It should_process_signals_serialized = () =>
 				{
@@ -160,9 +160,9 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Because of = () =>
 				{
-					_cell.Fire(new Ping());
-					_cell.Fire(new Ping());
-					_cell.Fire(new Ping());
+					_cell.Send(new Ping());
+					_cell.Send(new Ping());
+					_cell.Send(new Ping());
 				};
 
 			private It should_receive_in_async_fashion = () =>

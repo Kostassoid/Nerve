@@ -46,7 +46,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					Cell.OnStream().Of<Ping>().ReactWith(_ => countdown.Signal());
 
 					Stopwatch stopwatch = Stopwatch.StartNew();
-					Enumerable.Range(0, SignalsCount).ForEach(_ => Cell.Fire(new Ping()));
+					Enumerable.Range(0, SignalsCount).ForEach(_ => Cell.Send(new Ping()));
 
 					countdown.Wait();
 					stopwatch.Stop();

@@ -43,7 +43,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () => { _cell = new SpecialCell(); };
 
-			private Because of = () => _cell.Fire(new Ping());
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_be_handled = () => _cell.Received.ShouldBeTrue();
 		}

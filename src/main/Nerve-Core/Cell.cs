@@ -89,11 +89,11 @@ namespace Kostassoid.Nerve.Core
 			GC.SuppressFinalize(this);
 		}
 
-		public void Fire<T>(T body) where T : class
+		public void Send<T>(T payload) where T : class
 		{
-			Requires.NotNull(body, "body");
+			Requires.NotNull(payload, "payload");
 
-			OnSignal(Signal.From(body));
+			OnSignal(Signal.From(payload));
 		}
 
 		public override bool OnFailure(SignalException exception)
