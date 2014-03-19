@@ -7,6 +7,7 @@
     <authors>Konstantin Alexandroff</authors>
     <owners>Konstantin Alexandroff</owners>
     <projectUrl>https://github.com/Kostassoid/Nerve</projectUrl>
+    <iconUrl>http://i.kostassoid.com/nerve/logo-nuget.png</iconUrl>
     <licenseUrl>https://raw.githubusercontent.com/Kostassoid/Nerve/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <language>en-US</language>
