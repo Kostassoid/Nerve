@@ -41,8 +41,8 @@ bus.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
 // subscribing to Pong signals
 bus.OnStream().Of<Pong>().ReactWith(_ => _received = true);
     
-// firing (publishing) a signal
-bus.Fire(new Ping());
+// sending (publishing) a signal
+bus.Send(new Ping());
     
 // disposing the cell
 bus.Dispose();
@@ -67,15 +67,15 @@ public class PongActor : Cell
     public PongActor(PingActor pingActor)
     {
         // subscribing to ping messages
-        OnStream().Of<Ping>().ReactWith(s => pingActor.Fire(new Pong());
+        OnStream().Of<Ping>().ReactWith(s => pingActor.Send(new Pong());
     }
 }
     
 var pinger = new PingActor();
 var ponger = new PongActor(pinger);
     
-// firing ping message
-ponger.Fire(new Ping());
+// sending ping message
+ponger.Send(new Ping());
     
 // disposing cells
 pinger.Dispose();
@@ -104,7 +104,7 @@ cell.OnStream()
 Federation
 ----------
 
-Each Cell can also be a message consumer itself. It can be subscribed to a stream of messages fired from another cells.
+Each Cell can also be a message consumer itself. It can be subscribed to a stream of messages sent from another cells.
 
 ```csharp
 // creating cells
@@ -119,8 +119,8 @@ ponger.OnStream().Of<Pong>().ReactWith(pinger);
 ponger.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
 pinger.OnStream().Of<Pong>().ReactWith(_ => _received = true);
 
-// firing (publishing) a signal
-pinger.Fire(new Ping());
+// sending (publishing) a signal
+pinger.Send(new Ping());
     
 // disposing cells
 pinger.Dispose();
@@ -139,7 +139,7 @@ var cell = new Cell(ThreadScheduler.Factory);
 //...
 
 // Ping will be handled on another thread
-cell.Fire(new Ping());
+cell.Send(new Ping());
 
 // disposing cell and underlying thread
 cell.Dispose();
