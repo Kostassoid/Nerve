@@ -4,11 +4,13 @@
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Linq;
+	using System.Reflection;
 	using System.Text;
 
 	using Kostassoid.Nerve.Core;
 	using Kostassoid.Nerve.Core.Linking.Operators;
 	using Kostassoid.Nerve.Core.Scheduling;
+	using Newtonsoft.Json;
 
 	public class FileBasedEventStore : Cell
 	{
@@ -16,7 +18,15 @@
 
 		public FileBasedEventStore() : base("EventStore", ThreadScheduler.Factory)
 		{
+			ClearStorageFolder();
+
 			OnStream().Of<UncommitedEventStream>().ReactWith(ProcessUncommited);
+		}
+
+		void ClearStorageFolder()
+		{
+			_folder.Delete(true);
+			_folder.Create();
 		}
 
 		IEnumerable<IDomainEvent> LoadEventStreamFor(Type type, Guid id)
@@ -27,21 +37,16 @@
 				return new List<IDomainEvent>();
 			}
 
-			return File.ReadLines(path, Encoding.UTF8).Select(
-				s =>
-					{
-						var p = s.Split('~');
-						return (IDomainEvent)SimpleJson.DeserializeObject(p[1], Type.GetType(p[0]));
-					});
+			var settings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Auto};
+			return (IEnumerable<IDomainEvent>)JsonConvert.DeserializeObject(File.ReadAllText(path, Encoding.UTF8), typeof(IEnumerable<IDomainEvent>), settings);
 		}
 
 		void SaveEventStream(Type type, Guid id, IEnumerable<IDomainEvent> events)
 		{
 			var path = GetFilePathFor(type.Name, id);
 
-			var serializedEvents = events.Select(ev => string.Format("{0}~{1}", ev.GetType().FullName, SimpleJson.SerializeObject(ev)));
-
-			File.WriteAllLines(path, serializedEvents, Encoding.UTF8);
+			var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto, Formatting = Formatting.Indented};
+			File.WriteAllText(path, JsonConvert.SerializeObject(events, settings));
 		}
 
 		void ProcessUncommited(ISignal<UncommitedEventStream> uncommited)
@@ -50,7 +55,7 @@
 			var loaded = LoadEventStreamFor(root.GetType(), root.Id).ToList();
 			var sorted = uncommited.Payload.UncommitedEvents.OrderBy(e => e.Version);
 
-			long currentVersion = loaded.Any() ? loaded.Last().Version : 0;
+			long currentVersion = loaded.Any() ? loaded.Last().Version + 1 : 0;
 			foreach (var ev in sorted)
 			{
 				if (currentVersion != ev.Version)
@@ -76,7 +81,7 @@
 				throw new InvalidOperationException(string.Format("Aggregate root of type {0} with id {1} not found.", typeof(T).Name, id));
 			}
 
-			var root = Activator.CreateInstance<T>();
+			var root = ConstructInstanceOf<T>();
 			foreach (var ev in loaded)
 			{
 				root.Apply(ev, true);
@@ -88,6 +93,13 @@
 		private string GetFilePathFor(string type, Guid id)
 		{
 			return Path.Combine(_folder.FullName, string.Format("{0}-{1}.json", type, id));
+		}
+
+		private static T ConstructInstanceOf<T>()
+		{
+			var flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+			var ctor = typeof(T).GetConstructor(flags, null, new Type[0], null);
+			return (T)ctor.Invoke(null);
 		}
 	}
 }

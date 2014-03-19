@@ -2,10 +2,10 @@
 {
 	public class UserCreated : DomainEvent
 	{
-		public string Name { get; private set; }
-		public int Age { get; private set; }
+		public string Name { get; set; }
+		public int Age { get; set; }
 
-		protected UserCreated()
+		public UserCreated()
 		{}
 
 		public UserCreated(AggregateRoot root, string name, int age) : base(root)

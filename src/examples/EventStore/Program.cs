@@ -28,7 +28,14 @@
 			Console.ReadKey(false);
 
 			var user = store.Load<User>(jake.Id);
-			Console.WriteLine("Found user {0} with id {1}", user.Id, user.Name);
+			user.ChangeName("MegaJake");
+			user.Commit();
+
+			Console.WriteLine("Press any key to read from store...");
+			Console.ReadKey(false);
+
+			user = store.Load<User>(jake.Id);
+			Console.WriteLine("Found user [{0}] with id [{1}]", user.Name, user.Id);
 			Console.ReadKey(false);
 		}
 	}

@@ -2,9 +2,9 @@
 {
 	public class UserNameChanged : DomainEvent
 	{
-		public string NewName { get; private set; }
+		public string NewName { get; set; }
 
-		protected UserNameChanged()
+		public UserNameChanged()
 		{}
 
 		public UserNameChanged(AggregateRoot root, string newName) : base(root)

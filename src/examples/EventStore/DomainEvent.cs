@@ -4,9 +4,10 @@
 
 	public abstract class DomainEvent : IDomainEvent
 	{
-		public string Type { get; private set; }
-		public Guid Id { get; private set; }
-		public long Version { get; private set; }
+		public DateTime Happened { get; set; }
+		public string Type { get; set; }
+		public Guid Id { get; set; }
+		public long Version { get; set; }
 
 		protected DomainEvent()
 		{}
@@ -16,6 +17,8 @@
 			Type = type;
 			Id = id;
 			Version = version;
+
+			Happened = DateTime.UtcNow;
 		}
 
 		protected DomainEvent(AggregateRoot root) : this(root.GetType().Name, root.Id, root.Version)
