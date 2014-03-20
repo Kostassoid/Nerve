@@ -38,11 +38,27 @@ namespace Kostassoid.Nerve.Core
 			{
 				signal.MarkAsFaulted(ex);
 				var signalException = new SignalException(ex, signal);
+
+				if (OnFailure(signalException))
+				{
+					return;
+				}
+
+				if (signal.Callback != null)
+				{
+					if (signal.Callback.OnFailure(signalException))
+					{
+						return;
+					}
+				}
+
 				foreach (var s in signal.Stacktrace.Frames)
 				{
+					//if (s == signal.Callback) continue;
+
 					if (s.OnFailure(signalException)) return;
 				}
-				throw signalException;
+				//throw signalException;
 			}
 		}
 

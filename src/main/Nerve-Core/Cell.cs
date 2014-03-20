@@ -93,7 +93,15 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(payload, "payload");
 
-			OnSignal(Signal.From(payload));
+			OnSignal(Signal.From(payload, this));
+		}
+
+		public void Send<T>(T payload, ISignalProcessor callback) where T : class
+		{
+			Requires.NotNull(payload, "payload");
+			Requires.NotNull(callback, "callback");
+
+			OnSignal(Signal.From(payload, callback));
 		}
 
 		public override bool OnFailure(SignalException exception)

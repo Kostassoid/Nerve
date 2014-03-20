@@ -14,9 +14,9 @@
 			: base(id)
 		{ }
 
-		public static User Create(string name, int age)
+		public static User Create(Guid id, string name, int age)
 		{
-			var user = new User(Guid.NewGuid());
+			var user = new User(id);
 			user.Apply(new UserCreated(user, name, age));
 			return user;
 		}

@@ -1,8 +1,9 @@
-﻿namespace EventStore
+﻿namespace EventStore.Model
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
+	using System.Threading.Tasks;
 
 	public abstract class AggregateRoot
 	{
@@ -36,13 +37,13 @@
 			}
 		}
 
-		public void Commit()
+		public Task Commit()
 		{
 			// possible race condition here?
 			var toCommit = _uncommited;
 			_uncommited = new List<IDomainEvent>();
 
-			EventBus.Raise(new UncommitedEventStream(this, toCommit));
+			return EventBus.RaiseWithTask(new UncommitedEventStream(this, toCommit));
 		}
 	}
 }

@@ -1,5 +1,7 @@
 ﻿namespace EventStore
 {
+	using System.Threading.Tasks;
+
 	using Kostassoid.Nerve.Core;
 	using Kostassoid.Nerve.Core.Linking;
 
@@ -7,14 +9,21 @@
 	{
 		static readonly ICell Cell = new Cell("EventBus");
 
+		public static ILinkJunction OnStream()
+		{
+			return Cell.OnStream();
+		}
+
 		public static void Raise<T>(T ev) where T : class
 		{
 			Cell.Send(ev);
 		}
 
-		public static ILinkJunction OnStream()
+		public static Task RaiseWithTask<T>(T ev) where T : class
 		{
-			return Cell.OnStream();
+			var taskHandler = new TaskSignalHandler();
+			Cell.Send(ev, taskHandler);
+			return taskHandler.Task;
 		}
 	}
 }

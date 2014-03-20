@@ -38,7 +38,7 @@ namespace Kostassoid.Nerve.Core
 		/// <summary>
 		///   Original signal sender.
 		/// </summary>
-		ISignalProcessor Sender { get; }
+		ISignalProcessor Callback { get; }
 
 		/// <summary>
 		///   Recorded stack trace.

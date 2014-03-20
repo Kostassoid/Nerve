@@ -34,22 +34,27 @@ namespace Kostassoid.Nerve.Core
 		{
 			return new Signal<T>(payload);
 		}
-		
+
+		public static ISignal<T> From<T>(T payload, ISignalProcessor callback) where T : class
+		{
+			return new Signal<T>(payload, callback);
+		}
 	}
 
 	internal sealed class Signal<T> : ISignal<T>
 		where T : class
 	{
-		public Signal(T payload, Headers headers, Stacktrace stacktrace)
+		public Signal(T payload, Headers headers, Stacktrace stacktrace, ISignalProcessor callback)
 		{
 			Payload = payload;
 			Headers = headers;
 			Stacktrace = stacktrace;
+			Callback = callback;// ?? stacktrace.Frames.LastOrDefault();
+		}
 
-			if (!stacktrace.Frames.IsEmpty)
-			{
-				Sender = stacktrace.Frames.Last();
-			}
+		public Signal(T payload, Headers headers, Stacktrace stacktrace)
+			:this(payload, headers, stacktrace, null)
+		{
 		}
 
 		public Signal(T payload, Stacktrace stacktrace)
@@ -62,13 +67,18 @@ namespace Kostassoid.Nerve.Core
 		{
 		}
 
+		public Signal(T payload, ISignalProcessor callback)
+			: this(payload, Headers.Empty, Stacktrace.Empty, callback)
+		{
+		}
+
 		public Exception Exception { get; private set; }
 
 		public Headers Headers { get; private set; }
 
 		public T Payload { get; private set; }
 
-		public ISignalProcessor Sender { get; private set; }
+		public ISignalProcessor Callback { get; private set; }
 
 		public Stacktrace Stacktrace { get; private set; }
 
@@ -88,12 +98,12 @@ namespace Kostassoid.Nerve.Core
 
 		public ISignal Clone()
 		{
-			return new Signal<T>(Payload, Headers.Clone(), Stacktrace.Clone());
+			return new Signal<T>(Payload, Headers.Clone(), Stacktrace.Clone(), Callback);
 		}
 
 		public ISignal<TTarget> CloneWithPayload<TTarget>(TTarget payload) where TTarget : class
 		{
-			return new Signal<TTarget>(payload, Headers.Clone(), Stacktrace.Clone());
+			return new Signal<TTarget>(payload, Headers.Clone(), Stacktrace.Clone(), Callback);
 		}
 
 		public void MarkAsFaulted(Exception exception)
@@ -108,7 +118,12 @@ namespace Kostassoid.Nerve.Core
 
 		public void Return<TResponse>(TResponse response) where TResponse : class
 		{
-			Sender.OnSignal(CloneWithPayload(response));
+			if (Callback == null)
+			{
+				throw new InvalidOperationException(string.Format("Callback receiver is not set on signal [{0}]", this));
+			}
+
+			Callback.OnSignal(CloneWithPayload(response));
 		}
 
 		public void Trace(ISignalProcessor signalProcessor)

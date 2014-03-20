@@ -15,6 +15,9 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 {
 	using System;
 
+	using Tools;
+	using Tools.CodeContracts;
+
 	public static class ReactOp
 	{
 		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, ISignalProcessor signalProcessor) where T : class
@@ -27,7 +30,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IConsumerOf<T> consumer) where T : class
 		{
-			step.Attach(new SignalConsumerWrapper<T>(consumer));
+			step.Attach(new HandlerOperator<T>(consumer));
 
 			//TODO: not pretty
 			return step.Link.AttachToCell();
@@ -38,7 +41,53 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 			Action<ISignal<T>> handler,
 			Func<SignalException, bool> failureHandler = null) where T : class
 		{
-			return ReactWith(step, new SignalConsumerWrapper<T>(handler, failureHandler));
+			step.Attach(new HandlerOperator<T>(handler, failureHandler));
+
+			//TODO: not pretty
+			return step.Link.AttachToCell();
 		}
+
+		internal class HandlerOperator<T> : SignalProcessor, IConsumerBase where T : class
+		{
+			protected IConsumerBase Original { get; set; }
+
+			protected readonly Func<SignalException, bool> FailureHandler;
+
+			protected readonly Action<ISignal<T>> Handler;
+
+			public HandlerOperator(Action<ISignal<T>> handler, Func<SignalException, bool> failureHandler)
+			{
+				Requires.NotNull(handler, "signalProcessor");
+
+				Handler = handler;
+				FailureHandler = failureHandler;
+				Original = this;
+			}
+
+			public HandlerOperator(IConsumerOf<T> consumer):this(consumer.OnSignal, consumer.OnFailure)
+			{
+				Original = consumer;
+			}
+
+			protected override void Process(ISignal signal)
+			{
+				Handler((ISignal<T>)signal);
+			}
+
+			public override bool OnFailure(SignalException exception)
+			{
+				if (FailureHandler == null) return false;
+
+				return FailureHandler(exception);
+			}
+
+			public override string ToString()
+			{
+				return string.Format("Handler[{0}]", Original.GetType().BuildDescription());
+			}
+
+		}
+
+
 	}
 }

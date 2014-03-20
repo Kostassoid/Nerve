@@ -43,5 +43,7 @@ namespace Kostassoid.Nerve.Core
 		/// <typeparam name="T">Signal payload type.</typeparam>
 		/// <param name="payload">Signal payload body.</param>
 		void Send<T>(T payload) where T : class;
+
+		void Send<T>(T payload, ISignalProcessor callback) where T : class;
 	}
 }

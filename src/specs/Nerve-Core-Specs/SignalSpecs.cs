@@ -42,8 +42,8 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					_cell = new Cell();
 					_headers = new Headers { { "key", "value" } };
-					_stack = new Stacktrace(_cell);
-					_originalSignal = new Signal<object>(new object(), _headers, _stack);
+					_stack = Stacktrace.Empty;
+					_originalSignal = new Signal<object>(new object(), _headers, _stack, _cell);
 				};
 
 			private Because of = () => _clonedSignal = _originalSignal.CloneWithPayload("new payload");
@@ -54,7 +54,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_payload_set = () => _clonedSignal.Payload.ShouldEqual("new payload");
 
-			private It should_have_sender_set = () => _clonedSignal.Sender.ShouldEqual(_cell);
+			private It should_have_callback_receiver_set = () => _clonedSignal.Callback.ShouldEqual(_cell);
 
 			private It should_have_stacktrace_copied = () => _clonedSignal.Stacktrace.ShouldNotBeTheSameAs(_stack);
 
@@ -94,41 +94,41 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Because of = () => _signal = new Signal<object>(_payload, stacktrace);
 
-			private It should_have_sender_set_to_root_stack_cell = () => _signal.Sender.ShouldEqual(_cellA);
+			private It should_not_have_callback_receiver_set = () => _signal.Callback.ShouldBeNull();
 		}
 
 		[Subject(typeof(Signal<>))]
 		[Tags("Unit")]
 		public class when_creating_signal_with_new_stacktrace
 		{
-			private static ICell _cell;
+			static ICell _cell;
 
-			private static object _payload;
+			static object _payload;
 
-			private static Headers _headers;
+			static Headers _headers;
 
-			private static ISignal _signal;
+			static ISignal _signal;
 
-			private Cleanup after = () => _cell.Dispose();
+			Cleanup after = () => _cell.Dispose();
 
-			private Establish context = () =>
+			Establish context = () =>
 				{
 					_cell = new Cell();
 					_payload = new object();
 					_headers = new Headers { { "key", "value" } };
 				};
 
-			private Because of = () => _signal = new Signal<object>(_payload, _headers, new Stacktrace(_cell));
+			Because of = () => _signal = new Signal<object>(_payload, _headers, new Stacktrace(_cell));
 
-			private It should_have_headers_set = () => _signal.Headers.ShouldEqual(_headers);
+			It should_have_headers_set = () => _signal.Headers.ShouldEqual(_headers);
 
-			private It should_have_payload_set = () => _signal.Payload.ShouldEqual(_payload);
+			It should_have_payload_set = () => _signal.Payload.ShouldEqual(_payload);
 
-			private It should_have_sender_set = () => _signal.Sender.ShouldEqual(_cell);
+			It should_not_have_callback_receiver_set = () => _signal.Callback.ShouldBeNull();
 
-			private It should_have_stacktrace_set = () => _signal.Stacktrace.Frames.First().ShouldEqual(_cell);
+			It should_have_stacktrace_set = () => _signal.Stacktrace.Frames.First().ShouldEqual(_cell);
 
-			private It should_not_have_exception_set = () => _signal.Exception.ShouldBeNull();
+			It should_not_have_exception_set = () => _signal.Exception.ShouldBeNull();
 		}
 
 		[Subject(typeof(Signal<>))]
