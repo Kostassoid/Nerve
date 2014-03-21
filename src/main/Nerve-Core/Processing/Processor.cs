@@ -38,31 +38,6 @@ namespace Kostassoid.Nerve.Core.Processing
 			catch (Exception ex)
 			{
 				signal.MarkAsFaulted(ex);
-				var signalException = new SignalException(ex, signal);
-
-				if (OnFailure(signalException))
-				{
-					return;
-				}
-
-				var callbackIsNotified = false;
-				foreach (var s in signal.Stacktrace.Frames)
-				{
-					if (s == signal.Callback)
-					{
-						callbackIsNotified = true;
-					}
-
-					if (s.OnFailure(signalException)) return;
-				}
-
-				if (signal.Callback != null && !callbackIsNotified)
-				{
-					if (signal.Callback.OnFailure(signalException))
-					{
-						return;
-					}
-				}
 			}
 		}
 

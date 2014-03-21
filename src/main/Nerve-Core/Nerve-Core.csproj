@@ -98,7 +98,6 @@
     <Compile Include="Processing\IProcessor.cs" />
     <Compile Include="Processing\Operators\OfOp.cs" />
     <Compile Include="Processing\Operators\SplitOp.cs" />
-    <Compile Include="NerveCenter.cs" />
     <Compile Include="ILink.cs" />
     <Compile Include="Processing\Operators\AbstractOperator.cs" />
     <Compile Include="Processing\Operators\CastOp.cs" />
@@ -107,7 +106,7 @@
     <Compile Include="Processing\Operators\RootOperator.cs" />
     <Compile Include="Processing\Operators\ReactOp.cs" />
     <Compile Include="Processing\Operators\MapOp.cs" />
-    <Compile Include="Processing\Operators\HandleExceptionOp.cs" />
+    <Compile Include="Processing\Operators\HandleFailureOp.cs" />
     <Compile Include="ILinkJunction.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />
@@ -130,10 +129,9 @@
     <Compile Include="Tools\Collections\ImmutableLinkedList.cs" />
     <Compile Include="Tools\SystemTicks.cs" />
     <Compile Include="Tools\TypeEx.cs" />
+    <Compile Include="Tpl\TaskResultHandlerOf.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Diagnostics\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

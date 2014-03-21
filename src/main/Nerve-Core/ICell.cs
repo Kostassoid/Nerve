@@ -40,6 +40,12 @@ namespace Kostassoid.Nerve.Core
 		string Name { get; }
 
 		/// <summary>
+		/// Schedules execution of a signal on current Cell.
+		/// </summary>
+		/// <param name="signal">Signal.</param>
+		void Send(ISignal signal);
+
+		/// <summary>
 		/// Creates a new signal and schedules its execution on current Cell.
 		/// </summary>
 		/// <typeparam name="T">Signal payload type.</typeparam>

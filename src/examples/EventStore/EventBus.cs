@@ -3,6 +3,7 @@
 	using System.Threading.Tasks;
 
 	using Kostassoid.Nerve.Core;
+	using Kostassoid.Nerve.Core.Tpl;
 
 	public static class EventBus
 	{
@@ -20,7 +21,7 @@
 
 		public static Task RaiseWithTask<T>(T ev) where T : class
 		{
-			var taskHandler = new TaskHandler();
+			var taskHandler = new TaskResultHandlerOf<object>();
 			Cell.Send(ev, taskHandler);
 			return taskHandler.Task;
 		}

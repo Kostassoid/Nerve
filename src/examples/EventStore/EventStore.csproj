@@ -50,7 +50,7 @@
     <Compile Include="Command\CommandHandler.cs" />
     <Compile Include="Command\CreateUser.cs" />
     <Compile Include="Command\ICommand.cs" />
-    <Compile Include="LoadAggregate.cs" />
+    <Compile Include="AggregateIdentity.cs" />
     <Compile Include="Model\AggregateRoot.cs" />
     <Compile Include="EventBus.cs" />
     <Compile Include="EventStore.cs" />
@@ -64,7 +64,6 @@
     <Compile Include="Model\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\main\Nerve-Core\Nerve-Core.csproj">

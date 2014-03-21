@@ -3,7 +3,7 @@ properties {
     $OutputPath = "$BaseDir\output"
     $SolutionPath = "$BaseDir\src\Nerve.sln"
     $Configuration = "Release"
-    $Version = "0.4.0.0"
+    $Version = "0.5.0.0"
 }
 
 task default -depends Build

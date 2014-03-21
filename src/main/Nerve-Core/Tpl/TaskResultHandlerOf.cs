@@ -11,37 +11,33 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Tpl
 {
-	using System;
-	using System.Collections.Generic;
+	using System.Threading.Tasks;
+	using Core;
+	using Processing;
 
-	public class NerveCenter
+	public class TaskResultHandlerOf<T> : Processor where T : class
 	{
-		#region Fields
+		readonly TaskCompletionSource<T> _completionSource = new TaskCompletionSource<T>();
 
-		private Func<ICell> _cellFactory;
-
-		private IList<ICell> _cells = new ICell[0];
-
-		#endregion
-
-		#region Constructors and Destructors
-
-		public NerveCenter(Func<ICell> cellFactory)
+		public Task<T> Task
 		{
-			_cellFactory = cellFactory;
+			get
+			{
+				return _completionSource.Task;
+			}
 		}
 
-		#endregion
-
-		#region Public Methods and Operators
-
-		public void OnFailure(ICell source, SignalException exception)
+		public override bool OnFailure(SignalException exception)
 		{
-			//TODO: this
+			_completionSource.SetException(exception.InnerException);
+			return true;
 		}
 
-		#endregion
+		protected override void Process(ISignal signal)
+		{
+			_completionSource.SetResult(signal.CastTo<T>().Payload);
+		}
 	}
 }

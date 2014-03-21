@@ -52,7 +52,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			public override void InternalProcess(ISignal<TIn> signal)
 			{
-				_splitFunc(signal.Payload).ForEach(b => Next.OnSignal(signal.CloneWithPayload(b)));
+				_splitFunc(signal.Payload).ForEach(b => Next.OnSignal(signal.WithPayload(b)));
 			}
 
 			#endregion

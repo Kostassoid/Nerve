@@ -43,7 +43,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 				{
 					return;
 				}
-				Next.OnSignal(signal.CloneWithPayload(t));
+				Next.OnSignal(signal.WithPayload(t));
 			}
 
 			#endregion

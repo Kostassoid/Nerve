@@ -89,11 +89,18 @@ namespace Kostassoid.Nerve.Core
 			GC.SuppressFinalize(this);
 		}
 
+		public void Send(ISignal signal)
+		{
+			Requires.NotNull(signal, "signal");
+
+			OnSignal(signal);
+		}
+
 		public void Send<T>(T payload) where T : class
 		{
 			Requires.NotNull(payload, "payload");
 
-			OnSignal(Signal.From(payload, this));
+			OnSignal(Signal.Of(payload, this));
 		}
 
 		public void Send<T>(T payload, IProcessor callback) where T : class
@@ -101,7 +108,7 @@ namespace Kostassoid.Nerve.Core
 			Requires.NotNull(payload, "payload");
 			Requires.NotNull(callback, "callback");
 
-			OnSignal(Signal.From(payload, callback));
+			OnSignal(Signal.Of(payload, callback));
 		}
 
 		public override bool OnFailure(SignalException exception)

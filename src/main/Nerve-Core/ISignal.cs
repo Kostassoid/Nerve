@@ -66,7 +66,7 @@ namespace Kostassoid.Nerve.Core
 		/// <typeparam name="TTarget">New payload type.</typeparam>
 		/// <param name="payload">New payload</param>
 		/// <returns>Newly created signal.</returns>
-		ISignal<TTarget> CloneWithPayload<TTarget>(TTarget payload) where TTarget : class;
+		ISignal<TTarget> WithPayload<TTarget>(TTarget payload) where TTarget : class;
 
 		/// <summary>
 		///   Handles exception.
@@ -88,11 +88,18 @@ namespace Kostassoid.Nerve.Core
 		void Trace(IProcessor processor);
 
 		/// <summary>
-		/// Casts to typed signal. Throws in case of type mismatch.
+		/// Casts payload to another type. Throws in case of type mismatch.
 		/// </summary>
 		/// <typeparam name="T">Payload type.</typeparam>
 		/// <returns>Typed signal.</returns>
 		ISignal<T> CastTo<T>() where T : class;
+
+		/// <summary>
+		/// Casts to typed signal. Throws in case of type mismatch.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <returns>Typed signal.</returns>
+		ISignal<T> As<T>() where T : class;
 	}
 
 	/// <summary>

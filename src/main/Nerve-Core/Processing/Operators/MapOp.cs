@@ -48,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			public override void InternalProcess(ISignal<TIn> signal)
 			{
-				Next.OnSignal(signal.CloneWithPayload(_mapFunc(signal.Payload)));
+				Next.OnSignal(signal.WithPayload(_mapFunc(signal.Payload)));
 			}
 
 			#endregion

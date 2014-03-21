@@ -4,12 +4,10 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-	using System.Threading.Tasks;
-
 	using Kostassoid.Nerve.Core;
 	using Kostassoid.Nerve.Core.Processing.Operators;
 	using Kostassoid.Nerve.Core.Scheduling;
-
+	using Kostassoid.Nerve.Core.Tpl;
 	using Model;
 
 	using Storage;
@@ -23,17 +21,17 @@
 			_storage = storage;
 
 			OnStream().Of<UncommitedEventStream>().ReactWith(ProcessUncommited);
-			OnStream().Of<LoadAggregate>().ReactWith(Load);
+			OnStream().Of<AggregateIdentity>().ReactWith(Load);
 		}
 
 		public T Load<T>(Guid id) where T : AggregateRoot
 		{
-			var taskHandler = new TaskHandler();
-			Send(new LoadAggregate(typeof(T), id), taskHandler);
-			return (T)taskHandler.Task.Result;
+			var taskHandler = new TaskResultHandlerOf<T>();
+			Send(new AggregateIdentity(typeof(T), id), taskHandler);
+			return taskHandler.Task.Result;
 		}
 
-		void Load(ISignal<LoadAggregate> signal)
+		void Load(ISignal<AggregateIdentity> signal)
 		{
 			signal.Return(InternalLoad(signal.Payload.Type, signal.Payload.Id));
 		}
@@ -45,7 +43,7 @@
 			var sorted = uncommited.Payload.UncommitedEvents.OrderBy(e => e.Version);
 			var commited = new List<IDomainEvent>();
 
-			long currentVersion = loaded.Any() ? loaded.Last().Version + 1 : 0;
+			var currentVersion = loaded.Any() ? loaded.Last().Version + 1 : 0;
 			foreach (var ev in sorted)
 			{
 				if (currentVersion != ev.Version)

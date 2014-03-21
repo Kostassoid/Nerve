@@ -46,7 +46,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_originalSignal = new Signal<object>(new object(), _headers, _stack, _cell);
 				};
 
-			private Because of = () => _clonedSignal = _originalSignal.CloneWithPayload("new payload");
+			private Because of = () => _clonedSignal = _originalSignal.WithPayload("new payload");
 
 			private It should_have_same_headers = () => _clonedSignal.Headers.ShouldBeTheSameAs(_headers);
 
@@ -226,7 +226,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		{
 			private static ISignal _signal;
 
-			private Establish context = () => { _signal = Signal.From(new { }); };
+			private Establish context = () => { _signal = Signal.Of(new { }); };
 
 			private Because of = () =>
 			{
@@ -252,7 +252,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () =>
 				{
-					_signal = Signal.From(new { });
+					_signal = Signal.Of(new { });
 					_signal["a"] = "this";
 					_signal["b"] = 13;
 					_signal["c"] = "that";
