@@ -17,20 +17,12 @@ namespace Kostassoid.Nerve.Core
 
 	public class SignalException : Exception
 	{
-		#region Constructors and Destructors
-
 		public SignalException(Exception innerException, ISignal signal)
-			: base("Unhandled exception", innerException)
+			: base("Signal processing exception", innerException)
 		{
 			Signal = signal;
 		}
 
-		#endregion
-
-		#region Public Properties
-
 		public ISignal Signal { get; private set; }
-
-		#endregion
 	}
 }

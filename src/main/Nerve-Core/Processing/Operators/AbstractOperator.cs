@@ -11,15 +11,15 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking.Operators
+namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using Tools;
 
-	public abstract class AbstractOperator : SignalProcessor, ILinkJunction
+	public abstract class AbstractOperator : Processor, ILinkJunction
 	{
 		#region Fields
 
-		private ISignalProcessor _next;
+		private IProcessor _next;
 
 		#endregion
 
@@ -34,7 +34,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Properties
 
-		public ISignalProcessor Next
+		public IProcessor Next
 		{
 			get
 			{
@@ -48,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 		#region Public Methods and Operators
 
-		public void Attach(ISignalProcessor next)
+		public void Attach(IProcessor next)
 		{
 			_next = next;
 		}

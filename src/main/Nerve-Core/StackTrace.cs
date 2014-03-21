@@ -13,105 +13,58 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System.Linq;
-	using Tools.CodeContracts;
+	using Processing;
+
 	using Tools.Collections;
 
-	public class Stacktrace
+	/// <summary>
+	/// Processing stack implementation.
+	/// </summary>
+	public class Stacktrace : IProcessingStack
 	{
-		#region Fields
+		// ReSharper disable InconsistentNaming
+		static readonly Stacktrace _empty = new Stacktrace(ImmutableLinkedList<IProcessor>.Empty);
+		// ReSharper restore InconsistentNaming
 
-		IImmutableLinkedList<ISignalProcessor> _frames = ImmutableLinkedList<ISignalProcessor>.Empty;
-
-		#endregion
-
-		#region Constructors and Destructors
-
-		public Stacktrace()
-		{
-		}
-
-		public Stacktrace(ISignalProcessor root)
-		{
-			Requires.NotNull(root, "root");
-
-			_frames = _frames.Prepend(root);
-		}
-
-		internal Stacktrace(IImmutableLinkedList<ISignalProcessor> frames)
-		{
-			Requires.NotNull(frames, "Frames");
-
-			_frames = frames;
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		public IImmutableLinkedList<ISignalProcessor> Frames
-		{
+		readonly IImmutableLinkedList<IProcessor> _frames = ImmutableLinkedList<IProcessor>.Empty;
+		
+		/// <summary>
+		/// Processors trace list.
+		/// </summary>
+		public IImmutableLinkedList<IProcessor> Frames {
 			get
 			{
 				return _frames;
 			}
 		}
 
+		/// <summary>
+		/// Empty stacktrace.
+		/// </summary>
 		public static Stacktrace Empty
 		{
 			get
 			{
-				return new Stacktrace();
+				return _empty;
 			}
 		}
 
-		#endregion
+		private Stacktrace()
+		{}
 
-		#region Public Methods and Operators
-
-		public Stacktrace Clone()
+		private Stacktrace(IImmutableLinkedList<IProcessor> frames)
 		{
-			return new Stacktrace(_frames);
+			_frames = frames;
 		}
 
-		public override bool Equals(object obj)
+		/// <summary>
+		/// Returns new stacktrace with added processor record.
+		/// </summary>
+		/// <param name="processor"></param>
+		/// <returns></returns>
+		public Stacktrace With(IProcessor processor)
 		{
-			if (ReferenceEquals(null, obj))
-			{
-				return false;
-			}
-			if (ReferenceEquals(this, obj))
-			{
-				return true;
-			}
-			if (obj.GetType() != GetType())
-			{
-				return false;
-			}
-			return Equals((Stacktrace)obj);
+			return new Stacktrace(_frames.Prepend(processor));
 		}
-
-		public override int GetHashCode()
-		{
-			return (_frames != null ? _frames.GetHashCode() : 0);
-		}
-
-		public void Trace(ISignalProcessor cell)
-		{
-			Requires.NotNull(cell, "cell");
-
-			_frames = _frames.Prepend(cell);
-		}
-
-		#endregion
-
-		#region Methods
-
-		protected bool Equals(Stacktrace other)
-		{
-			return _frames.SequenceEqual(other._frames);
-		}
-
-		#endregion
 	}
 }

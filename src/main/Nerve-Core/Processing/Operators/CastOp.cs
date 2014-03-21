@@ -11,48 +11,39 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking.Operators
+namespace Kostassoid.Nerve.Core.Processing.Operators
 {
-	using System;
-	using System.Collections.Generic;
-
-	using Tools;
-
-	public static class SplitOp
+	public static class CastOp
 	{
-		public static ILinkJunction<TOut> Split<TIn, TOut>(
-			this ILinkJunction<TIn> step,
-			Func<TIn, IEnumerable<TOut>> splitFunc) where TIn : class where TOut : class
+		public static ILinkJunction<TOut> Cast<TOut>(this ILinkJunction step) where TOut : class
 		{
-			var next = new SplitOperator<TIn, TOut>(step.Link, splitFunc);
+			var next = new CastOperator<TOut>(step.Link);
 			step.Attach(next);
 			return next;
 		}
 
-		internal class SplitOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
-			where TIn : class where TOut : class
+		internal class CastOperator<TOut> : AbstractOperator, ILinkJunction<TOut>
+			where TOut : class
 		{
-			#region Fields
-
-			private readonly Func<TIn, IEnumerable<TOut>> _splitFunc;
-
-			#endregion
-
 			#region Constructors and Destructors
 
-			public SplitOperator(ILink link, Func<TIn, IEnumerable<TOut>> splitFunc)
+			public CastOperator(ILink link)
 				: base(link)
 			{
-				_splitFunc = splitFunc;
 			}
 
 			#endregion
 
 			#region Public Methods and Operators
 
-			public override void InternalProcess(ISignal<TIn> signal)
+			protected override void Process(ISignal signal)
 			{
-				_splitFunc(signal.Payload).ForEach(b => Next.OnSignal(signal.CloneWithPayload(b)));
+				var t = signal.Payload as TOut;
+				if (t == null)
+				{
+					return;
+				}
+				Next.OnSignal(signal.CloneWithPayload(t));
 			}
 
 			#endregion

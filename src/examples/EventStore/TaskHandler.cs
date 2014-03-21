@@ -3,8 +3,9 @@
 	using System.Threading.Tasks;
 
 	using Kostassoid.Nerve.Core;
+	using Kostassoid.Nerve.Core.Processing;
 
-	public class TaskSignalHandler : ISignalProcessor
+	public class TaskHandler : IProcessor
 	{
 		readonly TaskCompletionSource<object> _completionSource = new TaskCompletionSource<object>();
 

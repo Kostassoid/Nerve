@@ -41,14 +41,14 @@ namespace Kostassoid.Nerve.Core.Specs
 			private Establish context = () =>
 				{
 					_cell = new Cell();
-					_headers = new Headers { { "key", "value" } };
+					_headers = Headers.Empty.With("key", "value");
 					_stack = Stacktrace.Empty;
 					_originalSignal = new Signal<object>(new object(), _headers, _stack, _cell);
 				};
 
 			private Because of = () => _clonedSignal = _originalSignal.CloneWithPayload("new payload");
 
-			private It should_have_headers_copied = () => _clonedSignal.Headers.ShouldNotBeTheSameAs(_headers);
+			private It should_have_same_headers = () => _clonedSignal.Headers.ShouldBeTheSameAs(_headers);
 
 			private It should_have_headers_set = () => _clonedSignal.Headers.ShouldEqual(_headers);
 
@@ -56,7 +56,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_have_callback_receiver_set = () => _clonedSignal.Callback.ShouldEqual(_cell);
 
-			private It should_have_stacktrace_copied = () => _clonedSignal.Stacktrace.ShouldNotBeTheSameAs(_stack);
+			private It should_have_same_stacktrace = () => _clonedSignal.Stacktrace.ShouldBeTheSameAs(_stack);
 
 			private It should_have_stacktrace_set = () => _clonedSignal.Stacktrace.ShouldEqual(_stack);
 
@@ -88,8 +88,8 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cellA = new Cell();
 					_cellB = new Cell();
 					_payload = new object();
-					stacktrace = new Stacktrace(_cellA);
-					stacktrace.Trace(_cellB);
+					stacktrace = Stacktrace.Empty.With(_cellA);
+					stacktrace.With(_cellB);
 				};
 
 			private Because of = () => _signal = new Signal<object>(_payload, stacktrace);
@@ -115,10 +115,10 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					_cell = new Cell();
 					_payload = new object();
-					_headers = new Headers { { "key", "value" } };
+					_headers = Headers.Empty.With("key", "value");
 				};
 
-			Because of = () => _signal = new Signal<object>(_payload, _headers, new Stacktrace(_cell));
+			Because of = () => _signal = new Signal<object>(_payload, _headers, Stacktrace.Empty.With(_cell));
 
 			It should_have_headers_set = () => _signal.Headers.ShouldEqual(_headers);
 
@@ -144,7 +144,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			private Establish context = () =>
 				{
 					_cell = new Cell();
-					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
+					_signal = new Signal<object>(new object(), Stacktrace.Empty.With(_cell));
 				};
 
 			private Because of = () => _signal.MarkAsFaulted(new Exception("uh"));
@@ -167,7 +167,7 @@ namespace Kostassoid.Nerve.Core.Specs
 			private Establish context = () =>
 				{
 					_cell = new Cell();
-					_signal = new Signal<object>(new object(), new Stacktrace(_cell));
+					_signal = new Signal<object>(new object(), Stacktrace.Empty.With(_cell));
 					_signal.MarkAsFaulted(new Exception("uh"));
 				};
 
@@ -219,6 +219,59 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private It should_throw_invalid_cast_exception = () => _exception.ShouldBeOfExactType<InvalidCastException>();
 		}
+
+		[Subject(typeof(Signal<>))]
+		[Tags("Unit")]
+		public class when_setting_signal_headers_to_non_null_value
+		{
+			private static ISignal _signal;
+
+			private Establish context = () => { _signal = Signal.From(new { }); };
+
+			private Because of = () =>
+			{
+				_signal["a"] = "this";
+				_signal["b"] = 13;
+				_signal["a"] = "that";
+			};
+
+			private It should_have_headers_dictionary_with_added_items = () =>
+			{
+				_signal.Headers.Items.Count().ShouldEqual(2);
+
+				_signal["a"].ShouldEqual("that");
+				_signal["b"].ShouldEqual(13);
+			};
+		}
+
+		[Subject(typeof(Signal<>))]
+		[Tags("Unit")]
+		public class when_setting_signal_headers_to_null_value
+		{
+			private static ISignal _signal;
+
+			private Establish context = () =>
+				{
+					_signal = Signal.From(new { });
+					_signal["a"] = "this";
+					_signal["b"] = 13;
+					_signal["c"] = "that";
+				};
+
+			private Because of = () =>
+			{
+				_signal["b"] = null;
+			};
+
+			private It should_have_headers_dictionary_with_removed_items = () =>
+			{
+				_signal.Headers.Items.Count().ShouldEqual(2);
+
+				_signal["a"].ShouldEqual("this");
+				_signal["c"].ShouldEqual("that");
+			};
+		}
+
 	}
 
 	// ReSharper restore InconsistentNaming

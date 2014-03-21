@@ -13,17 +13,10 @@
 
 namespace Kostassoid.Nerve.Core
 {
-	using System;
-
 	using Processing;
 
-	public interface ISignalSource
+	public interface IProcessingStack
 	{
-		IDisposable Attach(IProcessor processor);
-		IDisposable Attach(IConsumer consumer);
-		IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class;
-
-		//TODO: refactor
-		ILinkJunction OnStream();
+		Stacktrace With(IProcessor processor);
 	}
 }

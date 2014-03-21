@@ -15,6 +15,8 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
+	using Processing;
+
 	/// <summary>
 	///   SignalException handler delegate type.
 	/// </summary>
@@ -25,7 +27,7 @@ namespace Kostassoid.Nerve.Core
 	/// <summary>
 	///   Base Cell interface.
 	/// </summary>
-	public interface ICell : ISignalSource, ISignalProcessor, IDisposable
+	public interface ICell : ISignalSource, IProcessor, IDisposable
 	{
 		/// <summary>
 		///   Unhandled exception event.
@@ -38,12 +40,18 @@ namespace Kostassoid.Nerve.Core
 		string Name { get; }
 
 		/// <summary>
-		///   Creates a new signal and schedules its execution on current Cell.
+		/// Creates a new signal and schedules its execution on current Cell.
 		/// </summary>
 		/// <typeparam name="T">Signal payload type.</typeparam>
 		/// <param name="payload">Signal payload body.</param>
 		void Send<T>(T payload) where T : class;
 
-		void Send<T>(T payload, ISignalProcessor callback) where T : class;
+		/// <summary>
+		/// Creates a new signal with explicit callback and schedules its execution on current Cell.
+		/// </summary>
+		/// <typeparam name="T">Signal payload type.</typeparam>
+		/// <param name="payload">Signal payload body.</param>
+		/// <param name="callback">Callback processor.</param>
+		void Send<T>(T payload, IProcessor callback) where T : class;
 	}
 }

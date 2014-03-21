@@ -15,14 +15,32 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 {
 	using System.Collections.Generic;
 
+	/// <summary>
+	/// Immutable list interface.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public interface IImmutableLinkedList<T> : IEnumerable<T>
 	{
+		/// <summary>
+		/// List elements count.
+		/// </summary>
 		int Count { get; }
+
+		/// <summary>
+		/// Returns true if collection is empty.
+		/// </summary>
 		bool IsEmpty { get; }
-		T Head { get; }
-		IImmutableLinkedList<T> Tail { get; }
-		IImmutableLinkedList<T> Append(T value);
+
+		//T Head { get; }
+		//IImmutableLinkedList<T> Tail { get; }
+		//IImmutableLinkedList<T> Append(T value);
+
+		/// <summary>
+		/// Prepends list with element.
+		/// </summary>
+		/// <param name="value">Element to add.</param>
+		/// <returns>New list with added element.</returns>
 		IImmutableLinkedList<T> Prepend(T value);
-		IImmutableLinkedList<T> Insert(int index, T value);
+		//IImmutableLinkedList<T> Insert(int index, T value);
 	}
 }

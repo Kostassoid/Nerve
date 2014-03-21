@@ -7,7 +7,7 @@
 
 	using Command;
 
-	using Kostassoid.Nerve.Core.Linking.Operators;
+	using Kostassoid.Nerve.Core.Processing.Operators;
 
 	using Model;
 

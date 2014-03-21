@@ -15,10 +15,12 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
+	using Processing;
+
 	using Tools;
 	using Tools.CodeContracts;
 
-	internal class SignalConsumerWrapper : ISignalProcessor, IConsumerBase
+	internal class ConsumerWrapper : Processor, IConsumerBase
 	{
 		#region Fields
 
@@ -32,16 +34,16 @@ namespace Kostassoid.Nerve.Core
 
 		#region Constructors and Destructors
 
-		protected SignalConsumerWrapper(Action<ISignal> handler, Func<SignalException, bool> failureHandler)
+		protected ConsumerWrapper(Action<ISignal> handler, Func<SignalException, bool> failureHandler)
 		{
-			Requires.NotNull(handler, "signalProcessor");
+			Requires.NotNull(handler, "processor");
 
 			Handler = handler;
 			FailureHandler = failureHandler;
 			Original = this;
 		}
 
-		public SignalConsumerWrapper(IConsumer consumer):this(consumer.OnSignal, consumer.OnFailure)
+		public ConsumerWrapper(IConsumer consumer):this(consumer.OnSignal, consumer.OnFailure)
 		{
 			Original = consumer;
 		}
@@ -50,13 +52,13 @@ namespace Kostassoid.Nerve.Core
 
 		#region Public Methods and Operators
 
-		public void OnSignal(ISignal signal)
+		protected override void Process(ISignal signal)
 		{
-			signal.Trace(this);
+			//signal.With(this);
 			Handler(signal);
 		}
 
-		public bool OnFailure(SignalException exception)
+		public override bool OnFailure(SignalException exception)
 		{
 			if (FailureHandler == null) return false;
 
@@ -71,22 +73,22 @@ namespace Kostassoid.Nerve.Core
 		#endregion
 	}
 
-	internal class SignalConsumerWrapper<T> : SignalConsumerWrapper
+	internal class ConsumerWrapper<T> : ConsumerWrapper
 		where T : class
 	{
 		#region Constructors and Destructors
 
-		public SignalConsumerWrapper(IConsumer consumer):base(consumer)
+		public ConsumerWrapper(IConsumer consumer):base(consumer)
 		{
 		}
 
-		public SignalConsumerWrapper(IConsumerOf<T> consumer)
+		public ConsumerWrapper(IConsumerOf<T> consumer)
 			: base(s => consumer.OnSignal((Signal<T>)s), consumer.OnFailure)
 		{
 			Original = consumer;
 		}
 
-		public SignalConsumerWrapper(Action<ISignal<T>> handler, Func<SignalException, bool> failureHandler)
+		public ConsumerWrapper(Action<ISignal<T>> handler, Func<SignalException, bool> failureHandler)
 			: base(s => handler((Signal<T>)s), failureHandler)
 		{
 		}
@@ -95,9 +97,9 @@ namespace Kostassoid.Nerve.Core
 
 		#region Public Methods and Operators
 
-		public void OnSignal(ISignal<T> signal)
+		public void Process(ISignal<T> signal)
 		{
-			OnSignal(signal as ISignal);
+			base.Process(signal);
 		}
 
 		#endregion

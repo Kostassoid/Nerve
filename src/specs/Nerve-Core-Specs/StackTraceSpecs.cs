@@ -17,6 +17,8 @@ namespace Kostassoid.Nerve.Core.Specs
 
 	using Machine.Specifications;
 
+	using Processing;
+
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
 	public class StackTraceSpecs
@@ -33,7 +35,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () => { _cell = new Cell(); };
 
-			private Because of = () => _stack = new Stacktrace(_cell);
+			private Because of = () => _stack = Stacktrace.Empty.With(_cell);
 
 			private It should_have_one_item_in_stack = () => _stack.Frames.Count().ShouldEqual(1);
 
@@ -61,15 +63,15 @@ namespace Kostassoid.Nerve.Core.Specs
 										{
 											_cellA = new Cell();
 											_cellB = new Cell();
-											_stack = new Stacktrace(_cellA);
+											_stack = Stacktrace.Empty.With(_cellA);
 										};
 
-			private Because of = () => _stack.Trace(_cellB);
+			private Because of = () => _stack = _stack.With(_cellB);
 
 			private It should_have_all_items_in_stack = () => _stack.Frames.Count().ShouldEqual(2);
 
 			It should_have_items_in_last_to_first_order = () =>
-				_stack.Frames.ToArray().ShouldEqual(new ISignalProcessor[] { _cellB, _cellA });
+				_stack.Frames.ToArray().ShouldEqual(new IProcessor[] { _cellB, _cellA });
 		}
 	}
 

@@ -15,6 +15,8 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
+	using Processing;
+
 	/// <summary>
 	///   Untyped signal interface
 	/// </summary>
@@ -38,13 +40,24 @@ namespace Kostassoid.Nerve.Core
 		/// <summary>
 		///   Original signal sender.
 		/// </summary>
-		ISignalProcessor Callback { get; }
+		IProcessor Callback { get; }
 
 		/// <summary>
 		///   Recorded stack trace.
 		/// </summary>
 		Stacktrace Stacktrace { get; }
 
+		/// <summary>
+		/// Returns headers value using key, or null if not present.
+		/// </summary>
+		/// <param name="key">Header key</param>
+		/// <returns></returns>
+		object this[string key] { get; set; }
+
+		/// <summary>
+		/// Clones this signal.
+		/// </summary>
+		/// <returns></returns>
 		ISignal Clone();
 
 		/// <summary>
@@ -69,11 +82,16 @@ namespace Kostassoid.Nerve.Core
 		void Return<TResponse>(TResponse body) where TResponse : class;
 
 		/// <summary>
-		///   Registers intermediate signalProcessor in stack trace.
+		///   Registers intermediate processor in stack trace.
 		/// </summary>
-		/// <param name="signalProcessor">Handler</param>
-		void Trace(ISignalProcessor signalProcessor);
+		/// <param name="processor">Handler</param>
+		void Trace(IProcessor processor);
 
+		/// <summary>
+		/// Casts to typed signal. Throws in case of type mismatch.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <returns>Typed signal.</returns>
 		ISignal<T> CastTo<T>() where T : class;
 	}
 
@@ -84,13 +102,9 @@ namespace Kostassoid.Nerve.Core
 	public interface ISignal<out T> : ISignal
 		where T : class
 	{
-		#region Public Properties
-
 		/// <summary>
 		///   Signal payload.
 		/// </summary>
 		new T Payload { get; }
-
-		#endregion
 	}
 }

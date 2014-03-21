@@ -60,6 +60,7 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BasicCustomSpecs.cs" />
+    <Compile Include="HeadersSpecs.cs" />
     <Compile Include="StackTraceSpecs.cs" />
     <Compile Include="Operators\OperatorsSpecs.cs" />
     <Compile Include="SignalSpecs.cs" />

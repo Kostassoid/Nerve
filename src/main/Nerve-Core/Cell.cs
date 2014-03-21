@@ -16,7 +16,7 @@ namespace Kostassoid.Nerve.Core
 	using System;
 	using System.Collections.Generic;
 
-	using Linking;
+	using Processing;
 
 	using Scheduling;
 
@@ -27,11 +27,11 @@ namespace Kostassoid.Nerve.Core
 	///   Base Class implementation.
 	///   Relays all incoming signals through all links.
 	/// </summary>
-	public class Cell : SignalProcessor, ICell
+	public class Cell : Processor, ICell
 	{
 		#region Fields
 
-		private readonly ISet<ISignalProcessor> _links = new HashSet<ISignalProcessor>();
+		private readonly ISet<IProcessor> _links = new HashSet<IProcessor>();
 
 		private readonly IScheduler _scheduler;
 
@@ -96,7 +96,7 @@ namespace Kostassoid.Nerve.Core
 			OnSignal(Signal.From(payload, this));
 		}
 
-		public void Send<T>(T payload, ISignalProcessor callback) where T : class
+		public void Send<T>(T payload, IProcessor callback) where T : class
 		{
 			Requires.NotNull(payload, "payload");
 			Requires.NotNull(callback, "callback");
@@ -122,12 +122,12 @@ namespace Kostassoid.Nerve.Core
 
 		public IDisposable Attach(IConsumer consumer)
 		{
-			return Attach(new SignalConsumerWrapper(consumer));
+			return Attach(new ConsumerWrapper(consumer));
 		}
 
 		public IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class
 		{
-			return Attach(new SignalConsumerWrapper<T>(consumer));
+			return Attach(new ConsumerWrapper<T>(consumer));
 		}
 
 		public ILinkJunction OnStream()
@@ -144,34 +144,34 @@ namespace Kostassoid.Nerve.Core
 
 		#region Explicit Interface Methods
 
-		IDisposable ISignalSource.Attach(ISignalProcessor signalProcessor)
+		IDisposable ISignalSource.Attach(IProcessor processor)
 		{
-			return Attach(signalProcessor);
+			return Attach(processor);
 		}
 
 		#endregion
 
 		#region Methods
 
-		public IDisposable Attach(ISignalProcessor signalProcessor)
+		public IDisposable Attach(IProcessor processor)
 		{
-			Requires.NotNull(signalProcessor, "signalProcessor");
+			Requires.NotNull(processor, "processor");
 
 			lock (_links)
 			{
-				_links.Add(signalProcessor);
+				_links.Add(processor);
 			}
 
-			return new DisposableAction(() => Detach(signalProcessor));
+			return new DisposableAction(() => Detach(processor));
 		}
 
-		internal void Detach(ISignalProcessor signalProcessor)
+		internal void Detach(IProcessor processor)
 		{
-			Requires.NotNull(signalProcessor, "signalProcessor");
+			Requires.NotNull(processor, "processor");
 
 			lock (_links)
 			{
-				_links.Remove(signalProcessor);
+				_links.Remove(processor);
 			}
 		}
 

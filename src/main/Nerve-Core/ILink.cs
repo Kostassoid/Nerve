@@ -11,17 +11,14 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking
+namespace Kostassoid.Nerve.Core
 {
-	public interface ILinkJunction
-	{
-		ILink Link { get; }
+	using System;
 
-		void Attach(ISignalProcessor next);
-	}
+	using Processing;
 
-	public interface ILinkJunction<out T> : ILinkJunction
-		where T : class
+	public interface ILink : IProcessor
 	{
+		IDisposable AttachToCell();
 	}
 }

@@ -11,39 +11,44 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking.Operators
+namespace Kostassoid.Nerve.Core.Processing.Operators
 {
-	public static class CastOp
+	using System;
+
+	public static class MapOp
 	{
-		public static ILinkJunction<TOut> Cast<TOut>(this ILinkJunction step) where TOut : class
+		public static ILinkJunction<TOut> Map<TIn, TOut>(this ILinkJunction<TIn> step, Func<TIn, TOut> mapFunc)
+			where TIn : class where TOut : class
 		{
-			var next = new CastOperator<TOut>(step.Link);
+			var next = new MapOperator<TIn, TOut>(step.Link, mapFunc);
 			step.Attach(next);
 			return next;
 		}
 
-		internal class CastOperator<TOut> : AbstractOperator, ILinkJunction<TOut>
-			where TOut : class
+		internal class MapOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
+			where TIn : class where TOut : class
 		{
+			#region Fields
+
+			private readonly Func<TIn, TOut> _mapFunc;
+
+			#endregion
+
 			#region Constructors and Destructors
 
-			public CastOperator(ILink link)
+			public MapOperator(ILink link, Func<TIn, TOut> mapFunc)
 				: base(link)
 			{
+				_mapFunc = mapFunc;
 			}
 
 			#endregion
 
 			#region Public Methods and Operators
 
-			protected override void Process(ISignal signal)
+			public override void InternalProcess(ISignal<TIn> signal)
 			{
-				var t = signal.Payload as TOut;
-				if (t == null)
-				{
-					return;
-				}
-				Next.OnSignal(signal.CloneWithPayload(t));
+				Next.OnSignal(signal.CloneWithPayload(_mapFunc(signal.Payload)));
 			}
 
 			#endregion

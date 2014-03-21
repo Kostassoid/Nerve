@@ -7,7 +7,7 @@
 	using System.Threading.Tasks;
 
 	using Kostassoid.Nerve.Core;
-	using Kostassoid.Nerve.Core.Linking.Operators;
+	using Kostassoid.Nerve.Core.Processing.Operators;
 	using Kostassoid.Nerve.Core.Scheduling;
 
 	using Model;
@@ -28,7 +28,7 @@
 
 		public T Load<T>(Guid id) where T : AggregateRoot
 		{
-			var taskHandler = new TaskSignalHandler();
+			var taskHandler = new TaskHandler();
 			Send(new LoadAggregate(typeof(T), id), taskHandler);
 			return (T)taskHandler.Task.Result;
 		}

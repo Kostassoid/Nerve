@@ -16,11 +16,11 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System;
 	using System.Linq;
 
-	using Linking.Operators;
-
 	using Machine.Specifications;
 
 	using Model;
+
+	using Processing.Operators;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
@@ -110,7 +110,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
-						"Handler[Handler of Ping]",
+						"Handler[ConsumerWrapper of Ping]",
 						"Operator[Of of Ping]",
 						"Cell[c]",
 						"Cell[b]",
@@ -178,10 +178,10 @@ namespace Kostassoid.Nerve.Core.Specs
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
-						"Handler[Handler of Pong]",
+						"Handler[ConsumerWrapper of Pong]",
 						"Operator[Of of Pong]",
 						"Cell[ping]",
-						"Handler[Handler of Ping]",
+						"Handler[ConsumerWrapper of Ping]",
 						"Operator[Of of Ping]",
 						"Cell[pong]",
 						"Operator[Of of Ping]",

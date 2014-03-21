@@ -14,7 +14,8 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System;
-	using System.Linq;
+
+	using Processing;
 
 	using Tools;
 	using Tools.CodeContracts;
@@ -35,7 +36,14 @@ namespace Kostassoid.Nerve.Core
 			return new Signal<T>(payload);
 		}
 
-		public static ISignal<T> From<T>(T payload, ISignalProcessor callback) where T : class
+		/// <summary>
+		/// Builds typed Signal from payload with empty headers and stacktrace.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="payload">Payload body.</param>
+		/// <param name="callback">Callback processor.</param>
+		/// <returns>New typed signal.</returns>
+		public static ISignal<T> From<T>(T payload, IProcessor callback) where T : class
 		{
 			return new Signal<T>(payload, callback);
 		}
@@ -44,12 +52,12 @@ namespace Kostassoid.Nerve.Core
 	internal sealed class Signal<T> : ISignal<T>
 		where T : class
 	{
-		public Signal(T payload, Headers headers, Stacktrace stacktrace, ISignalProcessor callback)
+		public Signal(T payload, Headers headers, Stacktrace stacktrace, IProcessor callback)
 		{
 			Payload = payload;
 			Headers = headers;
 			Stacktrace = stacktrace;
-			Callback = callback;// ?? stacktrace.Frames.LastOrDefault();
+			Callback = callback;
 		}
 
 		public Signal(T payload, Headers headers, Stacktrace stacktrace)
@@ -67,7 +75,7 @@ namespace Kostassoid.Nerve.Core
 		{
 		}
 
-		public Signal(T payload, ISignalProcessor callback)
+		public Signal(T payload, IProcessor callback)
 			: this(payload, Headers.Empty, Stacktrace.Empty, callback)
 		{
 		}
@@ -78,9 +86,21 @@ namespace Kostassoid.Nerve.Core
 
 		public T Payload { get; private set; }
 
-		public ISignalProcessor Callback { get; private set; }
+		public IProcessor Callback { get; private set; }
 
 		public Stacktrace Stacktrace { get; private set; }
+
+		public object this[string key]
+		{
+			get
+			{
+				return Headers[key];
+			}
+			set
+			{
+				Headers = value != null ? Headers.With(key, value) : Headers.Without(key);
+			}
+		}
 
 		#region Explicit Interface Properties
 
@@ -98,12 +118,13 @@ namespace Kostassoid.Nerve.Core
 
 		public ISignal Clone()
 		{
-			return new Signal<T>(Payload, Headers.Clone(), Stacktrace.Clone(), Callback);
+			//TODO: immutable signal perhaps?
+			return new Signal<T>(Payload, Headers, Stacktrace, Callback);
 		}
 
 		public ISignal<TTarget> CloneWithPayload<TTarget>(TTarget payload) where TTarget : class
 		{
-			return new Signal<TTarget>(payload, Headers.Clone(), Stacktrace.Clone(), Callback);
+			return new Signal<TTarget>(payload, Headers, Stacktrace, Callback);
 		}
 
 		public void MarkAsFaulted(Exception exception)
@@ -126,9 +147,9 @@ namespace Kostassoid.Nerve.Core
 			Callback.OnSignal(CloneWithPayload(response));
 		}
 
-		public void Trace(ISignalProcessor signalProcessor)
+		public void Trace(IProcessor processor)
 		{
-			Stacktrace.Trace(signalProcessor);
+			Stacktrace = Stacktrace.With(processor);
 		}
 
 		public ISignal<TOut> CastTo<TOut>() where TOut : class

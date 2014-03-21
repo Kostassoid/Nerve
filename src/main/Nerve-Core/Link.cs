@@ -1,4 +1,4 @@
-// Copyright 2014 https://github.com/Kostassoid/Nerve
+﻿// Copyright 2014 https://github.com/Kostassoid/Nerve
 //   
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -11,31 +11,59 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking.Operators
+namespace Kostassoid.Nerve.Core
 {
-	internal class RootOperator : AbstractOperator
+	using System;
+
+	using Processing.Operators;
+
+	internal class Link : ILink
 	{
+		#region Fields
+
+		private readonly ISignalSource _owner;
+
+		private readonly RootOperator _root;
+
+		#endregion
+
 		#region Constructors and Destructors
 
-		public RootOperator(ILink link)
-			: base(link)
+		public Link(ISignalSource owner)
 		{
+			_owner = owner;
+			_root = new RootOperator(this);
+		}
+
+		#endregion
+
+		#region Public Properties
+
+		public ILinkJunction Root
+		{
+			get
+			{
+				return _root;
+			}
 		}
 
 		#endregion
 
 		#region Public Methods and Operators
 
-		protected override void Process(ISignal signal)
+		public IDisposable AttachToCell()
 		{
-			Next.OnSignal(signal);
+			return _owner.Attach(this);
 		}
 
-		public override void OnSignal(ISignal signal)
+		public void OnSignal(ISignal signal)
 		{
-			if (Next == null) return;
+			_root.OnSignal(signal);
+		}
 
-			Process(signal);
+		public bool OnFailure(SignalException exception)
+		{
+			return false;
 		}
 
 		#endregion

@@ -11,15 +11,16 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Processing
 {
 	using System;
+
 	using Tools;
 
 	/// <summary>
 	/// Base signal processor code.
 	/// </summary>
-	public abstract class SignalProcessor : ISignalProcessor
+	public abstract class Processor : IProcessor
 	{
 		#region Public Methods and Operators
 

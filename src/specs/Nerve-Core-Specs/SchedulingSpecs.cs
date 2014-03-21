@@ -19,11 +19,11 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Threading;
 	using System.Threading.Tasks;
 
-	using Linking.Operators;
-
 	using Machine.Specifications;
 
 	using Model;
+
+	using Processing.Operators;
 
 	using Scheduling;
 

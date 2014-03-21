@@ -15,11 +15,11 @@ namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
 
-	using Linking.Operators;
-
 	using Machine.Specifications;
 
 	using Model;
+
+	using Processing.Operators;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
@@ -113,20 +113,54 @@ namespace Kostassoid.Nerve.Core.Specs
 			private Cleanup after = () => _cell.Dispose();
 
 			private Establish context = () =>
-				{
-					_cell = new Cell();
-					_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
-					_cell.OnStream()
-						.Of<Ping>()
-						.Where(_ => { throw new InvalidOperationException(); })
-						.ReactWith(_ => { _received = true; });
-				};
+			{
+				_cell = new Cell();
+				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+				_cell.OnStream()
+					.Of<Ping>()
+					.Where(_ => { throw new InvalidOperationException(); })
+					.ReactWith(_ => { _received = true; });
+			};
 
 			private Because of = () => _cell.Send(new Ping());
 
 			private It should_not_continue_signal_processing = () => _received.ShouldBeFalse();
 
 			private It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+		}
+
+		[Subject(typeof(Signal), "Error handling")]
+		[Tags("Unit")]
+		public class when_handling_failure_with_callback_set
+		{
+			private static ICell _cell;
+			private static ICell _callback;
+
+			private static bool _received;
+			private static bool _callbackIsNotified;
+
+			private Cleanup after = () =>
+				{
+					_cell.Dispose();
+					_callback.Dispose();
+				};
+
+			private Establish context = () =>
+			{
+				_cell = new Cell("original");
+				_callback = new Cell("callback");
+				_callback.Failed += (cell, exception) => { _callbackIsNotified = true; };
+				_cell.OnStream()
+					.Of<Ping>()
+					.Where(_ => { throw new InvalidOperationException(); })
+					.ReactWith(_ => { _received = true; });
+			};
+
+			private Because of = () => _cell.Send(new Ping(), _callback);
+
+			private It should_not_continue_signal_processing = () => _received.ShouldBeFalse();
+
+			private It should_be_handled_by_callback = () => _callbackIsNotified.ShouldBeTrue();
 		}
 	}
 

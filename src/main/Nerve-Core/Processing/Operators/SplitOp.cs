@@ -11,35 +11,39 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Linking.Operators
+namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using System;
+	using System.Collections.Generic;
 
-	public static class MapOp
+	using Tools;
+
+	public static class SplitOp
 	{
-		public static ILinkJunction<TOut> Map<TIn, TOut>(this ILinkJunction<TIn> step, Func<TIn, TOut> mapFunc)
-			where TIn : class where TOut : class
+		public static ILinkJunction<TOut> Split<TIn, TOut>(
+			this ILinkJunction<TIn> step,
+			Func<TIn, IEnumerable<TOut>> splitFunc) where TIn : class where TOut : class
 		{
-			var next = new MapOperator<TIn, TOut>(step.Link, mapFunc);
+			var next = new SplitOperator<TIn, TOut>(step.Link, splitFunc);
 			step.Attach(next);
 			return next;
 		}
 
-		internal class MapOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
+		internal class SplitOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
 			where TIn : class where TOut : class
 		{
 			#region Fields
 
-			private readonly Func<TIn, TOut> _mapFunc;
+			private readonly Func<TIn, IEnumerable<TOut>> _splitFunc;
 
 			#endregion
 
 			#region Constructors and Destructors
 
-			public MapOperator(ILink link, Func<TIn, TOut> mapFunc)
+			public SplitOperator(ILink link, Func<TIn, IEnumerable<TOut>> splitFunc)
 				: base(link)
 			{
-				_mapFunc = mapFunc;
+				_splitFunc = splitFunc;
 			}
 
 			#endregion
@@ -48,7 +52,7 @@ namespace Kostassoid.Nerve.Core.Linking.Operators
 
 			public override void InternalProcess(ISignal<TIn> signal)
 			{
-				Next.OnSignal(signal.CloneWithPayload(_mapFunc(signal.Payload)));
+				_splitFunc(signal.Payload).ForEach(b => Next.OnSignal(signal.CloneWithPayload(b)));
 			}
 
 			#endregion

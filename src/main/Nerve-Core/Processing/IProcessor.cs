@@ -11,12 +11,12 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Processing
 {
 	/// <summary>
 	/// Signal processor interface.
 	/// </summary>
-	public interface ISignalProcessor
+	public interface IProcessor
 	{
 		/// <summary>
 		/// Signal processing entry point.

@@ -13,11 +13,11 @@
 
 namespace Kostassoid.Nerve.Core.Specs
 {
-	using Linking.Operators;
-
 	using Machine.Specifications;
 
 	using Model;
+
+	using Processing.Operators;
 
 	// ReSharper disable UnusedMember.Local
 	// ReSharper disable InconsistentNaming

@@ -18,10 +18,9 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 	using System.Globalization;
 	using System.Linq;
 
-	using Linking;
-	using Linking.Operators;
-
 	using Machine.Specifications;
+
+	using Processing.Operators;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
