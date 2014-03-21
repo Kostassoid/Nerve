@@ -44,21 +44,24 @@ namespace Kostassoid.Nerve.Core
 					return;
 				}
 
-				if (signal.Callback != null)
+				var callbackIsNotified = false;
+				foreach (var s in signal.Stacktrace.Frames)
+				{
+					if (s == signal.Callback)
+					{
+						callbackIsNotified = true;
+					}
+
+					if (s.OnFailure(signalException)) return;
+				}
+
+				if (signal.Callback != null && !callbackIsNotified)
 				{
 					if (signal.Callback.OnFailure(signalException))
 					{
 						return;
 					}
 				}
-
-				foreach (var s in signal.Stacktrace.Frames)
-				{
-					//if (s == signal.Callback) continue;
-
-					if (s.OnFailure(signalException)) return;
-				}
-				//throw signalException;
 			}
 		}
 

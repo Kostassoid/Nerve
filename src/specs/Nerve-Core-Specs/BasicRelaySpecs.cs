@@ -110,7 +110,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
-						"Handler[SignalConsumerWrapper of Ping]",
+						"Handler[Handler of Ping]",
 						"Operator[Of of Ping]",
 						"Cell[c]",
 						"Cell[b]",
@@ -178,10 +178,10 @@ namespace Kostassoid.Nerve.Core.Specs
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
-						"Handler[SignalConsumerWrapper of Pong]",
+						"Handler[Handler of Pong]",
 						"Operator[Of of Pong]",
 						"Cell[ping]",
-						"Handler[SignalConsumerWrapper of Ping]",
+						"Handler[Handler of Ping]",
 						"Operator[Of of Ping]",
 						"Cell[pong]",
 						"Operator[Of of Ping]",
