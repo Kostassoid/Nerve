@@ -3,7 +3,6 @@ properties {
     $OutputPath = "$BaseDir\output"
     $SolutionPath = "$BaseDir\src\Nerve.sln"
     $Configuration = "Release"
-    $Version = "0.5.0.0"
 }
 
 task default -depends Build
@@ -26,6 +25,12 @@ task Test -depends Build {
 }
 
 task Pack -depends Test {
+        $AssemblyVersionPattern = 'AssemblyVersion\((\"\d+\.\d+\.\d+\.\d+\")\)'
+        $Version = Get-Content "$BaseDir\src\GlobalAssemblyInfo.cs" |
+		Select-String -pattern $AssemblyVersionPattern |
+		Select -first 1 |
+		% { $_.Matches[0].Groups[1] }
+
 	Exec { & ".\src\.nuget\nuget.exe" pack nuget\Nerve-Core.nuspec -version $Version -OutputDirectory $OutputPath }
 }
 

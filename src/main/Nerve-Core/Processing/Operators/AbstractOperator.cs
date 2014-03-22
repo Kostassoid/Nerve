@@ -77,7 +77,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 		protected override void Process(ISignal signal)
 		{
-			InternalProcess(signal.CastTo<TIn>());
+			InternalProcess(signal.As<TIn>());
 		}
 
 		public abstract void InternalProcess(ISignal<TIn> signal);
