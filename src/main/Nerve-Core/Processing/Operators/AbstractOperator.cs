@@ -15,25 +15,25 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using Tools;
 
+	/// <summary>
+	/// Base abstract untyped operator.
+	/// </summary>
 	public abstract class AbstractOperator : Processor, ILinkJunction
 	{
-		#region Fields
-
 		private IProcessor _next;
 
-		#endregion
-
-		#region Constructors and Destructors
-
+		/// <summary>
+		/// Builds new operator.
+		/// </summary>
+		/// <param name="link">Link to attach to.</param>
 		protected AbstractOperator(ILink link)
 		{
 			Link = link;
 		}
 
-		#endregion
-
-		#region Public Properties
-
+		/// <summary>
+		/// Next processor in processing chain.
+		/// </summary>
 		public IProcessor Next
 		{
 			get
@@ -42,46 +42,60 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			}
 		}
 
+		/// <summary>
+		/// Owner link.
+		/// </summary>
 		public ILink Link { get; private set; }
 
-		#endregion
-
-		#region Public Methods and Operators
-
+		/// <summary>
+		/// Sets next processor in chain.
+		/// </summary>
+		/// <param name="next"></param>
 		public void Attach(IProcessor next)
 		{
 			_next = next;
 		}
 
+		/// <summary>
+		/// Builds readable operator description.
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("Operator[{0}]", GetType().BuildDescription());
 		}
-
-		#endregion
 	}
 
+	/// <summary>
+	/// Base abstract typed operator.
+	/// </summary>
+	/// <typeparam name="TIn"></typeparam>
+	/// <typeparam name="TOut"></typeparam>
 	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, ILinkJunction<TOut>
 		where TIn : class where TOut : class
 	{
-		#region Constructors and Destructors
-
+		/// <summary>
+		/// Builds new operator.
+		/// </summary>
+		/// <param name="link">Link to attach to.</param>
 		protected AbstractOperator(ILink link)
 			: base(link)
 		{
 		}
 
-		#endregion
-
-		#region Public Methods and Operators
-
+		/// <summary>
+		/// Processes incoming signal.
+		/// </summary>
+		/// <param name="signal"></param>
 		protected override void Process(ISignal signal)
 		{
 			InternalProcess(signal.As<TIn>());
 		}
 
-		public abstract void InternalProcess(ISignal<TIn> signal);
-
-		#endregion
+		/// <summary>
+		/// Performs operator-specific signal processing.
+		/// </summary>
+		/// <param name="signal"></param>
+		protected abstract void InternalProcess(ISignal<TIn> signal);
 	}
 }

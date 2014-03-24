@@ -15,13 +15,26 @@ namespace Kostassoid.Nerve.Core
 {
 	using Processing;
 
+	/// <summary>
+	/// Untyped link extension point.
+	/// </summary>
 	public interface ILinkJunction
 	{
+		/// <summary>
+		/// Underlying link.
+		/// </summary>
 		ILink Link { get; }
 
+		/// <summary>
+		/// Attaches processor to the processing chain.
+		/// </summary>
+		/// <param name="next">Processor to attach.</param>
 		void Attach(IProcessor next);
 	}
 
+	/// <summary>
+	/// Typed link extension point.
+	/// </summary>
 	public interface ILinkJunction<out T> : ILinkJunction
 		where T : class
 	{

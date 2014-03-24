@@ -19,25 +19,15 @@ namespace Kostassoid.Nerve.Core
 
 	internal class Link : ILink
 	{
-		#region Fields
-
-		private readonly ISignalSource _owner;
+		private readonly ISignalSource _source;
 
 		private readonly RootOperator _root;
 
-		#endregion
-
-		#region Constructors and Destructors
-
-		public Link(ISignalSource owner)
+		public Link(ISignalSource source)
 		{
-			_owner = owner;
+			_source = source;
 			_root = new RootOperator(this);
 		}
-
-		#endregion
-
-		#region Public Properties
 
 		public ILinkJunction Root
 		{
@@ -47,13 +37,9 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		#endregion
-
-		#region Public Methods and Operators
-
-		public IDisposable AttachToCell()
+		public IDisposable AttachToSource()
 		{
-			return _owner.Attach(this);
+			return _source.Attach(this);
 		}
 
 		public void OnSignal(ISignal signal)
@@ -65,7 +51,5 @@ namespace Kostassoid.Nerve.Core
 		{
 			return false;
 		}
-
-		#endregion
 	}
 }

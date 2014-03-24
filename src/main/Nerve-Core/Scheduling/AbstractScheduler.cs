@@ -17,15 +17,12 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 	using Fibers;
 
+	/// <summary>
+	/// Base abstract signal processing scheduler.
+	/// </summary>
 	public abstract class AbstractScheduler : IScheduler
 	{
-		#region Fields
-
 		private IFiber _fiber;
-
-		#endregion
-
-		#region Public Properties
 
 		internal IFiber Fiber
 		{
@@ -43,10 +40,9 @@ namespace Kostassoid.Nerve.Core.Scheduling
 			}
 		}
 
-		#endregion
-
-		#region Public Methods and Operators
-
+		/// <summary>
+		/// Disposes the scheduler, with all underlying threads and resources.
+		/// </summary>
 		public void Dispose()
 		{
 			if (_fiber != null)
@@ -55,17 +51,15 @@ namespace Kostassoid.Nerve.Core.Scheduling
 			}
 		}
 
+		/// <summary>
+		/// Schedules new action.
+		/// </summary>
+		/// <param name="action">Action to schedule.</param>
 		public void Schedule(Action action)
 		{
 			Fiber.Enqueue(action);
 		}
 
-		#endregion
-
-		#region Methods
-
 		internal abstract IFiber BuildFiber();
-
-		#endregion
 	}
 }

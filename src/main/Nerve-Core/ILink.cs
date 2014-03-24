@@ -17,8 +17,15 @@ namespace Kostassoid.Nerve.Core
 
 	using Processing;
 
+	/// <summary>
+	/// Signal processing link (chain or processors).
+	/// </summary>
 	public interface ILink : IProcessor
 	{
-		IDisposable AttachToCell();
+		/// <summary>
+		/// Attaches link to signal source.
+		/// </summary>
+		/// <returns>Unsubscribing disposable object.</returns>
+		IDisposable AttachToSource();
 	}
 }

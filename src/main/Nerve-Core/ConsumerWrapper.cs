@@ -34,7 +34,7 @@ namespace Kostassoid.Nerve.Core
 
 		#region Constructors and Destructors
 
-		protected ConsumerWrapper(Action<ISignal> handler, Func<SignalException, bool> failureHandler)
+		public ConsumerWrapper(Action<ISignal> handler, Func<SignalException, bool> failureHandler)
 		{
 			Requires.NotNull(handler, "processor");
 

@@ -17,13 +17,37 @@ namespace Kostassoid.Nerve.Core
 
 	using Processing;
 
+	/// <summary>
+	/// Signal source.
+	/// </summary>
 	public interface ISignalSource
 	{
+		/// <summary>
+		/// Attaching (subscribing) processor to this signal source.
+		/// </summary>
+		/// <param name="processor">Processor to attach.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		IDisposable Attach(IProcessor processor);
+
+		//TODO: extract
+		/// <summary>
+		/// Attaching (subscribing) untyped consumer to this signal source.
+		/// </summary>
+		/// <param name="consumer">Consumer to attach.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		IDisposable Attach(IConsumer consumer);
+
+		/// <summary>
+		/// Attaches (subscribes) typed consumer to stream event.
+		/// </summary>
+		/// <param name="consumer">Consumer to attach.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class;
 
-		//TODO: refactor
+		/// <summary>
+		/// Starts building signal stream processing chain.
+		/// </summary>
+		/// <returns>Link extending point.</returns>
 		ILinkJunction OnStream();
 	}
 }

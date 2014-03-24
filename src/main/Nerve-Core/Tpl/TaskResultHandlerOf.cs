@@ -17,10 +17,17 @@ namespace Kostassoid.Nerve.Core.Tpl
 	using Core;
 	using Processing;
 
+	/// <summary>
+	/// Task based signal processor.
+	/// </summary>
+	/// <typeparam name="T">Signal payload type.</typeparam>
 	public class TaskResultHandlerOf<T> : Processor where T : class
 	{
 		readonly TaskCompletionSource<T> _completionSource = new TaskCompletionSource<T>();
 
+		/// <summary>
+		/// Task to await for signal.
+		/// </summary>
 		public Task<T> Task
 		{
 			get
@@ -29,12 +36,22 @@ namespace Kostassoid.Nerve.Core.Tpl
 			}
 		}
 
+		/// <summary>
+		/// Handles processing failure. Sets underlying Task exception.
+		/// </summary>
+		/// <param name="exception">Wrapped exception.</param>
+		/// <returns></returns>
 		public override bool OnFailure(SignalException exception)
 		{
 			_completionSource.SetException(exception.InnerException);
 			return true;
 		}
 
+		/// <summary>
+		/// Handles incoming signal. Sets underlying Task result.
+		/// </summary>
+		/// <param name="signal">Signal to process.</param>
+		/// <returns></returns>
 		protected override void Process(ISignal signal)
 		{
 			_completionSource.SetResult(signal.CastTo<T>().Payload);

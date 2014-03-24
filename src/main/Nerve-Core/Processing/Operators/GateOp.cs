@@ -20,8 +20,18 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 	using Tools;
 	using Tools.CodeContracts;
 
+	/// <summary>
+	/// Gate operator extension.
+	/// </summary>
 	public static class GateOp
 	{
+		/// <summary>
+		/// Filters out untyped signals based on frequency.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="threshold">Threshold count of signals within period.</param>
+		/// <param name="timespan">Period.</param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction Gate(this ILinkJunction step, int threshold, TimeSpan timespan)
 		{
 			var next = new GateOperator(step.Link, threshold, timespan);
@@ -29,6 +39,13 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			return next;
 		}
 
+		/// <summary>
+		/// Filters out typed signals based on frequency.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="threshold">Threshold count of signals within period.</param>
+		/// <param name="timespan">Period.</param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<T> Gate<T>(this ILinkJunction<T> step, int threshold, TimeSpan timespan) where T : class
 		{
 			var next = new GateOperator<T>(step.Link, threshold, timespan);

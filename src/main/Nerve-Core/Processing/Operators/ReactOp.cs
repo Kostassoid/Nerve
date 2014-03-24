@@ -15,24 +15,63 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using System;
 
+	/// <summary>
+	/// React operator extension.
+	/// </summary>
 	public static class ReactOp
 	{
+		/// <summary>
+		/// Defines a processor to handle typed signal stream.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="step"></param>
+		/// <param name="processor">Handling processor.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IProcessor processor) where T : class
 		{
 			step.Attach(processor);
 
 			//TODO: not pretty
-			return step.Link.AttachToCell();
+			return step.Link.AttachToSource();
 		}
 
+		/// <summary>
+		/// Defines a consumer for untyped signal stream.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="consumer">Consumer.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
+		public static IDisposable ReactWith(this ILinkJunction step, IConsumer consumer)
+		{
+			step.Attach(new ConsumerWrapper(consumer));
+
+			//TODO: not pretty
+			return step.Link.AttachToSource();
+		}
+
+		/// <summary>
+		/// Defines a consumer for typed signal stream.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="step"></param>
+		/// <param name="consumer">Consumer.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IConsumerOf<T> consumer) where T : class
 		{
 			step.Attach(new ConsumerWrapper<T>(consumer));
 
 			//TODO: not pretty
-			return step.Link.AttachToCell();
+			return step.Link.AttachToSource();
 		}
 
+		/// <summary>
+		/// Defines a handler delegate for typed signal stream.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="step"></param>
+		/// <param name="handler">Consumer delegate.</param>
+		/// <param name="failureHandler">Failure handler delegate</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		public static IDisposable ReactWith<T>(
 			this ILinkJunction<T> step,
 			Action<ISignal<T>> handler,
@@ -41,7 +80,25 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			step.Attach(new ConsumerWrapper<T>(handler, failureHandler));
 
 			//TODO: not pretty
-			return step.Link.AttachToCell();
+			return step.Link.AttachToSource();
+		}
+
+		/// <summary>
+		/// Defines a handler delegate for untyped signal stream.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="handler">Consumer delegate.</param>
+		/// <param name="failureHandler">Failure handler delegate</param>
+		/// <returns>Unsubscribing disposable object.</returns>
+		public static IDisposable ReactWith(
+			this ILinkJunction step,
+			Action<ISignal> handler,
+			Func<SignalException, bool> failureHandler = null)
+		{
+			step.Attach(new ConsumerWrapper(handler, failureHandler));
+
+			//TODO: not pretty
+			return step.Link.AttachToSource();
 		}
 	}
 }

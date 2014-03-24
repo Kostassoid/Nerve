@@ -15,8 +15,16 @@ namespace Kostassoid.Nerve.Core
 {
 	using Processing;
 
+	/// <summary>
+	/// Signal processing stack trace.
+	/// </summary>
 	public interface IProcessingStack
 	{
+		/// <summary>
+		/// Returns new stack with prepended processor.
+		/// </summary>
+		/// <param name="processor">Processor to add.</param>
+		/// <returns>New stack.</returns>
 		Stacktrace With(IProcessor processor);
 	}
 }

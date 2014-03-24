@@ -13,8 +13,17 @@
 
 namespace Kostassoid.Nerve.Core.Processing.Operators
 {
+	/// <summary>
+	/// Cast operator extension.
+	/// </summary>
 	public static class CastOp
 	{
+		/// <summary>
+		/// Casts signal payload to another type. Changes signal type if succeedes.
+		/// </summary>
+		/// <typeparam name="TOut">Target type.</typeparam>
+		/// <param name="step"></param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<TOut> Cast<TOut>(this ILinkJunction step) where TOut : class
 		{
 			var next = new CastOperator<TOut>(step.Link);

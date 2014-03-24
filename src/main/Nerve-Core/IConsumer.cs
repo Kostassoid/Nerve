@@ -13,8 +13,15 @@
 
 namespace Kostassoid.Nerve.Core
 {
+	/// <summary>
+	/// Untyped signal consumer.
+	/// </summary>
 	public interface IConsumer : IConsumerBase
 	{
+		/// <summary>
+		/// Handles incoming untyped signal.
+		/// </summary>
+		/// <param name="signal">Signal.</param>
 		void OnSignal(ISignal signal);
 	}
 }

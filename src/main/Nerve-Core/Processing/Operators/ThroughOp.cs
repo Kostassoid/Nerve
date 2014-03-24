@@ -15,8 +15,17 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using Scheduling;
 
+	/// <summary>
+	/// Through operator extension.
+	/// </summary>
 	public static class ThroughOp
 	{
+		/// <summary>
+		/// Schedules untyped signal stream processing using another scheduler.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="scheduler">Scheduler.</param>
+		/// <returns>Link extending point.</returns>
 		public static ILinkJunction<T> Through<T>(this ILinkJunction<T> step, IScheduler scheduler) where T : class
 		{
 			var next = new ThroughOperator<T>(step.Link, scheduler);
@@ -24,6 +33,12 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			return next;
 		}
 
+		/// <summary>
+		/// Schedules typed signal stream processing using another scheduler.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="scheduler">Scheduler.</param>
+		/// <returns>Link extending point.</returns>
 		public static ILinkJunction Through(this ILinkJunction step, IScheduler scheduler)
 		{
 			var next = new ThroughOperator(step.Link, scheduler);

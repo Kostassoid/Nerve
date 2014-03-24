@@ -13,8 +13,17 @@
 
 namespace Kostassoid.Nerve.Core.Processing.Operators
 {
+	/// <summary>
+	/// Of operator extension.
+	/// </summary>
 	public static class OfOp
 	{
+		/// <summary>
+		/// Casts untyped signal to typed interface if possible. Filters signal otherwise.
+		/// </summary>
+		/// <typeparam name="TOut">Target payload type.</typeparam>
+		/// <param name="step"></param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<TOut> Of<TOut>(this ILinkJunction step) where TOut : class
 		{
 			var next = new OfOperator<TOut>(step.Link);

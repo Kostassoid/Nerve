@@ -15,12 +15,17 @@ namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
 
+	/// <summary>
+	/// Signal processing scheduler.
+	/// </summary>
 	public interface IScheduler : IDisposable
 	{
-		#region Public Methods and Operators
+		//TODO: refactor
 
+		/// <summary>
+		/// Schedules action.
+		/// </summary>
+		/// <param name="action"></param>
 		void Schedule(Action action);
-
-		#endregion
 	}
 }

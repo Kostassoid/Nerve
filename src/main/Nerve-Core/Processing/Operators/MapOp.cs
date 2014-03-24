@@ -15,8 +15,19 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using System;
 
+	/// <summary>
+	/// Map operator extension.
+	/// </summary>
 	public static class MapOp
 	{
+		/// <summary>
+		/// Maps signal payload to another type using function.
+		/// </summary>
+		/// <typeparam name="TIn"></typeparam>
+		/// <typeparam name="TOut"></typeparam>
+		/// <param name="step"></param>
+		/// <param name="mapFunc">Mapping function.</param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<TOut> Map<TIn, TOut>(this ILinkJunction<TIn> step, Func<TIn, TOut> mapFunc)
 			where TIn : class where TOut : class
 		{
@@ -46,7 +57,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Public Methods and Operators
 
-			public override void InternalProcess(ISignal<TIn> signal)
+			protected override void InternalProcess(ISignal<TIn> signal)
 			{
 				Next.OnSignal(signal.WithPayload(_mapFunc(signal.Payload)));
 			}

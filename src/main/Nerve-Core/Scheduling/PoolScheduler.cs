@@ -17,21 +17,19 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 	using Fibers;
 
+	/// <summary>
+	/// ThreadPool based scheduler.
+	/// </summary>
 	public class PoolScheduler : AbstractScheduler
 	{
-		#region Static Fields
-
+		/// <summary>
+		/// Scheduler factory.
+		/// </summary>
 		public static readonly Func<IScheduler> Factory = () => new PoolScheduler();
-
-		#endregion
-
-		#region Methods
 
 		internal override IFiber BuildFiber()
 		{
 			return new PoolFiber();
 		}
-
-		#endregion
 	}
 }

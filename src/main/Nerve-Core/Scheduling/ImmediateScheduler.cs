@@ -17,21 +17,19 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 	using Fibers;
 
+	/// <summary>
+	/// Same thread scheduler without context switching.
+	/// </summary>
 	public class ImmediateScheduler : AbstractScheduler
 	{
-		#region Static Fields
-
+		/// <summary>
+		/// Scheduler factory.
+		/// </summary>
 		public static readonly Func<IScheduler> Factory = () => new ImmediateScheduler();
-
-		#endregion
-
-		#region Methods
 
 		internal override IFiber BuildFiber()
 		{
 			return new StubFiber { ExecutePendingImmediately = true };
 		}
-
-		#endregion
 	}
 }

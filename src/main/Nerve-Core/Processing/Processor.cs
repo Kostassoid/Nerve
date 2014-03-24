@@ -57,6 +57,10 @@ namespace Kostassoid.Nerve.Core.Processing
 		/// <param name="signal"></param>
 		protected abstract void Process(ISignal signal);
 
+		/// <summary>
+		/// Builds processor readable description.
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("Processor[{0}]", GetType().BuildDescription());

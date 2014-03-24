@@ -13,8 +13,16 @@
 
 namespace Kostassoid.Nerve.Core
 {
+	/// <summary>
+	/// Base consumer interface.
+	/// </summary>
 	public interface IConsumerBase
 	{
+		/// <summary>
+		/// Handles signal processing exception.
+		/// </summary>
+		/// <param name="exception">Wrapped exception.</param>
+		/// <returns>True if exception was handled.</returns>
 		bool OnFailure(SignalException exception);
 	}
 }

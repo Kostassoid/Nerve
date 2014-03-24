@@ -15,14 +15,20 @@ namespace Kostassoid.Nerve.Core
 {
 	using System;
 
+	/// <summary>
+	/// Signal processing exception wrapper.
+	/// </summary>
 	public class SignalException : Exception
 	{
-		public SignalException(Exception innerException, ISignal signal)
+		internal SignalException(Exception innerException, ISignal signal)
 			: base("Signal processing exception", innerException)
 		{
 			Signal = signal;
 		}
 
+		/// <summary>
+		/// Signal which caused the exception.
+		/// </summary>
 		public ISignal Signal { get; private set; }
 	}
 }

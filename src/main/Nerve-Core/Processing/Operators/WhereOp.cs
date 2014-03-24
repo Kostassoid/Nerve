@@ -15,8 +15,17 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using System;
 
+	/// <summary>
+	/// Where operator extension.
+	/// </summary>
 	public static class WhereOp
 	{
+		/// <summary>
+		/// Filters untyped signal stream using a predicate.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="predicateFunc">Predicate function.</param>
+		/// <returns>Link extending point.</returns>
 		public static ILinkJunction Where(this ILinkJunction step, Func<object, bool> predicateFunc)
 		{
 			var next = new FilterOperator(step.Link, predicateFunc);
@@ -24,6 +33,12 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			return next;
 		}
 
+		/// <summary>
+		/// Filters typed signal stream using a predicate.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="predicateFunc">Predicate function.</param>
+		/// <returns>Link extending point.</returns>
 		public static ILinkJunction<T> Where<T>(this ILinkJunction<T> step, Func<T, bool> predicateFunc) where T : class
 		{
 			var next = new FilterOperator<T>(step.Link, predicateFunc);
@@ -52,7 +67,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Public Methods and Operators
 
-			public override void InternalProcess(ISignal<T> signal)
+			protected override void InternalProcess(ISignal<T> signal)
 			{
 				if (!_predicateFunc(signal.Payload))
 				{

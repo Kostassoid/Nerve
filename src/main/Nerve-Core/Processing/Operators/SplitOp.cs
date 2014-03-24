@@ -18,11 +18,38 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 	using Tools;
 
+	/// <summary>
+	/// Split operator extension.
+	/// </summary>
 	public static class SplitOp
 	{
+		/// <summary>
+		/// Splits untyped signal into series of signals of another type.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="splitFunc">Split function.</param>
+		/// <returns>Link extending point.</returns>
+		public static ILinkJunction<TOut> Split<TOut>(
+			this ILinkJunction step,
+			Func<object, IEnumerable<TOut>> splitFunc)
+			where TOut : class
+		{
+			var next = new SplitOperator<object, TOut>(step.Link, splitFunc);
+			step.Attach(next);
+			return next;
+		}
+
+		/// <summary>
+		/// Splits typed signal into series of signals of another type.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="splitFunc">Split function.</param>
+		/// <returns>Link extending point.</returns>
 		public static ILinkJunction<TOut> Split<TIn, TOut>(
 			this ILinkJunction<TIn> step,
-			Func<TIn, IEnumerable<TOut>> splitFunc) where TIn : class where TOut : class
+			Func<TIn, IEnumerable<TOut>> splitFunc)
+			where TIn : class
+			where TOut : class
 		{
 			var next = new SplitOperator<TIn, TOut>(step.Link, splitFunc);
 			step.Attach(next);
@@ -50,7 +77,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Public Methods and Operators
 
-			public override void InternalProcess(ISignal<TIn> signal)
+			protected override void InternalProcess(ISignal<TIn> signal)
 			{
 				_splitFunc(signal.Payload).ForEach(b => Next.OnSignal(signal.WithPayload(b)));
 			}

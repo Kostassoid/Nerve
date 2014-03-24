@@ -24,21 +24,20 @@ namespace Kostassoid.Nerve.Core
 	using Tools.CodeContracts;
 
 	/// <summary>
-	///   Base Class implementation.
-	///   Relays all incoming signals through all links.
+	/// Base Class implementation.
+	/// Relays all incoming signals through all attached links.
 	/// </summary>
 	public class Cell : Processor, ICell
 	{
-		#region Fields
-
 		private readonly ISet<IProcessor> _links = new HashSet<IProcessor>();
 
 		private readonly IScheduler _scheduler;
 
-		#endregion
-
-		#region Constructors and Destructors
-
+		/// <summary>
+		/// Constructs new cell.
+		/// </summary>
+		/// <param name="name">Cell name.</param>
+		/// <param name="schedulerFactory">Scheduler factory.</param>
 		public Cell(string name, Func<IScheduler> schedulerFactory)
 		{
 			Requires.NotNull(schedulerFactory, "schedulerFactory");
@@ -47,48 +46,63 @@ namespace Kostassoid.Nerve.Core
 			_scheduler = schedulerFactory();
 		}
 
+		/// <summary>
+		/// Constructs new cell using default immediate scheduler.
+		/// </summary>
+		/// <param name="name">Cell name.</param>
 		public Cell(string name)
 			: this(name, () => new ImmediateScheduler())
 		{
 		}
 
+		/// <summary>
+		/// Constructs new unnamed cell.
+		/// </summary>
+		/// <param name="schedulerFactory">Scheduler factory.</param>
 		public Cell(Func<IScheduler> schedulerFactory)
 			: this(null, schedulerFactory)
 		{
 		}
 
+		/// <summary>
+		/// Constructs new unnamed cell using default immediate scheduler.
+		/// </summary>
 		public Cell()
 			: this(null, () => new ImmediateScheduler())
 		{
 		}
 
+		/// <summary>
+		/// Cell finalizer.
+		/// </summary>
 		~Cell()
 		{
 			Dispose(false);
 		}
 
-		#endregion
-
-		#region Public Events
-
+		/// <summary>
+		/// Failure handling event.
+		/// </summary>
 		public event SignalExceptionHandler Failed;
 
-		#endregion
-
-		#region Public Properties
-
+		/// <summary>
+		/// Optional cell name.
+		/// </summary>
 		public string Name { get; private set; }
 
-		#endregion
-
-		#region Public Methods and Operators
-
+		/// <summary>
+		/// Disposes cell freeing all underlying resources.
+		/// </summary>
 		public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
+		/// <summary>
+		/// Sends signal.
+		/// </summary>
+		/// <param name="signal">Signal to send.</param>
 		public void Send(ISignal signal)
 		{
 			Requires.NotNull(signal, "signal");
@@ -96,6 +110,11 @@ namespace Kostassoid.Nerve.Core
 			OnSignal(signal);
 		}
 
+		/// <summary>
+		/// Sends new signal using payload.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="payload">Payload body.</param>
 		public void Send<T>(T payload) where T : class
 		{
 			Requires.NotNull(payload, "payload");
@@ -103,6 +122,12 @@ namespace Kostassoid.Nerve.Core
 			OnSignal(Signal.Of(payload, this));
 		}
 
+		/// <summary>
+		/// Sends new signal using payload and explicit callback processor.
+		/// </summary>
+		/// <typeparam name="T">Payload type.</typeparam>
+		/// <param name="payload">Payload body.</param>
+		/// <param name="callback">Callback processor.</param>
 		public void Send<T>(T payload, IProcessor callback) where T : class
 		{
 			Requires.NotNull(payload, "payload");
@@ -111,6 +136,11 @@ namespace Kostassoid.Nerve.Core
 			OnSignal(Signal.Of(payload, callback));
 		}
 
+		/// <summary>
+		/// Handles signal processing exception.
+		/// </summary>
+		/// <param name="exception">Wrapped exception.</param>
+		/// <returns>Handling result. True if any subscriber present.</returns>
 		public override bool OnFailure(SignalException exception)
 		{
 			if (Failed == null)
@@ -122,44 +152,58 @@ namespace Kostassoid.Nerve.Core
 			return true;
 		}
 
+		/// <summary>
+		/// Processes (schedules) incoming signal.
+		/// </summary>
+		/// <param name="signal">Signal to process.</param>
 		protected override void Process(ISignal signal)
 		{
 			_scheduler.Schedule(() => Relay(signal));
 		}
 
+		/// <summary>
+		/// Attaching (subscribing) untyped consumer to this signal source.
+		/// </summary>
+		/// <param name="consumer">Consumer to attach.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		public IDisposable Attach(IConsumer consumer)
 		{
 			return Attach(new ConsumerWrapper(consumer));
 		}
 
+		/// <summary>
+		/// Attaches (subscribes) typed consumer to stream event.
+		/// </summary>
+		/// <param name="consumer">Consumer to attach.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		public IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class
 		{
 			return Attach(new ConsumerWrapper<T>(consumer));
 		}
 
+		/// <summary>
+		/// Starts building signal stream processing chain.
+		/// </summary>
+		/// <returns>Link extending point.</returns>
 		public ILinkJunction OnStream()
 		{
 			return new Link(this).Root;
 		}
 
+		/// <summary>
+		/// Builds readable cell description.
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Format("{0}[{1}]", GetType().Name, Name ?? "unnamed");
 		}
 
-		#endregion
-
-		#region Explicit Interface Methods
-
-		IDisposable ISignalSource.Attach(IProcessor processor)
-		{
-			return Attach(processor);
-		}
-
-		#endregion
-
-		#region Methods
-
+		/// <summary>
+		/// Attaching (subscribing) processor to this signal source.
+		/// </summary>
+		/// <param name="processor">Processor to attach.</param>
+		/// <returns>Unsubscribing disposable object.</returns>
 		public IDisposable Attach(IProcessor processor)
 		{
 			Requires.NotNull(processor, "processor");
@@ -182,6 +226,10 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
+		/// <summary>
+		/// Performs object cleanup.
+		/// </summary>
+		/// <param name="isDisposing"></param>
 		protected virtual void Dispose(bool isDisposing)
 		{
 			if (_links != null)
@@ -198,7 +246,7 @@ namespace Kostassoid.Nerve.Core
 			}
 		}
 
-		protected void Relay(ISignal signal)
+		private void Relay(ISignal signal)
 		{
 			Requires.NotNull(signal, "signal");
 
@@ -207,7 +255,5 @@ namespace Kostassoid.Nerve.Core
 				_links.ForEach(l => l.OnSignal(signal.Clone()));
 			}
 		}
-
-		#endregion
 	}
 }

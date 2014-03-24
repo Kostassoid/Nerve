@@ -15,8 +15,17 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 {
 	using System;
 
+	/// <summary>
+	/// HandleFailure operator extension.
+	/// </summary>
 	public static class HandleFailureOp
 	{
+		/// <summary>
+		/// Defines failure handler on processing chain.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="failureHandlerFunc">Failure handler function.</param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction HandleFailure(this ILinkJunction step, Func<SignalException, bool> failureHandlerFunc)
 		{
 			var next = new ExceptionHandlerOperator(step.Link, failureHandlerFunc);
@@ -24,6 +33,12 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			return next;
 		}
 
+		/// <summary>
+		/// Defines failure handler on processing chain.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="failureHandlerFunc">Failure handler function.</param>
+		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<T> HandleFailure<T>(this ILinkJunction<T> step, Func<SignalException, bool> failureHandlerFunc) where T : class
 		{
 			var next = new FailureHandlerOperator<T>(step.Link, failureHandlerFunc);
@@ -52,7 +67,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Public Methods and Operators
 
-			public override void InternalProcess(ISignal<T> signal)
+			protected override void InternalProcess(ISignal<T> signal)
 			{
 				Next.OnSignal(signal);
 			}
