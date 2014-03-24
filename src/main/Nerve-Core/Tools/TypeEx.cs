@@ -21,7 +21,7 @@
 
 			if (type.IsGenericType)
 			{
-				name += " of " + string.Join(",", type.GetGenericArguments().Select(t => t.Name));
+				name += "[" + string.Join(",", type.GetGenericArguments().Select(BuildDescription).ToArray()) + "]";
 				return name;
 			}
 

@@ -28,7 +28,7 @@ namespace Kostassoid.Nerve.Core.Specs
 	{
 		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
-		public class when_firing_a_signal_with_attached_handler
+		public class when_sending_a_signal_with_attached_untyped_handler
 		{
 			private static ICell _cell;
 
@@ -37,11 +37,33 @@ namespace Kostassoid.Nerve.Core.Specs
 			private Cleanup after = () => _cell.Dispose();
 
 			private Establish context = () =>
-				{
-					_cell = new Cell();
+			{
+				_cell = new Cell();
 
-					_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
-				};
+				_cell.OnStream().ReactWith(_ => _received = true);
+			};
+
+			private Because of = () => _cell.Send(new Ping());
+
+			private It should_be_handled = () => _received.ShouldBeTrue();
+		}
+
+		[Subject(typeof(Cell), "Basic")]
+		[Tags("Unit")]
+		public class when_sending_a_signal_with_attached_typed_handler
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+
+				_cell.OnStream().Of<Ping>().ReactWith(_ => _received = true);
+			};
 
 			private Because of = () => _cell.Send(new Ping());
 
@@ -110,11 +132,11 @@ namespace Kostassoid.Nerve.Core.Specs
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
-						"Handler[ConsumerWrapper of Ping]",
-						"Operator[Of of Ping]",
+						"Handler[ConsumerWrapper[Ping]]",
+						"Operator[Of[Ping]]",
 						"Cell[c]",
 						"Cell[b]",
-						"Operator[Of of Ping]",
+						"Operator[Of[Ping]]",
 						"Cell[a]"
 					});
 		}
@@ -178,13 +200,13 @@ namespace Kostassoid.Nerve.Core.Specs
 					.Select(f => f.ToString())
 					.ShouldEqual(new[]
 					{
-						"Handler[ConsumerWrapper of Pong]",
-						"Operator[Of of Pong]",
+						"Handler[ConsumerWrapper[Pong]]",
+						"Operator[Of[Pong]]",
 						"Cell[ping]",
-						"Handler[ConsumerWrapper of Ping]",
-						"Operator[Of of Ping]",
+						"Handler[ConsumerWrapper[Ping]]",
+						"Operator[Of[Ping]]",
 						"Cell[pong]",
-						"Operator[Of of Ping]",
+						"Operator[Of[Ping]]",
 						"Cell[ping]"
 					});
 
