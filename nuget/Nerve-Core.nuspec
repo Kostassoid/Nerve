@@ -17,6 +17,6 @@
     <tags>event message bus messaging integration actors</tags>
   </metadata>
   <files>
-    <file src="..\output\*.*" target="lib\net40\" />
+    <file src="..\output\net40\*.*" target="lib\net40\" />
   </files>
 </package>

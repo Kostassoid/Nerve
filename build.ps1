@@ -2,6 +2,8 @@ properties {
     $BaseDir = Resolve-Path "."
     $OutputPath = "$BaseDir\output"
     $SolutionPath = "$BaseDir\src\Nerve.sln"
+    $NugetPath = "$BaseDir\src\.nuget\nuget.exe"
+    $OpenCoverVersion = "4.5.2506"
     $Configuration = "Release"
 }
 
@@ -16,12 +18,24 @@ task Clean {
 	msbuild "$SolutionPath" /t:Clean /p:Configuration=$Configuration
 }
 
-task Test -depends Build {
+task TestPrerequisites {
+	Exec { & "$NugetPath" install OpenCover -OutputDirectory ".\src\packages" -version $OpenCoverVersion }
+}
+
+task Test -depends Build, TestPrerequisites {
 	$TestDlls = ls "$BaseDir\src\specs\*\bin\$Configuration" -rec `
 	    | where { $_.Name.EndsWith("-Specs.dll") } `
 	    | foreach { $_.FullName }
 
-	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls -x Unstable }
+#	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls -x Unstable }
+
+	Exec { & ".\src\packages\OpenCover.$OpenCoverVersion\OpenCover.Console.exe" -register:user `
+		"-target:.\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" `
+		"-targetargs:$TestDlls -x Unstable" "-output:$OutputPath\coverage.xml" "-filter:+[*]* -[*-Specs]*" }
+
+#	$xslt = New-Object System.Xml.Xsl.XslCompiledTransform
+#	$xslt.Load(".\src\packages\OpenCover.$OpenCoverVersion\Transform\simple_report.xslt")
+#	$xslt.Transform("$OutputPath\coverage.xml", "$OutputPath\coverage.html")
 }
 
 task Pack -depends Test {
@@ -36,5 +50,8 @@ task Pack -depends Test {
 
 task Build -depends Clean {
 	msbuild "$SolutionPath" /t:Build /p:Configuration=$Configuration
-	Copy-Item "$BaseDir\src\main\Nerve-Core\bin\$Configuration\*.*" $OutputPath -Recurse
+	
+	$LibPath = "$OutputPath\net40"
+	New-Item $LibPath -Type Directory
+	Copy-Item "$BaseDir\src\main\Nerve-Core\bin\$Configuration\*.*" $LibPath -Recurse
 }
