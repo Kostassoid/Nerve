@@ -1,0 +1,8 @@
+language: c
+ 
+install:
+  - sudo apt-get install mono-devel mono-gmcs
+ 
+script:
+  - xbuild /p:Configuration=Release /t:Clean;Build ./src/Nerve.sln
+  - mono --runtime=v4.0.30319 ./src/packages/Machine.Specifications-Signed.0.7.0/tools/mspec-clr4.exe .src/specs/Nerve-Core-Specs/bin/Release/Nerve-Core-Specs.dll
