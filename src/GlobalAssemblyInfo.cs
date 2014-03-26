@@ -53,5 +53,6 @@ using System.Runtime.InteropServices;
 
 // disable warning about using /keyfile instead of AssemblyKeyFile
 #pragma warning disable 1699
-[assembly: AssemblyKeyFile(@"..\..\Nerve.snk")]
+// using '\' will break mono builds
+[assembly: AssemblyKeyFile(@"../../Nerve.snk")]
 #pragma warning restore 1699
