@@ -21,7 +21,7 @@ task Test -depends Build {
 	    | where { $_.Name.EndsWith("-Specs.dll") } `
 	    | foreach { $_.FullName }
 
-	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls }
+	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls -x Unstable }
 }
 
 task Pack -depends Test {

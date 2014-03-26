@@ -19,6 +19,7 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Threading;
 
 	using Machine.Specifications;
+	using Machine.Specifications.Model;
 
 	using Model;
 
@@ -34,13 +35,12 @@ namespace Kostassoid.Nerve.Core.Specs
 	public class PerformanceSpecs
 	{
 		[Behaviors]
-		public class fast_message_broker
+        public class fast_message_broker
 		{
 			protected static int SignalsCount;
 
 			protected static ICell Cell;
 
-            [Ignore("Not stable for CI environment.")]
             private It should_be_faster_than_0_5_million_ops = () =>
 				{
 					var countdown = new CountdownEvent(SignalsCount);
@@ -59,7 +59,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		}
 
 		[Subject(typeof(Cell), "Performance")]
-		[Tags("Unit")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_immediate_scheduler
 		{
 			protected static int SignalsCount = 1000000;
@@ -74,7 +74,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		}
 
 		[Subject(typeof(Cell), "Performance")]
-		[Tags("Unit")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
 			protected static int SignalsCount = 1000000;
@@ -89,7 +89,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		}
 
 		[Subject(typeof(Cell), "Performance")]
-		[Tags("Unit")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
 			protected static int SignalsCount = 1000000;
