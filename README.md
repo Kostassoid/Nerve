@@ -15,6 +15,15 @@ To name a few:
 
 See [Quick start](https://github.com/Kostassoid/Nerve/wiki/Quick-start) page for more details.
 
+Build Status
+------------
+
+.NET:
+[![Build status](https://ci.appveyor.com/api/projects/status/647029luk6l3q95j)](https://ci.appveyor.com/project/KonstantinAlexandroff/nerve)
+
+Mono:
+[![Build Status](https://travis-ci.org/Kostassoid/Nerve.svg?branch=master)](https://travis-ci.org/Kostassoid/Nerve)
+
 License
 -------
 Licensed under Apache 2.0 License.
