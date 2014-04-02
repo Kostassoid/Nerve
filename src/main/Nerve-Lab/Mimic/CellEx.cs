@@ -7,6 +7,8 @@
 
 	public static class CellEx
 	{
+		private static ProxyGenerator _generator = new ProxyGenerator("Nerve-Gen");
+
 		public static void Wrap<T>(this ICell cell, T obj)
 		{
 			var type = typeof(T);
@@ -27,6 +29,11 @@
 									null);
 						    });
 				});
+		}
+
+		public static T ProxyOf<T>(this ICell cell) where T : class
+		{
+			return _generator.Generate<T>(cell);
 		}
 	}
 }

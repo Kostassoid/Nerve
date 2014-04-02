@@ -46,6 +46,7 @@
     <Compile Include="Mimic\Invocation.cs" />
     <Compile Include="Mimic\InvocationParam.cs" />
     <Compile Include="Mimic\Invoke.cs" />
+    <Compile Include="Mimic\ProxyGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

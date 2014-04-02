@@ -1,15 +1,16 @@
 ﻿namespace Kostassoid.Nerve.Lab.Mimic
 {
 	using System.Collections.Generic;
-	using System.Linq;
 
 	public class Invocation
 	{
+		public string MethodName { get; private set; }
 		public IList<InvocationParam> Params { get; private set; }
 
-		public Invocation(IEnumerable<InvocationParam> @params)
+		public Invocation(string methodName, IList<InvocationParam> @params)
 		{
-			Params = @params.ToList();
+			MethodName = methodName;
+			Params = @params;
 		}
 	}
 }

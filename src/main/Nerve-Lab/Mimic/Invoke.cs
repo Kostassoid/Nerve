@@ -9,9 +9,10 @@
 		public static Invocation Using(Expression<Action<T>> expr)
 		{
 			var methodInfo = (MethodCallExpression)expr.Body;
-			return new Invocation(
-				methodInfo.Arguments.Select(a =>
-					new InvocationParam(((ConstantExpression)a).Value)));
+			return new Invocation(methodInfo.Method.Name,
+				methodInfo.Arguments
+				.Select(a => new InvocationParam(((ConstantExpression)a).Value))
+				.ToList());
 		}
 	}
 }

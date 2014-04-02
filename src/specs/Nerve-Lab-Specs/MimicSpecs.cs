@@ -54,7 +54,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 
 		[Subject(typeof(Cell), "Mimic")]
 		[Tags("Unit")]
-		public class when_sending_to_wrapped_object_using_single_parameter_method
+		public class when_sending_to_wrapped_object_using_single_const_parameter_method
 		{
 			private static ILogic _logic;
 			private static Cell _cell;
@@ -73,6 +73,30 @@ namespace Kostassoid.Nerve.Lab.Specs
 			private It should_invoke_method = () =>
 				A.CallTo(() => _logic.B(13)).MustHaveHappened(Repeated.Exactly.Once);
 		}
+
+		[Subject(typeof(Cell), "Mimic")]
+		[Tags("Unit")]
+		[Ignore("Not ready")]
+		public class when_invoking_wrapped_object_parameterless_method
+		{
+			private static ILogic _logic;
+			private static bool _received;
+			private static Cell _cell;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+				_cell.OnStream().Of<Invocation>().ReactWith(_ => _received = true);
+				_logic = _cell.ProxyOf<ILogic>();
+			};
+
+			Because of = () => _logic.A();
+
+			It should_send_invocation_message = () => _received.ShouldBeTrue();
+		}
+
 	}
 
 	// ReSharper restore InconsistentNaming
