@@ -14,6 +14,7 @@
 namespace Kostassoid.Nerve.Lab.Specs
 {
 	using System;
+	using System.Linq;
 	using Core;
 	using FakeItEasy;
 	using Machine.Specifications;
@@ -43,7 +44,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 			{
 				_logic = A.Fake<ILogic>();
 				_cell = new Cell();
-				_cell.Wrap(_logic);
+				_cell.BindTo(_logic);
 			};
 
 			private Because of = () => _cell.Send(Invoke<ILogic>.Using(l => l.A()));
@@ -65,7 +66,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 			{
 				_logic = A.Fake<ILogic>();
 				_cell = new Cell();
-				_cell.Wrap(_logic);
+				_cell.BindTo(_logic);
 			};
 
 			private Because of = () => _cell.Send(Invoke<ILogic>.Using(l => l.B(13)));
@@ -76,7 +77,6 @@ namespace Kostassoid.Nerve.Lab.Specs
 
 		[Subject(typeof(Cell), "Mimic")]
 		[Tags("Unit")]
-		[Ignore("Not ready")]
 		public class when_invoking_wrapped_object_parameterless_method
 		{
 			private static ILogic _logic;
@@ -95,6 +95,30 @@ namespace Kostassoid.Nerve.Lab.Specs
 			Because of = () => _logic.A();
 
 			It should_send_invocation_message = () => _received.ShouldBeTrue();
+		}
+
+		[Subject(typeof(Cell), "Mimic")]
+		[Tags("Unit")]
+		public class when_invoking_wrapped_object_method_without_return
+		{
+			private static ILogic _logic;
+			private static Invocation _received;
+			private static Cell _cell;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+				_cell.OnStream().Of<Invocation>().ReactWith(s => _received = s.Payload);
+				_logic = _cell.ProxyOf<ILogic>();
+			};
+
+			Because of = () => _logic.B(13);
+
+			It should_send_invocation_message = () => _received.ShouldNotBeNull();
+
+			It should_contain_invocation_args = () => _received.Params.Single().ShouldEqual(13);
 		}
 
 	}

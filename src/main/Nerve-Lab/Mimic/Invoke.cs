@@ -10,9 +10,10 @@
 		{
 			var methodInfo = (MethodCallExpression)expr.Body;
 			return new Invocation(methodInfo.Method.Name,
+				methodInfo.Method.ReturnType,
 				methodInfo.Arguments
-				.Select(a => new InvocationParam(((ConstantExpression)a).Value))
-				.ToList());
+				.Select(a => ((ConstantExpression)a).Value)
+				.ToArray());
 		}
 	}
 }
