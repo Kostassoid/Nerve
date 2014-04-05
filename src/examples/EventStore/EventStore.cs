@@ -28,7 +28,7 @@
 		{
 			var taskHandler = new TaskResultHandlerOf<T>();
 			Send(new AggregateIdentity(typeof(T), id), taskHandler);
-			return taskHandler.Task.Result;
+			return taskHandler.TypedTask.Result;
 		}
 
 		void Load(ISignal<AggregateIdentity> signal)

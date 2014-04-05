@@ -1,8 +1,12 @@
 ﻿namespace Kostassoid.Nerve.Lab.Mimic
 {
+	using System;
 	using System.Linq;
-	using Castle.DynamicProxy;
+	using System.Threading.Tasks;
 	using Core;
+	using Core.Processing;
+	using Core.Tpl;
+	using LinFu.DynamicProxy;
 
 	public class RelayingInterceptor : IInterceptor
 	{
@@ -13,14 +17,30 @@
 			_cell = cell;
 		}
 
-		public void Intercept(IInvocation invocation)
+		public object Intercept(InvocationInfo info)
 		{
 			var i = new Invocation(
-				invocation.Method.Name,
-				invocation.Method.ReturnType,
-				invocation.Arguments);
+				info.TargetMethod.Name,
+				info.TargetMethod.ReturnType,
+				info.Arguments);
 
-			_cell.Send(i);
+			if (info.TargetMethod.ReturnType == typeof (void))
+			{
+				_cell.Send(i);
+				return null;
+			}
+
+			//TODO: improve
+			if (typeof (Task).IsAssignableFrom(info.TargetMethod.ReturnType))
+			{
+				var taskResultHandler = TaskResultHandler.For(info.TargetMethod.ReturnType.GetGenericArguments().Single());
+				_cell.Send(i, taskResultHandler);
+				return taskResultHandler.Task;
+			}
+
+			var resultHandler = new TaskResultHandlerOf<object>();
+			_cell.Send(i, resultHandler);
+			return resultHandler.TypedTask.Result;
 		}
 	}
 }

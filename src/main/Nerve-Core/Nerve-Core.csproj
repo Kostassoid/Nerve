@@ -129,6 +129,7 @@
     <Compile Include="Tools\Collections\ImmutableLinkedList.cs" />
     <Compile Include="Tools\SystemTicks.cs" />
     <Compile Include="Tools\TypeEx.cs" />
+    <Compile Include="Tpl\TaskResultHandler.cs" />
     <Compile Include="Tpl\TaskResultHandlerOf.cs" />
   </ItemGroup>
   <ItemGroup />

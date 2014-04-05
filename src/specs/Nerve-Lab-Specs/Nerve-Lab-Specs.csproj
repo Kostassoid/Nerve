@@ -32,11 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\packages\Castle.Core.3.2.2\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="FakeItEasy">
       <HintPath>..\..\packages\FakeItEasy.1.18.0\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.DynamicProxy">
+      <HintPath>..\..\packages\LinFu.DynamicProxy.OfficialRelease.1.0.5\lib\net\LinFu.DynamicProxy.dll</HintPath>
     </Reference>
     <Reference Include="Machine.Specifications">
       <HintPath>..\..\packages\Machine.Specifications-Signed.0.7.0\lib\net40\Machine.Specifications.dll</HintPath>

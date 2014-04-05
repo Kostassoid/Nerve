@@ -21,14 +21,25 @@ namespace Kostassoid.Nerve.Core.Tpl
 	/// Task based signal processor.
 	/// </summary>
 	/// <typeparam name="T">Signal payload type.</typeparam>
-	public class TaskResultHandlerOf<T> : Processor where T : class
+	public class TaskResultHandlerOf<T> : TaskResultHandler where T : class
 	{
 		readonly TaskCompletionSource<T> _completionSource = new TaskCompletionSource<T>();
 
 		/// <summary>
 		/// Task to await for signal.
 		/// </summary>
-		public Task<T> Task
+		public override Task Task
+		{
+			get
+			{
+				return _completionSource.Task;
+			}
+		}
+
+		/// <summary>
+		/// Task to await for signal.
+		/// </summary>
+		public Task<T> TypedTask
 		{
 			get
 			{
