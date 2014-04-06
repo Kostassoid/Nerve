@@ -19,8 +19,6 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Threading;
 
 	using Machine.Specifications;
-	using Machine.Specifications.Model;
-
 	using Model;
 
 	using Processing.Operators;

@@ -54,6 +54,7 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CellEx.cs" />
     <Compile Include="Fibers\Core\BoundedQueue.cs" />
     <Compile Include="Fibers\Core\BusyWaitQueue.cs" />
     <Compile Include="Fibers\Core\DefaultExecutor.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Tools\DisposableAction.cs" />
     <Compile Include="Tools\EnumerableEx.cs" />
     <Compile Include="Tools\Collections\ImmutableLinkedList.cs" />
+    <Compile Include="Tools\New.cs" />
     <Compile Include="Tools\SystemTicks.cs" />
     <Compile Include="Tools\TypeEx.cs" />
     <Compile Include="Tpl\TaskResultHandler.cs" />

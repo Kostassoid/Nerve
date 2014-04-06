@@ -15,7 +15,6 @@ namespace Kostassoid.Nerve.Core.Tpl
 {
 	using System.Threading.Tasks;
 	using Core;
-	using Processing;
 
 	/// <summary>
 	/// Task based signal processor.

@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Castle.Core.3.2.2\lib\net40-client\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="LinFu.DynamicProxy">
       <HintPath>..\..\packages\LinFu.DynamicProxy.OfficialRelease.1.0.5\lib\net\LinFu.DynamicProxy.dll</HintPath>
     </Reference>
@@ -48,9 +51,10 @@
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Mimic\CellEx.cs" />
+    <Compile Include="Mimic\CastleInterceptor.cs" />
     <Compile Include="Mimic\Invocation.cs" />
     <Compile Include="Mimic\Invoke.cs" />
-    <Compile Include="Mimic\RelayingInterceptor.cs" />
+    <Compile Include="Mimic\LinFuInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
