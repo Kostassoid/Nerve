@@ -38,6 +38,10 @@
     <Reference Include="LinFu.DynamicProxy">
       <HintPath>..\..\packages\LinFu.DynamicProxy.OfficialRelease.1.0.5\lib\net\LinFu.DynamicProxy.dll</HintPath>
     </Reference>
+    <Reference Include="NProxy.Core, Version=2.2.1.25510, Culture=neutral, PublicKeyToken=9b6ab58067085eda, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NProxy\NProxy.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,11 +54,17 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Mimic\Castle\CastleProxyBuilder.cs" />
     <Compile Include="Mimic\CellEx.cs" />
-    <Compile Include="Mimic\CastleInterceptor.cs" />
+    <Compile Include="Mimic\Castle\CastleInterceptor.cs" />
+    <Compile Include="Mimic\AbstractInvoker.cs" />
+    <Compile Include="Mimic\IProxyBuilder.cs" />
+    <Compile Include="Mimic\LinFu\LinFuProxyBuilder.cs" />
+    <Compile Include="Mimic\NProxy\NProxyBuilder.cs" />
+    <Compile Include="Mimic\NProxy\NProxyInterceptor.cs" />
     <Compile Include="Mimic\Invocation.cs" />
     <Compile Include="Mimic\Invoke.cs" />
-    <Compile Include="Mimic\LinFuInterceptor.cs" />
+    <Compile Include="Mimic\LinFu\LinFuInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

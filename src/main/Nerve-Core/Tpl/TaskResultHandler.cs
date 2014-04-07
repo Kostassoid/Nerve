@@ -28,6 +28,7 @@ namespace Kostassoid.Nerve.Core.Tpl
 		/// </summary>
 		abstract public Task Task { get; }
 
+/*
 		public static TaskResultHandler Of<T>()
 		{
 			return Of(typeof (T));
@@ -39,5 +40,6 @@ namespace Kostassoid.Nerve.Core.Tpl
 			//return (TaskResultHandler) Activator.CreateInstance(handlerType);
 			return (TaskResultHandler)New.InstanceOf(handlerType);
 		}
+*/
 	}
 }

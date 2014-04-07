@@ -13,12 +13,5 @@
 			cell.Send(payload);
 			return handler.TypedTask;
 		}
-
-		public static Task SendFor(this ICell cell, Type resultType, object payload)
-		{
-			var handler = TaskResultHandler.Of(resultType);
-			cell.Send(payload);
-			return handler.Task;
-		}
 	}
 }
