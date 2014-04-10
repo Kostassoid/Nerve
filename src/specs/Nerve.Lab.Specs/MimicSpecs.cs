@@ -13,6 +13,7 @@
 
 namespace Kostassoid.Nerve.Lab.Specs
 {
+	using System;
 	using System.Linq;
 	using System.Threading.Tasks;
 	using Core;
@@ -75,6 +76,28 @@ namespace Kostassoid.Nerve.Lab.Specs
 
 			private It should_invoke_method = () =>
 				A.CallTo(() => _logic.B(13)).MustHaveHappened(Repeated.Exactly.Once);
+		}
+
+		[Subject(typeof(Cell), "Mimic")]
+		[Tags("Unit")]
+		public class when_sending_to_wrapped_object_using_expression_parameter
+		{
+			private static ILogic _logic;
+			private static Cell _cell;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_logic = A.Fake<ILogic>();
+				_cell = new Cell();
+				_cell.BindTo(_logic);
+			};
+
+			private Because of = () => _cell.Send(Invoke<ILogic>.Using(l => l.B(new Random().Next(100))));
+
+			private It should_invoke_method = () =>
+				A.CallTo(() => _logic.B(A<int>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
 		}
 
 		[Subject(typeof(Cell), "Mimic")]

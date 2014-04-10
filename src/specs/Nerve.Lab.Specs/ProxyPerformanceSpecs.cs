@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
 	#pragma warning disable 0169
-	public class MimicPerformanceSpecs
+	public class ProxyPerformanceSpecs
 	{
 		public interface ILogic
 		{
