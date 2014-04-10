@@ -45,9 +45,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\main\Nerve-Core\Nerve-Core.csproj">
+    <ProjectReference Include="..\..\main\Nerve.Core\Nerve.Core.csproj">
       <Project>{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}</Project>
-      <Name>Nerve-Core</Name>
+      <Name>Nerve.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

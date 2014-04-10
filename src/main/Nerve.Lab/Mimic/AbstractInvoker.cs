@@ -10,8 +10,8 @@
 
 	public abstract class AbstractInvoker
 	{
-		private static readonly IDictionary<Type, Func<TaskResultHandler>> HandlerTypeMap
-			= new Dictionary<Type, Func<TaskResultHandler>>();
+		private static readonly IDictionary<Type, Func<ITaskResultHandler>> HandlerTypeMap
+			= new Dictionary<Type, Func<ITaskResultHandler>>();
 
 		readonly ICell _cell;
 
@@ -29,14 +29,14 @@
 			}
 
 			//TODO: improve
-			Func<TaskResultHandler> handlerFactory;
+			Func<ITaskResultHandler> handlerFactory;
 			if (!HandlerTypeMap.TryGetValue(invocation.Expects, out handlerFactory))
 			{
 				if (typeof(Task).IsAssignableFrom(invocation.Expects))
 				{
 					var typeArg = invocation.Expects.GetGenericArguments().Single();
 					var handlerType = typeof (TaskResultHandlerOf<>).MakeGenericType(typeArg);
-					handlerFactory = () => (TaskResultHandler)New.InstanceOf(handlerType);
+					handlerFactory = () => (ITaskResultHandler)New.InstanceOf(handlerType);
 					HandlerTypeMap[invocation.Expects] = handlerFactory;
 				}
 			}
@@ -44,7 +44,7 @@
 			if (handlerFactory != null)
 			{
 				var taskResultHandler = handlerFactory();
-				_cell.Send(invocation, taskResultHandler);
+				_cell.Send(invocation, taskResultHandler.Processor);
 				return taskResultHandler.Task;
 			}
 

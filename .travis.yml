@@ -14,4 +14,4 @@ script:
   - cd src
   - xbuild Nerve.sln
   - chmod +x packages/Machine.Specifications-Signed.0.7.0/tools/mspec-clr4.exe
-  - mono --runtime=v4.0.30319 packages/Machine.Specifications-Signed.0.7.0/tools/mspec-clr4.exe specs/Nerve-Core-Specs/bin/Debug/Nerve-Core-Specs.dll
+  - mono --runtime=v4.0.30319 packages/Machine.Specifications-Signed.0.7.0/tools/mspec-clr4.exe specs/Nerve.Core.Specs/bin/Debug/Nerve.Core.Specs.dll

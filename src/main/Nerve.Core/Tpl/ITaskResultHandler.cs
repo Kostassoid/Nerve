@@ -13,33 +13,22 @@
 
 namespace Kostassoid.Nerve.Core.Tpl
 {
-	using System;
 	using System.Threading.Tasks;
 	using Processing;
-	using Tools;
 
 	/// <summary>
 	/// Task based signal processor.
 	/// </summary>
-	public abstract class TaskResultHandler : Processor
+	public interface ITaskResultHandler
 	{
 		/// <summary>
-		/// Task to await for signal.
+		/// Processor.
 		/// </summary>
-		abstract public Task Task { get; }
+		IProcessor Processor { get; }
 
-/*
-		public static TaskResultHandler Of<T>()
-		{
-			return Of(typeof (T));
-		}
-
-		public static TaskResultHandler Of(Type type)
-		{
-			var handlerType = typeof (TaskResultHandlerOf<>).MakeGenericType(type);
-			//return (TaskResultHandler) Activator.CreateInstance(handlerType);
-			return (TaskResultHandler)New.InstanceOf(handlerType);
-		}
-*/
+		/// <summary>
+		/// Task.
+		/// </summary>
+		Task Task { get; }
 	}
 }

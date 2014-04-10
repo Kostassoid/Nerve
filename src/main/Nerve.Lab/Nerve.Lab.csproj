@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kostassoid.Nerve.Lab</RootNamespace>
-    <AssemblyName>Nerve-Lab</AssemblyName>
+    <AssemblyName>Nerve.Lab</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
@@ -31,6 +31,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\Nerve.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
       <HintPath>..\..\packages\Castle.Core.3.2.2\lib\net40-client\Castle.Core.dll</HintPath>
@@ -38,9 +44,9 @@
     <Reference Include="LinFu.DynamicProxy">
       <HintPath>..\..\packages\LinFu.DynamicProxy.OfficialRelease.1.0.5\lib\net\LinFu.DynamicProxy.dll</HintPath>
     </Reference>
-    <Reference Include="NProxy.Core, Version=2.2.1.25510, Culture=neutral, PublicKeyToken=9b6ab58067085eda, processorArchitecture=MSIL">
+    <Reference Include="NProxy.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=75421c8750338fd2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\NProxy\NProxy.Core.dll</HintPath>
+      <HintPath>..\..\packages\NProxy.Core.2.3.0\lib\net35\NProxy.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,9 +74,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nerve-Core\Nerve-Core.csproj">
+    <ProjectReference Include="..\Nerve.Core\Nerve.Core.csproj">
       <Project>{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}</Project>
-      <Name>Nerve-Core</Name>
+      <Name>Nerve.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

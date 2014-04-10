@@ -24,7 +24,7 @@ task TestPrerequisites {
 
 task Test -depends Build, TestPrerequisites {
 	$TestDlls = ls "$BaseDir\src\specs\*\bin\$Configuration" -rec `
-	    | where { $_.Name.EndsWith("-Specs.dll") } `
+	    | where { $_.Name.EndsWith(".Specs.dll") } `
 	    | foreach { $_.FullName }
 
 #	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls -x Unstable }
@@ -45,7 +45,7 @@ task Pack -depends Test {
 		Select -first 1 |
 		% { $_.Matches[0].Groups[1] }
 
-	Exec { & ".\src\.nuget\nuget.exe" pack nuget\Nerve-Core.nuspec -version $Version -OutputDirectory $OutputPath }
+	Exec { & ".\src\.nuget\nuget.exe" pack nuget\Nerve.Core.nuspec -version $Version -OutputDirectory $OutputPath }
 }
 
 task Build -depends Clean {
@@ -53,5 +53,5 @@ task Build -depends Clean {
 	
 	$LibPath = "$OutputPath\net40"
 	New-Item $LibPath -Type Directory
-	Copy-Item "$BaseDir\src\main\Nerve-Core\bin\$Configuration\*.*" $LibPath -Recurse
+	Copy-Item "$BaseDir\src\main\Nerve.Core\bin\$Configuration\*.*" $LibPath -Recurse
 }

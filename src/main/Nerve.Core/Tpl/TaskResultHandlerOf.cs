@@ -15,23 +15,32 @@ namespace Kostassoid.Nerve.Core.Tpl
 {
 	using System.Threading.Tasks;
 	using Core;
+	using Processing;
 
 	/// <summary>
 	/// Task based signal processor.
 	/// </summary>
 	/// <typeparam name="T">Signal payload type.</typeparam>
-	public class TaskResultHandlerOf<T> : TaskResultHandler where T : class
+	public class TaskResultHandlerOf<T> : Processor, ITaskResultHandler where T : class
 	{
 		readonly TaskCompletionSource<T> _completionSource = new TaskCompletionSource<T>();
 
 		/// <summary>
 		/// Task to await for signal.
 		/// </summary>
-		public override Task Task
+		public Task Task
 		{
 			get
 			{
 				return _completionSource.Task;
+			}
+		}
+
+		public IProcessor Processor
+		{
+			get
+			{
+				return this;
 			}
 		}
 

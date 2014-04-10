@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Nerve-Core</id>
-    <title>Nerve-Core</title>
+    <id>Nerve.Core</id>
+    <title>Nerve.Core</title>
     <version>$version$</version>
     <authors>Konstantin Alexandroff</authors>
     <owners>Konstantin Alexandroff</owners>
