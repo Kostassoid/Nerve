@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 	using Scheduling;
 
-	using Tools;
+	using Core.Tools;
 
 	// ReSharper disable UnusedField.Compiler
 	// ReSharper disable InconsistentNaming

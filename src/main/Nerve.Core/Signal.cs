@@ -16,7 +16,6 @@ namespace Kostassoid.Nerve.Core
 	using System;
 
 	using Processing;
-	using Processing.Operators;
 	using Tools;
 	using Tools.CodeContracts;
 

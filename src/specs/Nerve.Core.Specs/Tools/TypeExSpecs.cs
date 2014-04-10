@@ -11,21 +11,17 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Specs
+namespace Kostassoid.Nerve.Core.Specs.Tools
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
-
+	using Core.Tools;
 	using Machine.Specifications;
-
 	using Processing.Operators;
-
-	using Tools;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
-	public class ToolsSpecs
+	public class TypeExSpecs
 	{
 		[Subject(typeof(TypeEx))]
 		[Tags("Unit")]

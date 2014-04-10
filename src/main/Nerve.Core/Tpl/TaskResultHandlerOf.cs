@@ -36,6 +36,9 @@ namespace Kostassoid.Nerve.Core.Tpl
 			}
 		}
 
+		/// <summary>
+		/// Associated processor.
+		/// </summary>
 		public IProcessor Processor
 		{
 			get

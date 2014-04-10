@@ -44,7 +44,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 			protected static ICell Cell;
 			protected static Action InvokingAction;
 
-			private It should_be_faster_than_0_5_million_ops = () =>
+			private It should_be_faster_than_0_25_million_ops = () =>
 			{
 				var countdown = new CountdownEvent(SignalsCount);
 
@@ -62,7 +62,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 
 				var ops = SignalsCount * 1000L / stopwatch.ElapsedMilliseconds;
 				Console.WriteLine("Ops / second: {0}", ops);
-				ops.ShouldBeGreaterThan(500000);
+				ops.ShouldBeGreaterThan(250000);
 			};
 		}
 

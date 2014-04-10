@@ -26,7 +26,7 @@ namespace Kostassoid.Nerve.Core
 		static readonly Stacktrace _empty = new Stacktrace(ImmutableLinkedList<IProcessor>.Empty);
 		// ReSharper restore InconsistentNaming
 
-		readonly IImmutableLinkedList<IProcessor> _frames = ImmutableLinkedList<IProcessor>.Empty;
+		readonly IImmutableLinkedList<IProcessor> _frames;
 		
 		/// <summary>
 		/// Processors trace list.
@@ -48,9 +48,6 @@ namespace Kostassoid.Nerve.Core
 				return _empty;
 			}
 		}
-
-		private Stacktrace()
-		{}
 
 		private Stacktrace(IImmutableLinkedList<IProcessor> frames)
 		{

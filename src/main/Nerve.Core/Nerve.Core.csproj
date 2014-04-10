@@ -53,7 +53,7 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CellEx.cs" />
+    <Compile Include="Tpl\CellEx.cs" />
     <Compile Include="Fibers\Core\BoundedQueue.cs" />
     <Compile Include="Fibers\Core\BusyWaitQueue.cs" />
     <Compile Include="Fibers\Core\DefaultExecutor.cs" />
