@@ -4,14 +4,6 @@
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 
-	internal static class New<T> where T : new()
-	{
-		public static readonly Func<T> Instance =
-			Expression
-			.Lambda<Func<T>>(Expression.New(typeof(T)))
-			.Compile();
-	}
-
 	internal static class New
 	{
 		private static readonly IDictionary<Type, Func<object>> Cache

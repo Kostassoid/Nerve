@@ -133,8 +133,9 @@ namespace Kostassoid.Nerve.Core
 
 		public void MarkAsFaulted(Exception exception)
 		{
+			Requires.NotNull(exception, "exception");
 			Requires.ValidState(
-				Exception == null,
+				!IsFaulted,
 				"Already marked as faulted with exception of type [{0}].",
 				Exception != null ? Exception.GetType().Name : "");
 
@@ -151,33 +152,31 @@ namespace Kostassoid.Nerve.Core
 			}
 
 			var signalException = new SignalException(Exception, this);
-			var callbackIsNotified = false;
-			foreach (var s in Stacktrace.Frames)
-			{
-				if (s == Callback)
-				{
-					callbackIsNotified = true;
-				}
 
-				if (s.OnFailure(signalException)) return;
-			}
-
-			if (Callback != null && !callbackIsNotified)
+			if (Callback != null)
 			{
 				if (Callback.OnFailure(signalException))
 				{
 					return;
 				}
 			}
+
+			foreach (var s in Stacktrace.Frames)
+			{
+				if (s == Callback)
+				{
+					continue;
+				}
+
+				if (s.OnFailure(signalException)) return;
+			}
 		}
 
 		public void Return<TResponse>(TResponse response) where TResponse : class
 		{
-			if (Callback == null)
-			{
-				throw new InvalidOperationException(string.Format("Callback receiver is not set on signal [{0}]", this));
-			}
+			Requires.ValidState(Callback != null, "Callback receiver is not set on signal [{0}]", this);
 
+			// ReSharper disable once PossibleNullReferenceException
 			Callback.OnSignal(WithPayload(response));
 		}
 

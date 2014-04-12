@@ -1,5 +1,6 @@
 ﻿namespace Kostassoid.Nerve.Lab.Mimic
 {
+	using System;
 	using System.Linq;
 	using System.Reflection;
 	using Core;
@@ -17,27 +18,16 @@
 
 			methods.ForEach(mi =>
 							{
-								//var target = Expression.Parameter(typeof (T), "x");
-								//var args = mi.GetParameters().Select(p => Expression.Parameter(p.ParameterType, p.Name)).ToArray();
-								//var call = Expression.Call(Expression.Constant(obj), mi, args);
-								//var invokeAction = Expression.Lambda(call, args).Compile();
-
 								var invokeAction = FastInvoker.GetMethodInvoker(mi);
+								var name = mi.Name;
+								var argsCount = mi.GetParameters().Length;
 
 								cell.OnStream()
 									.Of<Invocation>()
 									.Where(i =>
-										i.Method == mi.Name &&
-										i.Params.Count == mi.GetParameters().Count())
-/*
-									.ReactWith(i => mi.Invoke(
-										obj,
-										BindingFlags.InvokeMethod,
-										null,
-										i.Payload.Params.ToArray(),
-										null));
-*/
-									.ReactWith(i => invokeAction(obj, i.Payload.Params.ToArray()));
+										i.Method.Equals(name, StringComparison.Ordinal) &&
+										i.Params.Length == argsCount)
+									.ReactWith(i => invokeAction(obj, i.Payload.Params));
 							});
 		}
 

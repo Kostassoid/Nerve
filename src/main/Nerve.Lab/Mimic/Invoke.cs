@@ -33,15 +33,6 @@
 			}
 
 			return resolver();
-
-/*
-			var constant = e as ConstantExpression;
-			if (constant != null)
-			{
-				return constant.Value;
-			}
-*/
-
 		}
 	}
 }

@@ -67,6 +67,30 @@ namespace Kostassoid.Nerve.Core.Processing
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Stub processor.
+		/// </summary>
+		public static IProcessor Stub { get { return StubProcessor.Instance; } }
+
+		private class StubProcessor : IProcessor
+		{
+			// ReSharper disable once InconsistentNaming
+			private static readonly Lazy<StubProcessor> _instance = new Lazy<StubProcessor>(() => new StubProcessor());
+			public static StubProcessor Instance { get { return _instance.Value; } }
+
+			private StubProcessor() { }
+
+			public void OnSignal(ISignal signal)
+			{
+				// no-op
+			}
+
+			public bool OnFailure(SignalException exception)
+			{
+				return false;
+			}
+		}
 	}
 
 }

@@ -33,6 +33,8 @@ namespace Kostassoid.Nerve.Core
 
 		private readonly IScheduler _scheduler;
 
+		private readonly object _sync = new object();
+
 		/// <summary>
 		/// Constructs new cell.
 		/// </summary>
@@ -208,7 +210,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(processor, "processor");
 
-			lock (_links)
+			lock (_sync)
 			{
 				_links.Add(processor);
 			}
@@ -220,7 +222,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(processor, "processor");
 
-			lock (_links)
+			lock (_sync)
 			{
 				_links.Remove(processor);
 			}
@@ -232,9 +234,9 @@ namespace Kostassoid.Nerve.Core
 		/// <param name="isDisposing"></param>
 		protected virtual void Dispose(bool isDisposing)
 		{
-			if (_links != null)
+			lock (_sync)
 			{
-				lock (_links)
+				if (_links != null)
 				{
 					_links.Clear();
 				}
@@ -250,7 +252,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(signal, "signal");
 
-			lock (_links)
+			lock (_sync)
 			{
 				_links.ForEach(l => l.OnSignal(signal.Clone()));
 			}

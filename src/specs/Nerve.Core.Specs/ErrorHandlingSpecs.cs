@@ -18,7 +18,7 @@ namespace Kostassoid.Nerve.Core.Specs
 	using Machine.Specifications;
 
 	using Model;
-
+	using Processing;
 	using Processing.Operators;
 
 	// ReSharper disable InconsistentNaming
@@ -49,7 +49,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
 				};
 
-			private Because of = () => _cell.Send(new Ping());
+			private Because of = () => _cell.Send(new Ping(), Processor.Stub);
 
 			private It should_handle_exception = () => _exceptionWasHandled.ShouldBeTrue();
 

@@ -19,7 +19,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 	using System.Linq;
 
 	using Machine.Specifications;
-
+	using Processing;
 	using Processing.Operators;
 
 	// ReSharper disable InconsistentNaming
@@ -180,7 +180,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 					.ReactWith(s => _received = true);
 			};
 
-			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" });
+			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" }, Processor.Stub);
 
 			private It should_invoke_the_handler = () => _handledException.ShouldBeTrue();
 
