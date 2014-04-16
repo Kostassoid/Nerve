@@ -5,6 +5,7 @@
 	using System.Reflection;
 	using Core;
 	using Core.Processing.Operators;
+	using Core.Tools;
 	using NProxy;
 
 	public static class CellEx

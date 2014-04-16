@@ -1,12 +1,12 @@
-﻿namespace Kostassoid.Nerve.Lab.Mimic
+﻿namespace Kostassoid.Nerve.Core.Tools
 {
 	using System;
 	using System.Reflection;
 	using System.Reflection.Emit;
 
-	public class FastInvoker
+	internal class FastInvoker
 	{
-		public delegate object FastInvokeHandler(object target,
+		internal delegate object FastInvokeHandler(object target,
 								   object[] paramters);
 
 		private static void EmitCastToReference(ILGenerator il, Type type)

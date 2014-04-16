@@ -53,6 +53,8 @@
     <Compile Include="..\..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Tools\FastInvoker.cs" />
+    <Compile Include="Tools\MemoizedFunc.cs" />
     <Compile Include="Tpl\CellEx.cs" />
     <Compile Include="Fibers\Core\BoundedQueue.cs" />
     <Compile Include="Fibers\Core\BusyWaitQueue.cs" />

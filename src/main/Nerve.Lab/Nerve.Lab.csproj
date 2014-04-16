@@ -64,7 +64,6 @@
     <Compile Include="Mimic\CellEx.cs" />
     <Compile Include="Mimic\Castle\CastleInterceptor.cs" />
     <Compile Include="Mimic\AbstractInvoker.cs" />
-    <Compile Include="Mimic\FastInvoker.cs" />
     <Compile Include="Mimic\IProxyBuilder.cs" />
     <Compile Include="Mimic\LinFu\LinFuProxyBuilder.cs" />
     <Compile Include="Mimic\NProxy\NProxyBuilder.cs" />

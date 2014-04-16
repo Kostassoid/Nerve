@@ -13,13 +13,27 @@
 
 namespace Kostassoid.Nerve.Core.Tpl
 {
+	using System;
+	using System.Linq;
 	using System.Threading.Tasks;
+	using Tools;
 
 	/// <summary>
 	/// Cell Tpl extension methods
 	/// </summary>
 	public static class CellEx
 	{
+		static readonly Func<Type, FastInvoker.FastInvokeHandler> BuildSender = payloadType =>
+			{
+				var send = typeof (ICell)
+					.GetMethods().Single(mi => mi.Name == "Send" && mi.GetParameters().Length == 2)
+					.MakeGenericMethod(payloadType);
+
+				return FastInvoker.GetMethodInvoker(send);
+			};
+
+		static readonly Func<Type, FastInvoker.FastInvokeHandler> SenderResolver = BuildSender.AsMemoized();
+
 		/// <summary>
 		/// Sends signal and returns a typed task to expect the return.
 		/// </summary>
@@ -31,7 +45,11 @@ namespace Kostassoid.Nerve.Core.Tpl
 			where T : class
 		{
 			var handler = new TaskResultHandlerOf<T>();
-			cell.Send(payload, handler);
+
+			var sender = SenderResolver(payload.GetType());
+
+			sender.Invoke(cell, new[] { payload, handler });
+
 			return handler.TypedTask;
 		}
 	}
