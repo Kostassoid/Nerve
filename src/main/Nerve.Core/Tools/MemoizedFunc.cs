@@ -1,4 +1,4 @@
-﻿// Copyright 2011-2013 Anodyne.
+﻿// Copyright 2014 https://github.com/Kostassoid/Nerve
 //   
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -95,7 +95,5 @@ namespace Kostassoid.Nerve.Core.Tools
                 return cache[key];
             };
         }
-
-
     }
 }

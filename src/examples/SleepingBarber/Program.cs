@@ -10,95 +10,99 @@
 
 	class Program
 	{
-		const int SeatsCount = 3;
+		const int MaxQueueSize = 3;
 		const int ClientsCount = 20;
 		public static Random Random = new Random();
 
-		abstract class ClientEvent
+		class Client
 		{
-			public Client Client { get; set; }
-		}
+			readonly int _id;
 
-		class ClientEnteredTheShop : ClientEvent
-		{}
-
-		class ClientIsReadyForHaircut : ClientEvent
-		{}
-
-		class ClientGotHaircut : ClientEvent
-		{}
-
-		class Client : Cell
-		{
 			public bool GotHaircut { get; private set; }
 
 			public Client(int id)
-				: base(id.ToString(), PoolScheduler.Factory)
 			{
-				OnStream().Of<ClientGotHaircut>().ReactWith(s => { GotHaircut = true; });
+				_id = id;
 			}
 
+			public override string ToString()
+			{
+				return string.Format("[Client {0}]", _id);
+			}
+
+			public void Cut()
+			{
+				if (GotHaircut)
+				{
+					throw new InvalidOperationException(ToString() + " already got a haircut!");
+				}
+
+				GotHaircut = true;
+			}
 		}
 
 		class Barber : Cell
 		{
 			public Barber() : base(ThreadScheduler.Factory)
 			{
-				OnStream().Of<ClientIsReadyForHaircut>()
+				OnStream().Of<Client>()
 					.ReactWith(s =>
 							   {
 								   Thread.Sleep(Random.Next(10, 200));
-								   var gotHaircutEvent = new ClientGotHaircut { Client = s.Payload.Client };
 
-								   //TODO: not sure if I like this
-								   s.Payload.Client.Send(gotHaircutEvent);
-								   s.Return(gotHaircutEvent);
+								   s.Payload.Cut();
+
+								   s.Return(s.Payload);
 							   });
 			}
-
 		}
 
 		class Shop : Cell
 		{
+			readonly Barber _barber;
 			readonly int _maxQueueSize;
 			readonly Queue<Client> _queue = new Queue<Client>();
 
 			bool _seatIsTaken;
 
-			public Shop(int maxQueueSize) : base(ThreadScheduler.Factory)
+			public Shop(Barber barber, int maxQueueSize) : base(ThreadScheduler.Factory)
 			{
+				_barber = barber;
 				_maxQueueSize = maxQueueSize;
 
 				Console.WriteLine("{0} is open.", this);
 
-				OnStream().Of<ClientEnteredTheShop>()
+				OnStream().Of<Client>()
 					.ReactWith(s =>
 					{
-						Console.WriteLine("{0} entered the shop.", s.Payload.Client);
-
-						if (!_seatIsTaken)
+						if (!s.Payload.GotHaircut)
 						{
-							SendToBarber(s.Payload.Client);
+							Console.WriteLine("{0} entered the shop.", s.Payload);
+
+							if (!_seatIsTaken)
+							{
+								SendToBarber(s.Payload);
+							}
+							else
+							{
+								SendToQueue(s.Payload);
+							}
 						}
 						else
 						{
-							SendToQueue(s.Payload.Client);
+							Console.WriteLine("{0} got haircut.", s.Payload);
+
+							_seatIsTaken = false;
+							if (_queue.Count == 0)
+							{
+								Console.WriteLine("[Barber] is sleeping...");
+								return;
+							}
+							var client = _queue.Dequeue();
+
+							SendToBarber(client);
+							
 						}
-					});
-				OnStream().Of<ClientGotHaircut>()
-					.ReactWith(s =>
-					{
-						Console.WriteLine("{0} got haircut.", s.Payload.Client);
-						
-						_seatIsTaken = false;
-						if (_queue.Count == 0)
-						{
-							Console.WriteLine("[Barber] is sleeping...");
-							return;
-						}
-						var client = _queue.Dequeue();
-						
-						SendToBarber(client);
 					});
 			}
 
@@ -106,7 +110,7 @@
 			{
 				_seatIsTaken = true;
 				Console.WriteLine("{0} is getting a haircut.", client);
-				Send(new ClientIsReadyForHaircut { Client = client });
+				_barber.Send(client, this);
 			}
 
 			private void SendToQueue(Client client)
@@ -129,18 +133,18 @@
 			}
 		}
 
+		// ReSharper disable UnusedParameter.Local
 		static void Main(string[] args)
+		// ReSharper restore UnusedParameter.Local
 		{
 			var barber = new Barber();
-			var shop = new Shop(SeatsCount);
+			var shop = new Shop(barber, MaxQueueSize);
 			var clients = Enumerable.Range(1, ClientsCount).Select(i => new Client(i)).ToList();
-
-			shop.Attach(barber);
 
 			foreach (var client in clients)
 			{
 				Thread.Sleep(Random.Next(10, 200));
-				shop.Send(new ClientEnteredTheShop { Client = client });
+				shop.Send(client);
 			}
 
 			Thread.Sleep(1000);
