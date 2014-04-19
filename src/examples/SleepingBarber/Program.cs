@@ -73,36 +73,36 @@
 				Console.WriteLine("{0} is open.", this);
 
 				OnStream().Of<Client>()
+					.Where(c => !c.GotHaircut)
 					.ReactWith(s =>
 					{
-						if (!s.Payload.GotHaircut)
-						{
-							Console.WriteLine("{0} entered the shop.", s.Payload);
+						Console.WriteLine("{0} entered the shop.", s.Payload);
 
-							if (!_seatIsTaken)
-							{
-								SendToBarber(s.Payload);
-							}
-							else
-							{
-								SendToQueue(s.Payload);
-							}
+						if (!_seatIsTaken)
+						{
+							SendToBarber(s.Payload);
 						}
 						else
 						{
-							Console.WriteLine("{0} got haircut.", s.Payload);
-
-							_seatIsTaken = false;
-							if (_queue.Count == 0)
-							{
-								Console.WriteLine("[Barber] is sleeping...");
-								return;
-							}
-							var client = _queue.Dequeue();
-
-							SendToBarber(client);
-							
+							SendToQueue(s.Payload);
 						}
+					});
+
+				OnStream().Of<Client>()
+					.Where(c => c.GotHaircut)
+					.ReactWith(s =>
+					{
+						Console.WriteLine("{0} got haircut.", s.Payload);
+
+						_seatIsTaken = false;
+						if (_queue.Count == 0)
+						{
+							Console.WriteLine("[Barber] is sleeping...");
+							return;
+						}
+						var client = _queue.Dequeue();
+
+						SendToBarber(client);
 					});
 			}
 
