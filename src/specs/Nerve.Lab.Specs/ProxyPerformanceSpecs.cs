@@ -50,14 +50,17 @@ namespace Kostassoid.Nerve.Lab.Specs
 
 				Cell.OnStream().Of<Invocation>().ReactWith(s =>
 					{
-						s.Return("that");
+						if (s.Callback != null)
+						{
+							s.Return("that");
+						}
 						countdown.Signal();
 					});
 
 				var stopwatch = Stopwatch.StartNew();
 				Enumerable.Range(0, SignalsCount).ForEach(_ => InvokingAction());
 
-				countdown.Wait();
+				countdown.Wait(30000).ShouldBeTrue();
 				stopwatch.Stop();
 
 				var ops = SignalsCount * 1000L / stopwatch.ElapsedMilliseconds;

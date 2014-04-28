@@ -49,7 +49,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_cell.OnStream().Of<Ping>().ReactWith(_ => { _received = true; });
 				};
 
-			private Because of = () => _cell.Send(new Ping(), Processor.Stub);
+			private Because of = () => _cell.Send(new Ping());
 
 			private It should_handle_exception = () => _exceptionWasHandled.ShouldBeTrue();
 

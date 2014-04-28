@@ -75,7 +75,7 @@ namespace Kostassoid.Nerve.Core
 		void MarkAsFaulted(Exception exception);
 
 		/// <summary>
-		///   Fires back at original sender.
+		/// Sends response message to callback handler.
 		/// </summary>
 		/// <typeparam name="TResponse">Response payload type.</typeparam>
 		/// <param name="body">Signal payload.</param>

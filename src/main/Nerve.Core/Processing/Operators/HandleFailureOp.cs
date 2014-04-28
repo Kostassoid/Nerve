@@ -26,9 +26,9 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="failureHandlerFunc">Failure handler function.</param>
 		/// <returns>Link extension point.</returns>
-		public static ILinkJunction HandleFailure(this ILinkJunction step, Func<SignalException, bool> failureHandlerFunc)
+		public static ILinkJunction Catch(this ILinkJunction step, Func<SignalException, bool> failureHandlerFunc)
 		{
-			var next = new ExceptionHandlerOperator(step.Link, failureHandlerFunc);
+			var next = new FailureHandlerOperator(step.Link, failureHandlerFunc);
 			step.Attach(next);
 			return next;
 		}
@@ -39,7 +39,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="failureHandlerFunc">Failure handler function.</param>
 		/// <returns>Link extension point.</returns>
-		public static ILinkJunction<T> HandleFailure<T>(this ILinkJunction<T> step, Func<SignalException, bool> failureHandlerFunc) where T : class
+		public static ILinkJunction<T> Catch<T>(this ILinkJunction<T> step, Func<SignalException, bool> failureHandlerFunc) where T : class
 		{
 			var next = new FailureHandlerOperator<T>(step.Link, failureHandlerFunc);
 			step.Attach(next);
@@ -80,7 +80,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			#endregion
 		}
 
-		internal class ExceptionHandlerOperator : AbstractOperator
+		internal class FailureHandlerOperator : AbstractOperator
 		{
 			#region Fields
 
@@ -90,7 +90,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Constructors and Destructors
 
-			public ExceptionHandlerOperator(ILink link, Func<SignalException, bool> failureHandlerFunc)
+			public FailureHandlerOperator(ILink link, Func<SignalException, bool> failureHandlerFunc)
 				: base(link)
 			{
 				_failureHandlerFunc = failureHandlerFunc;

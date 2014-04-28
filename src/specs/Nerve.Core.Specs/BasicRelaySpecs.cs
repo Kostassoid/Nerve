@@ -191,7 +191,7 @@ namespace Kostassoid.Nerve.Core.Specs
 					_ping.OnStream().Of<Pong>().ReactWith(s => _received = s);
 				};
 
-			private Because of = () => _ping.Send(new Ping());
+			private Because of = () => _ping.Send(new Ping(), _ping);
 
 			private It should_receive_response_on_specified_handler = () => _received.ShouldNotBeNull();
 

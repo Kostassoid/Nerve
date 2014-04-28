@@ -154,7 +154,7 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 			private It should_not_be_received = () => _received.ShouldBeFalse();
 		}
 
-		[Subject(typeof(ILink), "HandleFailure")]
+		[Subject(typeof(ILink), "Catch")]
 		[Tags("Unit")]
 		public class when_exception_occured_with_exception_handler_is_set_on_link
 		{
@@ -174,13 +174,13 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 
 				_cell.OnStream()
 					.Of<SimpleString>()
-					.HandleFailure(_ => { _handledException = true; return true; })
+					.Catch(_ => { _handledException = true; return true; })
 					.Where(s => s.Str != null)
 					.Map(s => new SimpleNum { Num = Int32.Parse(s.Str) })
 					.ReactWith(s => _received = true);
 			};
 
-			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" }, Processor.Stub);
+			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" });
 
 			private It should_invoke_the_handler = () => _handledException.ShouldBeTrue();
 

@@ -121,7 +121,7 @@ namespace Kostassoid.Nerve.Core
 		{
 			Requires.NotNull(payload, "payload");
 
-			OnSignal(Signal.Of(payload, this));
+			OnSignal(Signal.Of(payload));
 		}
 
 		/// <summary>
