@@ -32,7 +32,7 @@ namespace Kostassoid.Nerve.Core.Specs
 	{
 		[Subject(typeof(Cell), "TPL")]
 		[Tags("Unit")]
-		public class when_requesting_value_using_task
+		public class when_requesting_object_using_task
 		{
 			static ICell _cell;
 
@@ -52,10 +52,38 @@ namespace Kostassoid.Nerve.Core.Specs
 			It should_return_task = () => _task.ShouldNotBeNull();
 
 			It should_have_value = () =>
-				{
-					_task.Wait(1000).ShouldBeTrue();
-					_task.Result.ShouldEqual("pinged!");
-				};
+			{
+				_task.Wait(1000).ShouldBeTrue();
+				_task.Result.ShouldEqual("pinged!");
+			};
+		}
+
+		[Subject(typeof(Cell), "TPL")]
+		[Tags("Unit")]
+		public class when_requesting_value_using_task
+		{
+			static ICell _cell;
+
+			static Task<int> _task;
+
+			Cleanup after = () => _cell.Dispose();
+
+			Establish context = () =>
+			{
+				_cell = new Cell();
+
+				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(13));
+			};
+
+			Because of = () => { _task = _cell.SendFor<int>(new Ping()); };
+
+			It should_return_task = () => _task.ShouldNotBeNull();
+
+			It should_have_value = () =>
+			{
+				_task.Wait(1000).ShouldBeTrue();
+				_task.Result.ShouldEqual(13);
+			};
 		}
 
 		[Subject(typeof(Cell), "TPL")]

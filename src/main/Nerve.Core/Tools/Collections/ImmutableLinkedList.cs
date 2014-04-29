@@ -20,6 +20,7 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 
 	internal sealed class ImmutableLinkedList<T> : IImmutableLinkedList<T>
 	{
+		// ReSharper disable once InconsistentNaming
 		readonly static ImmutableLinkedList<T> _empty = new ImmutableLinkedList<T>();
 		readonly bool _isEmpty;
 		readonly T _head;

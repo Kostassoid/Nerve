@@ -19,12 +19,12 @@ namespace Kostassoid.Nerve.Core.Specs.Fibers
 		{
 			It should_execute_in_original_order = () =>
 				{
-					PoolFiber fiber = new PoolFiber(new DefaultThreadPool(), new DefaultExecutor());
+					var fiber = new PoolFiber(new DefaultThreadPool(), new DefaultExecutor());
 					fiber.Start();
 
-					int count = 0;
-					AutoResetEvent reset = new AutoResetEvent(false);
-					List<int> result = new List<int>();
+					var count = 0;
+					var reset = new AutoResetEvent(false);
+					var result = new List<int>();
 					Action command = delegate
 						{
 							result.Add(count++);
@@ -44,8 +44,8 @@ namespace Kostassoid.Nerve.Core.Specs.Fibers
 
 			It should_execute_only_after_start = () =>
 			{
-				PoolFiber fiber = new PoolFiber();
-				AutoResetEvent reset = new AutoResetEvent(false);
+				var fiber = new PoolFiber();
+				var reset = new AutoResetEvent(false);
 				fiber.Enqueue(() => reset.Set());
 				reset.WaitOne(1, false).ShouldBeFalse();
 				fiber.Start();
