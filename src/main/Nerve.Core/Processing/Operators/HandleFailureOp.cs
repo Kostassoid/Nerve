@@ -39,7 +39,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="failureHandlerFunc">Failure handler function.</param>
 		/// <returns>Link extension point.</returns>
-		public static ILinkJunction<T> Catch<T>(this ILinkJunction<T> step, Func<SignalException, bool> failureHandlerFunc) where T : class
+		public static ILinkJunction<T> Catch<T>(this ILinkJunction<T> step, Func<SignalException, bool> failureHandlerFunc)
 		{
 			var next = new FailureHandlerOperator<T>(step.Link, failureHandlerFunc);
 			step.Attach(next);
@@ -47,7 +47,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class FailureHandlerOperator<T> : AbstractOperator<T, T>
-			where T : class
 		{
 			#region Fields
 

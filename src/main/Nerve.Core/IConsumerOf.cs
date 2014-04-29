@@ -18,7 +18,6 @@ namespace Kostassoid.Nerve.Core
 	/// </summary>
 	/// <typeparam name="T">Payload type.</typeparam>
 	public interface IConsumerOf<in T> : IConsumerBase
-		where T : class
 	{
 		/// <summary>
 		/// Handles incoming signal.

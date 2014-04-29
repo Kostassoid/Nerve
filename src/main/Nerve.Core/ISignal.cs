@@ -66,7 +66,7 @@ namespace Kostassoid.Nerve.Core
 		/// <typeparam name="TTarget">New payload type.</typeparam>
 		/// <param name="payload">New payload</param>
 		/// <returns>Newly created signal.</returns>
-		ISignal<TTarget> WithPayload<TTarget>(TTarget payload) where TTarget : class;
+		ISignal<TTarget> WithPayload<TTarget>(TTarget payload);
 
 		/// <summary>
 		///   Handles exception.
@@ -79,7 +79,7 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <typeparam name="TResponse">Response payload type.</typeparam>
 		/// <param name="body">Signal payload.</param>
-		void Return<TResponse>(TResponse body) where TResponse : class;
+		void Return<TResponse>(TResponse body);
 
 		/// <summary>
 		///   Registers intermediate processor in stack trace.
@@ -92,14 +92,14 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <typeparam name="T">Payload type.</typeparam>
 		/// <returns>Typed signal.</returns>
-		ISignal<T> CastTo<T>() where T : class;
+		ISignal<T> CastTo<T>();
 
 		/// <summary>
 		/// Casts to typed signal. Throws in case of type mismatch.
 		/// </summary>
 		/// <typeparam name="T">Payload type.</typeparam>
 		/// <returns>Typed signal.</returns>
-		ISignal<T> As<T>() where T : class;
+		ISignal<T> As<T>();
 	}
 
 	/// <summary>
@@ -107,7 +107,6 @@ namespace Kostassoid.Nerve.Core
 	/// </summary>
 	/// <typeparam name="T">Signal payload type.</typeparam>
 	public interface ISignal<out T> : ISignal
-		where T : class
 	{
 		/// <summary>
 		///   Signal payload.

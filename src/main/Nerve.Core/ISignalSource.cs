@@ -42,7 +42,7 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <param name="consumer">Consumer to attach.</param>
 		/// <returns>Unsubscribing disposable object.</returns>
-		IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class;
+		IDisposable Attach<T>(IConsumerOf<T> consumer);
 
 		/// <summary>
 		/// Starts building signal stream processing chain.

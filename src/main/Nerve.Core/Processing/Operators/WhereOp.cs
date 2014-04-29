@@ -39,7 +39,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="predicateFunc">Predicate function.</param>
 		/// <returns>Link extending point.</returns>
-		public static ILinkJunction<T> Where<T>(this ILinkJunction<T> step, Func<T, bool> predicateFunc) where T : class
+		public static ILinkJunction<T> Where<T>(this ILinkJunction<T> step, Func<T, bool> predicateFunc)
 		{
 			var next = new FilterOperator<T>(step.Link, predicateFunc);
 			step.Attach(next);
@@ -47,7 +47,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class FilterOperator<T> : AbstractOperator<T, T>
-			where T : class
 		{
 			#region Fields
 

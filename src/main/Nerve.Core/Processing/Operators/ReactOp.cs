@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="processor">Handling processor.</param>
 		/// <returns>Unsubscribing disposable object.</returns>
-		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IProcessor processor) where T : class
+		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IProcessor processor)
 		{
 			step.Attach(processor);
 
@@ -56,7 +56,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="consumer">Consumer.</param>
 		/// <returns>Unsubscribing disposable object.</returns>
-		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IConsumerOf<T> consumer) where T : class
+		public static IDisposable ReactWith<T>(this ILinkJunction<T> step, IConsumerOf<T> consumer)
 		{
 			step.Attach(new ConsumerWrapper<T>(consumer));
 
@@ -75,7 +75,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		public static IDisposable ReactWith<T>(
 			this ILinkJunction<T> step,
 			Action<ISignal<T>> handler,
-			Func<SignalException, bool> failureHandler = null) where T : class
+			Func<SignalException, bool> failureHandler = null)
 		{
 			step.Attach(new ConsumerWrapper<T>(handler, failureHandler));
 

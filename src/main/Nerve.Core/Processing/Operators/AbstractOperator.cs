@@ -72,7 +72,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 	/// <typeparam name="TIn"></typeparam>
 	/// <typeparam name="TOut"></typeparam>
 	public abstract class AbstractOperator<TIn, TOut> : AbstractOperator, ILinkJunction<TOut>
-		where TIn : class where TOut : class
 	{
 		/// <summary>
 		/// Builds new operator.

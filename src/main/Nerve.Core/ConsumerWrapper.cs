@@ -74,7 +74,6 @@ namespace Kostassoid.Nerve.Core
 	}
 
 	internal class ConsumerWrapper<T> : ConsumerWrapper
-		where T : class
 	{
 		#region Constructors and Destructors
 

@@ -46,7 +46,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="threshold">Threshold count of signals within period.</param>
 		/// <param name="timespan">Period.</param>
 		/// <returns>Link extension point.</returns>
-		public static ILinkJunction<T> Gate<T>(this ILinkJunction<T> step, int threshold, TimeSpan timespan) where T : class
+		public static ILinkJunction<T> Gate<T>(this ILinkJunction<T> step, int threshold, TimeSpan timespan)
 		{
 			var next = new GateOperator<T>(step.Link, threshold, timespan);
 			step.Attach(next);
@@ -98,7 +98,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class GateOperator<T> : GateOperator, ILinkJunction<T>
-			where T : class
 		{
 			#region Constructors and Destructors
 

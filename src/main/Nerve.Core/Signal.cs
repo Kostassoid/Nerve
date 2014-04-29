@@ -14,7 +14,7 @@
 namespace Kostassoid.Nerve.Core
 {
 	using System;
-
+	using System.Linq;
 	using Processing;
 	using Tools;
 	using Tools.CodeContracts;
@@ -30,7 +30,7 @@ namespace Kostassoid.Nerve.Core
 		/// <typeparam name="T">Payload type.</typeparam>
 		/// <param name="payload">Payload body.</param>
 		/// <returns>New typed signal.</returns>
-		public static ISignal<T> Of<T>(T payload) where T : class
+		public static ISignal<T> Of<T>(T payload)
 		{
 			return new Signal<T>(payload);
 		}
@@ -42,14 +42,13 @@ namespace Kostassoid.Nerve.Core
 		/// <param name="payload">Payload body.</param>
 		/// <param name="callback">Callback processor.</param>
 		/// <returns>New typed signal.</returns>
-		public static ISignal<T> Of<T>(T payload, IProcessor callback) where T : class
+		public static ISignal<T> Of<T>(T payload, IProcessor callback)
 		{
 			return new Signal<T>(payload, callback);
 		}
 	}
 
 	internal sealed class Signal<T> : ISignal<T>
-		where T : class
 	{
 		public Signal(T payload, Headers headers, Stacktrace stacktrace, IProcessor callback)
 		{
@@ -126,7 +125,7 @@ namespace Kostassoid.Nerve.Core
 			return new Signal<T>(Payload, Headers, Stacktrace, Callback);
 		}
 
-		public ISignal<TTarget> WithPayload<TTarget>(TTarget payload) where TTarget : class
+		public ISignal<TTarget> WithPayload<TTarget>(TTarget payload)
 		{
 			return new Signal<TTarget>(payload, Headers, Stacktrace, Callback);
 		}
@@ -161,18 +160,13 @@ namespace Kostassoid.Nerve.Core
 				}
 			}
 
-			foreach (var s in Stacktrace.Frames)
-			{
-				if (s == Callback)
-				{
-					continue;
-				}
-
-				if (s.OnFailure(signalException)) return;
-			}
+			Stacktrace.Frames
+				.Where(p => p != Callback)
+				.FirstOrDefault(p => p.OnFailure(signalException))
+				.Ignore();
 		}
 
-		public void Return<TResponse>(TResponse response) where TResponse : class
+		public void Return<TResponse>(TResponse response)
 		{
 			Requires.ValidState(Callback != null, "Callback receiver is not set on signal [{0}]", this);
 
@@ -185,7 +179,7 @@ namespace Kostassoid.Nerve.Core
 			Stacktrace = Stacktrace.With(processor);
 		}
 
-		public ISignal<TOut> As<TOut>() where TOut : class
+		public ISignal<TOut> As<TOut>()
 		{
 			var s = this as ISignal<TOut>;
 			if (s == null)
@@ -195,14 +189,11 @@ namespace Kostassoid.Nerve.Core
 			return s;
 		}
 
-		public ISignal<TOut> CastTo<TOut>() where TOut : class
+		public ISignal<TOut> CastTo<TOut>()
 		{
-			var p = Payload as TOut;
-			if (p == null)
-			{
-				throw new InvalidCastException(string.Format("Expected payload of type [{0}] but got [{1}].", typeof(TOut).Name, Payload.GetType().Name));
-			}
-			return WithPayload(p);
+			//TODO: check performance
+			//TODO: handle exception?
+			return WithPayload((TOut)(object)Payload);
 		}
 
 		#endregion

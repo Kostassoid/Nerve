@@ -24,7 +24,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <typeparam name="TOut">Target payload type.</typeparam>
 		/// <param name="step"></param>
 		/// <returns>Link extension point.</returns>
-		public static ILinkJunction<TOut> Of<TOut>(this ILinkJunction step) where TOut : class
+		public static ILinkJunction<TOut> Of<TOut>(this ILinkJunction step)
 		{
 			var next = new OfOperator<TOut>(step.Link);
 			step.Attach(next);
@@ -32,7 +32,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class OfOperator<TOut> : AbstractOperator, ILinkJunction<TOut>
-			where TOut : class
 		{
 			#region Constructors and Destructors
 

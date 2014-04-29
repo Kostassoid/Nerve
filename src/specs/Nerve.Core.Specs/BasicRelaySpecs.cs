@@ -72,6 +72,28 @@ namespace Kostassoid.Nerve.Core.Specs
 
 		[Subject(typeof(Cell), "Basic")]
 		[Tags("Unit")]
+		public class when_sending_a_signal_of_value_type
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+
+				_cell.OnStream().Of<int>().ReactWith(_ => _received = true);
+			};
+
+			private Because of = () => _cell.Send(666);
+
+			private It should_be_handled = () => _received.ShouldBeTrue();
+		}
+
+		[Subject(typeof(Cell), "Basic")]
+		[Tags("Unit")]
 		public class when_firing_a_signal_with_detached_handler
 		{
 			private static ICell _cell;

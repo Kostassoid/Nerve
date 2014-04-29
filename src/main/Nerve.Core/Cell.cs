@@ -117,9 +117,9 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <typeparam name="T">Payload type.</typeparam>
 		/// <param name="payload">Payload body.</param>
-		public void Send<T>(T payload) where T : class
+		public void Send<T>(T payload)
 		{
-			Requires.NotNull(payload, "payload");
+			//Requires.True(Equals(payload, default(T)), "payload");
 
 			OnSignal(Signal.Of(payload));
 		}
@@ -130,9 +130,9 @@ namespace Kostassoid.Nerve.Core
 		/// <typeparam name="T">Payload type.</typeparam>
 		/// <param name="payload">Payload body.</param>
 		/// <param name="callback">Callback processor.</param>
-		public void Send<T>(T payload, IProcessor callback) where T : class
+		public void Send<T>(T payload, IProcessor callback)
 		{
-			Requires.NotNull(payload, "payload");
+			//Requires.True(Equals(payload, default(T)), "payload");
 			Requires.NotNull(callback, "callback");
 
 			OnSignal(Signal.Of(payload, callback));
@@ -178,7 +178,7 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <param name="consumer">Consumer to attach.</param>
 		/// <returns>Unsubscribing disposable object.</returns>
-		public IDisposable Attach<T>(IConsumerOf<T> consumer) where T : class
+		public IDisposable Attach<T>(IConsumerOf<T> consumer)
 		{
 			return Attach(new ConsumerWrapper<T>(consumer));
 		}

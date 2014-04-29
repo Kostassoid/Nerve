@@ -32,7 +32,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		public static ILinkJunction<TOut> Split<TOut>(
 			this ILinkJunction step,
 			Func<object, IEnumerable<TOut>> splitFunc)
-			where TOut : class
 		{
 			var next = new SplitOperator<object, TOut>(step.Link, splitFunc);
 			step.Attach(next);
@@ -48,8 +47,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		public static ILinkJunction<TOut> Split<TIn, TOut>(
 			this ILinkJunction<TIn> step,
 			Func<TIn, IEnumerable<TOut>> splitFunc)
-			where TIn : class
-			where TOut : class
 		{
 			var next = new SplitOperator<TIn, TOut>(step.Link, splitFunc);
 			step.Attach(next);
@@ -57,7 +54,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class SplitOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
-			where TIn : class where TOut : class
 		{
 			#region Fields
 

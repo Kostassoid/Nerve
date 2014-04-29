@@ -26,7 +26,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="step"></param>
 		/// <param name="scheduler">Scheduler.</param>
 		/// <returns>Link extending point.</returns>
-		public static ILinkJunction<T> Through<T>(this ILinkJunction<T> step, IScheduler scheduler) where T : class
+		public static ILinkJunction<T> Through<T>(this ILinkJunction<T> step, IScheduler scheduler)
 		{
 			var next = new ThroughOperator<T>(step.Link, scheduler);
 			step.Attach(next);
@@ -75,7 +75,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class ThroughOperator<T> : ThroughOperator, ILinkJunction<T>
-			where T : class
 		{
 			#region Constructors and Destructors
 

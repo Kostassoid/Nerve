@@ -22,7 +22,7 @@ namespace Kostassoid.Nerve.Core.Tools
 
 		public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
 		{
-			foreach (T item in source)
+			foreach (var item in source)
 			{
 				action(item);
 			}
@@ -35,10 +35,10 @@ namespace Kostassoid.Nerve.Core.Tools
 				yield break;
 			}
 
-			foreach (T item in source)
+			foreach (var item in source)
 			{
 				yield return item;
-				foreach (T subItem in SelectDeep(selector(item), selector))
+				foreach (var subItem in SelectDeep(selector(item), selector))
 				{
 					yield return subItem;
 				}

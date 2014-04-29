@@ -27,10 +27,10 @@ task Test -depends Build, TestPrerequisites {
 	    | where { $_.Name.EndsWith(".Specs.dll") } `
 	    | foreach { $_.FullName }
 
-#	Exec { & ".\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" $TestDlls -x Unstable }
+#	Exec { & ".\src\packages\Machine.Specifications-Signed.0.8.2\tools\mspec-clr4.exe" $TestDlls -x Unstable }
 
 	Exec { & ".\src\packages\OpenCover.$OpenCoverVersion\OpenCover.Console.exe" -register:user `
-		"-target:.\src\packages\Machine.Specifications-Signed.0.7.0\tools\mspec-clr4.exe" `
+		"-target:.\src\packages\Machine.Specifications-Signed.0.8.2\tools\mspec-clr4.exe" `
 		"-targetargs:$TestDlls -x Unstable" "-output:$OutputPath\coverage.xml" "-filter:+[*]* -[*-Specs]*" }
 
 #	$xslt = New-Object System.Xml.Xsl.XslCompiledTransform

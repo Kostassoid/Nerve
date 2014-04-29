@@ -50,7 +50,7 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <typeparam name="T">Signal payload type.</typeparam>
 		/// <param name="payload">Signal payload body.</param>
-		void Send<T>(T payload) where T : class;
+		void Send<T>(T payload);
 
 		/// <summary>
 		/// Creates a new signal with explicit callback and schedules its execution on current Cell.
@@ -58,6 +58,6 @@ namespace Kostassoid.Nerve.Core
 		/// <typeparam name="T">Signal payload type.</typeparam>
 		/// <param name="payload">Signal payload body.</param>
 		/// <param name="callback">Callback processor.</param>
-		void Send<T>(T payload, IProcessor callback) where T : class;
+		void Send<T>(T payload, IProcessor callback);
 	}
 }

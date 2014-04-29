@@ -42,7 +42,6 @@ namespace Kostassoid.Nerve.Core.Tpl
 		/// <param name="payload">Signal payload to send.</param>
 		/// <returns>Future result.</returns>
 		public static Task<T> SendFor<T>(this ICell cell, object payload)
-			where T : class
 		{
 			var handler = new TaskResultHandlerOf<T>();
 

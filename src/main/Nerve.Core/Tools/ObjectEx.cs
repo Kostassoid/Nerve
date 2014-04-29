@@ -11,31 +11,17 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core
+namespace Kostassoid.Nerve.Core.Tools
 {
-	using Processing;
-
-	/// <summary>
-	/// Untyped link extension point.
-	/// </summary>
-	public interface ILinkJunction
+	internal static class ObjectEx
 	{
-		/// <summary>
-		/// Underlying link.
-		/// </summary>
-		ILink Link { get; }
+		#region Public Methods and Operators
 
-		/// <summary>
-		/// Attaches processor to the processing chain.
-		/// </summary>
-		/// <param name="next">Processor to attach.</param>
-		void Attach(IProcessor next);
-	}
+		public static void Ignore(this object _)
+		{
+			//no-op
+		}
 
-	/// <summary>
-	/// Typed link extension point.
-	/// </summary>
-	public interface ILinkJunction<out T> : ILinkJunction
-	{
+		#endregion
 	}
 }

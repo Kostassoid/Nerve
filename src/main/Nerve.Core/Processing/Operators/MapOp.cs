@@ -29,7 +29,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <param name="mapFunc">Mapping function.</param>
 		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<TOut> Map<TIn, TOut>(this ILinkJunction<TIn> step, Func<TIn, TOut> mapFunc)
-			where TIn : class where TOut : class
 		{
 			var next = new MapOperator<TIn, TOut>(step.Link, mapFunc);
 			step.Attach(next);
@@ -37,7 +36,6 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		}
 
 		internal class MapOperator<TIn, TOut> : AbstractOperator<TIn, TOut>
-			where TIn : class where TOut : class
 		{
 			#region Fields
 
