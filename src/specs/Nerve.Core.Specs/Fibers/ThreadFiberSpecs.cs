@@ -14,7 +14,7 @@ namespace Kostassoid.Nerve.Core.Specs.Fibers
 		{
 			It should_run_to_completion = () =>
 				{
-					ThreadFiber threadFiber = new ThreadFiber();
+					var threadFiber = new ThreadFiber();
 					threadFiber.Start();
 					threadFiber.Dispose();
 					threadFiber.Join();
@@ -27,7 +27,7 @@ namespace Kostassoid.Nerve.Core.Specs.Fibers
 		{
 			It should_run_to_completion = () =>
 				{
-					ThreadFiber threadFiber = new ThreadFiber();
+					var threadFiber = new ThreadFiber();
 					threadFiber.Start();
 					threadFiber.Enqueue(threadFiber.Dispose);
 					threadFiber.Join();

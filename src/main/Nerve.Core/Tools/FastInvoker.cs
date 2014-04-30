@@ -10,18 +10,11 @@
 								   object[] paramters);
 
 		private static void EmitCastToReference(ILGenerator il, Type type)
-        {
-            if (type.IsValueType)
-            {
-                il.Emit(OpCodes.Unbox_Any, type);
-            }
-            else
-            {
-                il.Emit(OpCodes.Castclass, type);
-            }
-        }
- 
-        private static void EmitBoxIfNeeded(ILGenerator il, Type type)
+		{
+			il.Emit(type.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, type);
+		}
+
+		private static void EmitBoxIfNeeded(ILGenerator il, Type type)
         {
             if (type.IsValueType)
             {

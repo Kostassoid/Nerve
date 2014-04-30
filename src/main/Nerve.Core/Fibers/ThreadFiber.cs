@@ -52,11 +52,13 @@ namespace Kostassoid.Nerve.Core.Fibers
         public ThreadFiber(IQueue queue, string threadName, bool isBackground = true, ThreadPriority priority = ThreadPriority.Normal)
         {
             _queue = queue;
-            _thread = new Thread(RunThread);
-            _thread.Name = threadName;
-            _thread.IsBackground = isBackground;
-            _thread.Priority = priority;
-            _scheduler = new Scheduler(this);
+            _thread = new Thread(RunThread)
+					  {
+						  Name = threadName,
+						  IsBackground = isBackground,
+						  Priority = priority
+					  };
+	        _scheduler = new Scheduler(this);
         }
 
         /// <summary>
