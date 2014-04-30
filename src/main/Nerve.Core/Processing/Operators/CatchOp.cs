@@ -16,9 +16,9 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 	using System;
 
 	/// <summary>
-	/// HandleFailure operator extension.
+	/// Catch operator extension.
 	/// </summary>
-	public static class HandleFailureOp
+	public static class CatchOp
 	{
 		/// <summary>
 		/// Defines failure handler on processing chain.
@@ -28,7 +28,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <returns>Link extension point.</returns>
 		public static ILinkJunction Catch(this ILinkJunction step, Func<SignalException, bool> failureHandlerFunc)
 		{
-			var next = new FailureHandlerOperator(step.Link, failureHandlerFunc);
+			var next = new CatchOperator(step.Link, failureHandlerFunc);
 			step.Attach(next);
 			return next;
 		}
@@ -41,12 +41,44 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 		/// <returns>Link extension point.</returns>
 		public static ILinkJunction<T> Catch<T>(this ILinkJunction<T> step, Func<SignalException, bool> failureHandlerFunc)
 		{
-			var next = new FailureHandlerOperator<T>(step.Link, failureHandlerFunc);
+			var next = new CatchOperator<T>(step.Link, failureHandlerFunc);
 			step.Attach(next);
 			return next;
 		}
 
-		internal class FailureHandlerOperator<T> : AbstractOperator<T, T>
+		/// <summary>
+		/// Defines failure handler on processing chain.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="failureHandlerSetup">Failure handler builder setup.</param>
+		/// <returns>Link extension point.</returns>
+		public static ILinkJunction Catch(this ILinkJunction step, Action<FailureHandlerBuilder> failureHandlerSetup)
+		{
+			var builder = new FailureHandlerBuilder();
+			failureHandlerSetup(builder);
+
+			var next = new CatchOperator(step.Link, builder.Build());
+			step.Attach(next);
+			return next;
+		}
+
+		/// <summary>
+		/// Defines failure handler on processing chain.
+		/// </summary>
+		/// <param name="step"></param>
+		/// <param name="failureHandlerSetup">Failure handler builder setup.</param>
+		/// <returns>Link extension point.</returns>
+		public static ILinkJunction<T> Catch<T>(this ILinkJunction<T> step, Action<FailureHandlerBuilder<T>> failureHandlerSetup)
+		{
+			var builder = new FailureHandlerBuilder<T>();
+			failureHandlerSetup(builder);
+
+			var next = new CatchOperator<T>(step.Link, builder.Build());
+			step.Attach(next);
+			return next;
+		}
+
+		internal class CatchOperator<T> : AbstractOperator<T, T>
 		{
 			#region Fields
 
@@ -56,7 +88,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Constructors and Destructors
 
-			public FailureHandlerOperator(ILink link, Func<SignalException, bool> failureHandlerFunc)
+			public CatchOperator(ILink link, Func<SignalException, bool> failureHandlerFunc)
 				: base(link)
 			{
 				_failureHandlerFunc = failureHandlerFunc;
@@ -79,7 +111,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			#endregion
 		}
 
-		internal class FailureHandlerOperator : AbstractOperator
+		internal class CatchOperator : AbstractOperator
 		{
 			#region Fields
 
@@ -89,7 +121,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			#region Constructors and Destructors
 
-			public FailureHandlerOperator(ILink link, Func<SignalException, bool> failureHandlerFunc)
+			public CatchOperator(ILink link, Func<SignalException, bool> failureHandlerFunc)
 				: base(link)
 			{
 				_failureHandlerFunc = failureHandlerFunc;
@@ -112,4 +144,5 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 			#endregion
 		}
 	}
+
 }

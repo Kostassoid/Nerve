@@ -188,6 +188,80 @@ namespace Kostassoid.Nerve.Core.Specs.Operators
 			private It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
 		}
 
+		[Subject(typeof(ILink), "Catch")]
+		[Tags("Unit")]
+		public class when_exception_occured_matched_with_catch_operator
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+			private static bool _handledException;
+			private static bool _cellIsNotified;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+
+				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+
+				_cell.OnStream()
+					.Of<SimpleString>()
+					.Catch(b =>
+						b.On<FormatException>((ex, s) => { _handledException = true; return true; })
+					)
+					.Where(s => s.Str != null)
+					.Map(s => new SimpleNum { Num = Int32.Parse(s.Str) })
+					.ReactWith(s => _received = true);
+			};
+
+			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" });
+
+			private It should_invoke_the_handler = () => _handledException.ShouldBeTrue();
+
+			private It should_stop_processing = () => _received.ShouldBeFalse();
+
+			private It should_not_notify_cell = () => _cellIsNotified.ShouldBeFalse();
+		}
+
+		[Subject(typeof(ILink), "Catch")]
+		[Tags("Unit")]
+		public class when_exception_occured_not_matched_with_catch_operator
+		{
+			private static ICell _cell;
+
+			private static bool _received;
+			private static bool _handledException;
+			private static bool _cellIsNotified;
+
+			private Cleanup after = () => _cell.Dispose();
+
+			private Establish context = () =>
+			{
+				_cell = new Cell();
+
+				_cell.Failed += (cell, exception) => { _cellIsNotified = true; };
+
+				_cell.OnStream()
+					.Of<SimpleString>()
+					.Catch(b =>
+						b.On<ArgumentException>((ex, s) => { _handledException = true; return true; })
+					)
+					.Where(s => s.Str != null)
+					.Map(s => new SimpleNum { Num = Int32.Parse(s.Str) })
+					.ReactWith(s => _received = true);
+			};
+
+			private Because of = () => _cell.Send(new SimpleString { Str = "thirteen" });
+
+			private It should_not_invoke_the_handler = () => _handledException.ShouldBeFalse();
+
+			private It should_stop_processing = () => _received.ShouldBeFalse();
+
+			private It should_notify_cell = () => _cellIsNotified.ShouldBeTrue();
+		}
+
 
 	}
 
