@@ -3,7 +3,11 @@ properties {
     $OutputPath = "$BaseDir\output"
     $SolutionPath = "$BaseDir\src\Nerve.sln"
     $NugetPath = "$BaseDir\src\.nuget\nuget.exe"
+    $BuiltPath = "$OutputPath\built"
+    $MergedPath = "$OutputPath\merged"
     $OpenCoverVersion = "4.5.2506"
+    $MSpecVersion = "0.8.2"
+    $ILMergeVersion = "2.13.0307"
     $Configuration = "Release"
 }
 
@@ -18,27 +22,35 @@ task Clean {
 	msbuild "$SolutionPath" /t:Clean /p:Configuration=$Configuration
 }
 
-task TestPrerequisites {
+task Prerequisites {
 	Exec { & "$NugetPath" install OpenCover -OutputDirectory ".\src\packages" -version $OpenCoverVersion }
+	Exec { & "$NugetPath" install ILMerge -OutputDirectory ".\src\packages" -version $ILMergeVersion }
 }
 
-task Test -depends Build, TestPrerequisites {
+task Test -depends Build, Prerequisites {
 	$TestDlls = ls "$BaseDir\src\specs\*\bin\$Configuration" -rec `
 	    | where { $_.Name.EndsWith(".Specs.dll") } `
 	    | foreach { $_.FullName }
 
-#	Exec { & ".\src\packages\Machine.Specifications-Signed.0.8.2\tools\mspec-clr4.exe" $TestDlls -x Unstable }
-
 	Exec { & ".\src\packages\OpenCover.$OpenCoverVersion\OpenCover.Console.exe" -register:user `
-		"-target:.\src\packages\Machine.Specifications-Signed.0.8.2\tools\mspec-clr4.exe" `
+		"-target:.\src\packages\Machine.Specifications-Signed.$MSpecVersion\tools\mspec-clr4.exe" `
 		"-targetargs:$TestDlls -x Unstable" "-output:$OutputPath\coverage.xml" "-filter:+[*]* -[*-Specs]*" }
-
-#	$xslt = New-Object System.Xml.Xsl.XslCompiledTransform
-#	$xslt.Load(".\src\packages\OpenCover.$OpenCoverVersion\Transform\simple_report.xslt")
-#	$xslt.Transform("$OutputPath\coverage.xml", "$OutputPath\coverage.html")
 }
 
-task Pack -depends Test {
+task Merge -depends Build, Prerequisites {
+	New-Item $MergedPath -Type Directory
+
+	Exec { & ".\src\packages\ILMerge.$ILMergeVersion\ilmerge.exe" `
+		/keyfile:src\Nerve.snk /internalize /target:library `
+		/targetplatform:"v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" `
+		"/out:$MergedPath\Nerve.Core.dll" `
+		"$BuiltPath\Nerve.Core.dll" `
+		"$BuiltPath\NProxy.Core.dll" }
+
+	Copy-Item "$BuiltPath\Nerve.Core.xml" $MergedPath
+}
+
+task Pack -depends Test, Merge {
         $AssemblyVersionPattern = 'AssemblyVersion\((\"\d+\.\d+\.\d+\.\d+\")\)'
         $Version = Get-Content "$BaseDir\src\GlobalAssemblyInfo.cs" |
 		Select-String -pattern $AssemblyVersionPattern |
@@ -51,7 +63,7 @@ task Pack -depends Test {
 task Build -depends Clean {
 	msbuild "$SolutionPath" /t:Build /p:Configuration=$Configuration
 	
-	$LibPath = "$OutputPath\net40"
-	New-Item $LibPath -Type Directory
-	Copy-Item "$BaseDir\src\main\Nerve.Core\bin\$Configuration\*.*" $LibPath -Recurse
+	New-Item $BuiltPath -Type Directory
+	Copy-Item "$BaseDir\src\main\Nerve.Core\bin\$Configuration\*.*" $BuiltPath -Recurse
+	Copy-Item "$BaseDir\src\main\Nerve.Lab\bin\$Configuration\NProxy.Core.*" $BuiltPath -Recurse
 }
