@@ -11,7 +11,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Lab.Specs
+namespace Kostassoid.Nerve.Core.Specs
 {
 	using System;
 	using System.Diagnostics;
@@ -19,10 +19,10 @@ namespace Kostassoid.Nerve.Lab.Specs
 	using System.Threading;
 	using System.Threading.Tasks;
 	using Core;
-	using Core.Processing.Operators;
-	using Machine.Specifications;
-	using Mimic;
+	using Processing.Operators;
+	using Proxy;
 	using Core.Tools;
+	using Machine.Specifications;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
@@ -69,7 +69,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 			};
 		}
 
-		[Subject(typeof(Cell), "Mimic")]
+		[Subject(typeof(Cell), "Proxy")]
 		[Tags("Unit", "Unstable")]
 		public class when_invoking_using_proxy_method_without_return_value
 		{
@@ -90,7 +90,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 			Behaves_like<fast_message_broker> _;
 		}
 
-		[Subject(typeof(Cell), "Mimic")]
+		[Subject(typeof(Cell), "Proxy")]
 		[Tags("Unit", "Unstable")]
 		public class when_invoking_using_proxy_async_method
 		{
@@ -111,7 +111,7 @@ namespace Kostassoid.Nerve.Lab.Specs
 			Behaves_like<fast_message_broker> _;
 		}
 
-		[Subject(typeof(Cell), "Mimic")]
+		[Subject(typeof(Cell), "Proxy")]
 		[Tags("Unit", "Unstable")]
 		public class when_invoking_using_proxy_sync_method
 		{

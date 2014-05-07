@@ -5,13 +5,11 @@
 	using System.Reflection;
 	using Core;
 	using Core.Processing.Operators;
+	using Core.Proxy;
 	using Core.Tools;
-	using NProxy;
 
 	public static class CellEx
 	{
-		private static readonly IProxyBuilder Builder = new NProxyBuilder();
-
 		public static void BindTo<T>(this ICell cell, T obj)
 		{
 			var type = typeof(T);
@@ -30,11 +28,6 @@
 										i.Params.Length == argsCount)
 									.ReactWith(i => invokeAction(obj, i.Payload.Params));
 							});
-		}
-
-		public static T ProxyOf<T>(this ICell cell) where T : class
-		{
-			return Builder.Build<T>(cell);
 		}
 	}
 }

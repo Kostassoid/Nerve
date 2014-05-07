@@ -18,5 +18,6 @@
   </metadata>
   <files>
     <file src="..\output\merged\*.*" target="lib\net40\" />
+    <file src="..\*LICENSE*" target="\" />
   </files>
 </package>

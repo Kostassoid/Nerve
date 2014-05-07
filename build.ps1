@@ -65,5 +65,4 @@ task Build -depends Clean {
 	
 	New-Item $BuiltPath -Type Directory
 	Copy-Item "$BaseDir\src\main\Nerve.Core\bin\$Configuration\*.*" $BuiltPath -Recurse
-	Copy-Item "$BaseDir\src\main\Nerve.Lab\bin\$Configuration\NProxy.Core.*" $BuiltPath -Recurse
 }

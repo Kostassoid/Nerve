@@ -14,12 +14,10 @@
 namespace Kostassoid.Nerve.Lab.Specs
 {
 	using System;
-	using System.Linq;
 	using System.Threading.Tasks;
 	using Core;
 	using FakeItEasy;
 	using Machine.Specifications;
-	using Core.Processing.Operators;
 	using Mimic;
 
 	// ReSharper disable InconsistentNaming
@@ -99,111 +97,6 @@ namespace Kostassoid.Nerve.Lab.Specs
 			private It should_invoke_method = () =>
 				A.CallTo(() => _logic.B(A<int>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
 		}
-
-		[Subject(typeof(Cell), "Mimic")]
-		[Tags("Unit")]
-		public class when_invoking_wrapped_object_parameterless_method
-		{
-			private static ILogic _logic;
-			private static bool _received;
-			private static Cell _cell;
-
-			private Cleanup after = () => _cell.Dispose();
-
-			private Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.OnStream().Of<Invocation>().ReactWith(_ => _received = true);
-				_logic = _cell.ProxyOf<ILogic>();
-			};
-
-			Because of = () => _logic.A();
-
-			It should_send_invocation_message = () => _received.ShouldBeTrue();
-		}
-
-		[Subject(typeof(Cell), "Mimic")]
-		[Tags("Unit")]
-		public class when_invoking_wrapped_object_method_without_return
-		{
-			private static ILogic _logic;
-			private static Invocation _received;
-			private static Cell _cell;
-
-			private Cleanup after = () => _cell.Dispose();
-
-			private Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.OnStream().Of<Invocation>().ReactWith(s => _received = s.Payload);
-				_logic = _cell.ProxyOf<ILogic>();
-			};
-
-			Because of = () => _logic.B(13);
-
-			It should_send_invocation_message = () => _received.ShouldNotBeNull();
-
-			It should_contain_invocation_args = () => _received.Params.Single().ShouldEqual(13);
-		}
-
-		[Subject(typeof(Cell), "Mimic")]
-		[Tags("Unit")]
-		public class when_invoking_wrapped_object_method_with_simple_return
-		{
-			private static ILogic _logic;
-			private static Invocation _received;
-			private static Cell _cell;
-			static string _returned;
-
-			private Cleanup after = () => _cell.Dispose();
-
-			private Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.OnStream().Of<Invocation>().ReactWith(s =>
-				{
-					_received = s.Payload;
-					s.Return("xyz");
-				});
-				_logic = _cell.ProxyOf<ILogic>();
-			};
-
-			Because of = () => _returned = _logic.C();
-
-			It should_send_invocation_message = () => _received.ShouldNotBeNull();
-
-			It should_return_value = () => _returned.ShouldEqual("xyz");
-		}
-
-		[Subject(typeof(Cell), "Mimic")]
-		[Tags("Unit")]
-		public class when_invoking_wrapped_object_method_with_task_return
-		{
-			private static ILogic _logic;
-			private static Invocation _received;
-			private static Cell _cell;
-			static Task<string> _returned;
-
-			private Cleanup after = () => _cell.Dispose();
-
-			private Establish context = () =>
-			{
-				_cell = new Cell();
-				_cell.OnStream().Of<Invocation>().ReactWith(s =>
-				{
-					_received = s.Payload;
-					s.Return("xyz");
-				});
-				_logic = _cell.ProxyOf<ILogic>();
-			};
-
-			Because of = () => _returned = _logic.D();
-
-			It should_send_invocation_message = () => _received.ShouldNotBeNull();
-
-			It should_return_value = () => _returned.Result.ShouldEqual("xyz");
-		}
-
 	}
 
 	// ReSharper restore InconsistentNaming
