@@ -45,6 +45,7 @@ task Merge -depends Build, Prerequisites {
 		/targetplatform:"v4,C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319" `
 		"/out:$MergedPath\Nerve.Core.dll" `
 		"$BuiltPath\Nerve.Core.dll" `
+		"$BuiltPath\Fasterflect.dll" `
 		"$BuiltPath\NProxy.Core.dll" }
 
 	Copy-Item "$BuiltPath\Nerve.Core.xml" $MergedPath
