@@ -24,6 +24,7 @@ namespace Kostassoid.Nerve.Core.Specs
 	using Model;
 
 	using Processing.Operators;
+	using Scheduling;
 	using Tpl;
 
 	// ReSharper disable UnusedMember.Local
@@ -136,24 +137,63 @@ namespace Kostassoid.Nerve.Core.Specs
 			};
 
 			It should_be_faster_than_0_1_million_ops = () =>
-				{
-					_countdown = new CountdownEvent(SignalCount);
+			{
+				_countdown = new CountdownEvent(SignalCount);
 
-					var stopwatch = Stopwatch.StartNew();
+				var stopwatch = Stopwatch.StartNew();
 
-					Enumerable.Range(0, SignalCount)
-						.ForEach(_ => _cell.SendFor<Pong>(new Ping()).ContinueWith(t =>
-						{
-							_countdown.Signal();
-						}));
+				Enumerable.Range(0, SignalCount)
+					.ForEach(_ => _cell.SendFor<Pong>(new Ping()).ContinueWith(t =>
+					{
+						_countdown.Signal();
+					}));
 
-					_countdown.Wait();
-					stopwatch.Stop();
+				_countdown.Wait();
+				stopwatch.Stop();
 
-					var ops = SignalCount * 1000L / stopwatch.ElapsedMilliseconds;
-					Console.WriteLine("Ops / second: {0}", ops);
-					ops.ShouldBeGreaterThan(100000);
-				};
+				var ops = SignalCount * 1000L / stopwatch.ElapsedMilliseconds;
+				Console.WriteLine("Ops / second: {0}", ops);
+				ops.ShouldBeGreaterThan(100000);
+			};
+		}
+
+		[Subject(typeof(Cell), "TPL")]
+		[Tags("Unit", "Unstable")]
+		public class when_requesting_from_multiple_threads
+		{
+			const int SignalCount = 1000000;
+
+			static Cell _cell;
+			static CountdownEvent _countdown;
+
+			Cleanup after = () => _cell.Dispose();
+
+			Establish context = () =>
+			{
+				_cell = new Cell(PoolScheduler.Factory);
+
+				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
+			};
+
+			It should_be_faster_than_0_1_million_ops = () =>
+			{
+				_countdown = new CountdownEvent(SignalCount);
+
+				var stopwatch = Stopwatch.StartNew();
+
+				Enumerable.Range(0, SignalCount)
+					.ForEach(_ => Task.Factory.StartNew(() => _cell.SendFor<Pong>(new Ping()).ContinueWith(t =>
+					{
+						_countdown.Signal();
+					})));
+
+				_countdown.Wait();
+				stopwatch.Stop();
+
+				var ops = SignalCount * 1000L / stopwatch.ElapsedMilliseconds;
+				Console.WriteLine("Ops / second: {0}", ops);
+				ops.ShouldBeGreaterThan(100000);
+			};
 		}
 
 	}
