@@ -48,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		}
 
 		[Subject(typeof(IScheduler), "Concurrency")]
-		[Tags("Unit")]
+		[Tags("Unit", "Unstable")]
 		public class when_scheduling_using_immediate_scheduler
 		{
 			protected static int SignalsCount = 1000000;
@@ -63,7 +63,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		}
 
 		[Subject(typeof(IScheduler), "Concurrency")]
-		[Tags("Unit")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
 			protected static int SignalsCount = 1000000;
@@ -78,7 +78,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		}
 
 		[Subject(typeof(IScheduler), "Concurrency")]
-		[Tags("Unit")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
 			protected static int SignalsCount = 1000000;
