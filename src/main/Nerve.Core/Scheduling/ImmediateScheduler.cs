@@ -29,7 +29,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		internal override IFiber BuildFiber()
 		{
-			return new StubFiber { ExecutePendingImmediately = true };
+			return new ImmediateFiber { ExecutePendingImmediately = true };
 		}
 	}
 }
