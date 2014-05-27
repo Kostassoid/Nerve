@@ -69,6 +69,7 @@
     <Compile Include="ConcurrencySpecs.cs" />
     <Compile Include="ProxySpecs.cs" />
     <Compile Include="ProxyPerformanceSpecs.cs" />
+    <Compile Include="Tools\ImmutableLinkedListSpecs.cs" />
     <Compile Include="Tools\MemoizedFuncSpecs.cs" />
     <Compile Include="TplSpecs.cs" />
     <Compile Include="Helpers\ExceptionEx.cs" />
