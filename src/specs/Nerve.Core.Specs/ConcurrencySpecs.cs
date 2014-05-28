@@ -38,7 +38,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 					var tasks = Enumerable
 						.Range(0, SignalsCount)
-						.Select(_ => Task.Factory.StartNew(() => Scheduler.Schedule(() => countdown.Signal())))
+						.Select(_ => Task.Factory.StartNew(() => Scheduler.Enqueue(() => countdown.Signal())))
 						.ToArray();
 
 					Task.WaitAll(tasks, 10000).ShouldBeTrue();

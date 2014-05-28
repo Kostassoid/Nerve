@@ -34,7 +34,7 @@ namespace Kostassoid.Nerve.Core.Specs
 		[Behaviors]
         public class fast_message_broker
 		{
-			protected static int SignalsCount;
+			const int SignalsCount = 3000000;
 
 			protected static ICell Cell;
 
@@ -59,8 +59,6 @@ namespace Kostassoid.Nerve.Core.Specs
 		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_immediate_scheduler
 		{
-			protected static int SignalsCount = 1000000;
-
 			protected static ICell Cell;
 
 			Behaves_like<fast_message_broker> _;
@@ -74,8 +72,6 @@ namespace Kostassoid.Nerve.Core.Specs
 		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
-			protected static int SignalsCount = 1000000;
-
 			protected static ICell Cell;
 
 			Behaves_like<fast_message_broker> _;
@@ -89,8 +85,6 @@ namespace Kostassoid.Nerve.Core.Specs
 		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
-			protected static int SignalsCount = 1000000;
-
 			protected static ICell Cell;
 
 			Behaves_like<fast_message_broker> _;

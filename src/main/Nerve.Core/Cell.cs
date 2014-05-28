@@ -160,7 +160,7 @@ namespace Kostassoid.Nerve.Core
 		/// <param name="signal">Signal to process.</param>
 		protected override void Process(ISignal signal)
 		{
-			_scheduler.Schedule(() => Relay(signal));
+			_scheduler.Enqueue(() => Relay(signal));
 		}
 
 		/// <summary>

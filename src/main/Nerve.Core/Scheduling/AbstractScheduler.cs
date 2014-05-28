@@ -22,44 +22,19 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	/// </summary>
 	public abstract class AbstractScheduler : IScheduler
 	{
-		private IFiber _fiber;
-
-		internal IFiber Fiber
-		{
-			get
-			{
-				if (_fiber != null)
-				{
-					return _fiber;
-				}
-
-				_fiber = BuildFiber();
-				_fiber.Start();
-
-				return _fiber;
-			}
-		}
-
 		/// <summary>
 		/// Disposes the scheduler, with all underlying threads and resources.
 		/// </summary>
-		public void Dispose()
+		public virtual void Dispose()
 		{
-			if (_fiber != null)
-			{
-				_fiber.Dispose();
-			}
 		}
+
+		public int QueueSize { get; private set; }
 
 		/// <summary>
 		/// Schedules new action.
 		/// </summary>
 		/// <param name="action">Action to schedule.</param>
-		public void Schedule(Action action)
-		{
-			Fiber.Enqueue(action);
-		}
-
-		internal abstract IFiber BuildFiber();
+		public abstract void Enqueue(Action action);
 	}
 }

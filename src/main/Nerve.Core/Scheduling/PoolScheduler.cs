@@ -14,22 +14,62 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
-
-	using Fibers;
+	using System.Collections.Concurrent;
+	using System.Threading;
 
 	/// <summary>
-	/// ThreadPool based scheduler.
+	/// Thread pool scheduler.
 	/// </summary>
 	public class PoolScheduler : AbstractScheduler
 	{
+		ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
+		ConcurrentQueue<Action> _temp = new ConcurrentQueue<Action>();
+		int _flushing;
+
 		/// <summary>
 		/// Scheduler factory.
 		/// </summary>
 		public static readonly Func<IScheduler> Factory = () => new PoolScheduler();
 
-		internal override IFiber BuildFiber()
+		/// <summary>
+		/// Enqueue a single action.
+		/// </summary>
+		/// <param name="action"></param>
+		public override void Enqueue(Action action)
 		{
-			return new PoolFiber();
+			_pending.Enqueue(action);
+
+			if (Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
+			{
+				return;
+			}
+
+			Flush();
+		}
+
+		/// <summary>
+		/// Execute all actions in the pending list.  If any of the executed actions enqueue more actions, execute those as well.
+		/// </summary>
+		public void Flush()
+		{
+			_temp = _pending;// Interlocked.Exchange(ref _pending, _temp);
+
+			ThreadPool.QueueUserWorkItem(_ =>
+			{
+				Action act;
+				while (_temp.TryDequeue(out act))
+				{
+					try
+					{
+						act();
+					}
+					catch
+					{
+					}
+				}
+
+				Interlocked.Exchange(ref _flushing, 0);
+			});
 		}
 	}
 }

@@ -67,6 +67,8 @@
     <Compile Include="Proxy\IProxyBuilder.cs" />
     <Compile Include="Proxy\NProxy\NProxyBuilder.cs" />
     <Compile Include="Proxy\NProxy\NProxyInterceptor.cs" />
+    <Compile Include="Scheduling\ThreadScheduler.cs" />
+    <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Tools\ObjectEx.cs" />
     <Compile Include="Tools\FastInvoker.cs" />
     <Compile Include="Tools\MemoizedFunc.cs" />
@@ -127,8 +129,6 @@
     <Compile Include="ILinkJunction.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="Scheduling\AbstractScheduler.cs" />
-    <Compile Include="Scheduling\ThreadScheduler.cs" />
-    <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Scheduling\ImmediateScheduler.cs" />
     <Compile Include="Scheduling\IScheduler.cs" />
     <Compile Include="SignalException.cs" />

@@ -14,22 +14,55 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
-
-	using Fibers;
+	using System.Collections.Concurrent;
+	using System.Threading;
 
 	/// <summary>
 	/// Same thread scheduler without context switching.
 	/// </summary>
 	public class ImmediateScheduler : AbstractScheduler
 	{
+		readonly ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
+		int _flushing;
+
 		/// <summary>
 		/// Scheduler factory.
 		/// </summary>
 		public static readonly Func<IScheduler> Factory = () => new ImmediateScheduler();
 
-		internal override IFiber BuildFiber()
+		/// <summary>
+		/// Enqueue a single action.
+		/// </summary>
+		/// <param name="action"></param>
+		public override void Enqueue(Action action)
 		{
-			return new ImmediateFiber { ExecutePendingImmediately = true };
+			if (Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
+			{
+				_pending.Enqueue(action);
+				return;
+			}
+
+			try
+			{
+				action();
+				Flush();
+			}
+			finally
+			{
+				Interlocked.Exchange(ref _flushing, 0);
+			}
+		}
+
+		/// <summary>
+		/// Execute all actions in the pending list.  If any of the executed actions enqueue more actions, execute those as well.
+		/// </summary>
+		public void Flush()
+		{
+			Action act;
+			while (_pending.TryDequeue(out act))
+			{
+				act();
+			}
 		}
 	}
 }

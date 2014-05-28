@@ -20,12 +20,15 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	/// </summary>
 	public interface IScheduler : IDisposable
 	{
-		//TODO: refactor
+		/// <summary>
+		/// Queue size.
+		/// </summary>
+		int QueueSize { get; }
 
 		/// <summary>
 		/// Schedules action.
 		/// </summary>
 		/// <param name="action"></param>
-		void Schedule(Action action);
+		void Enqueue(Action action);
 	}
 }

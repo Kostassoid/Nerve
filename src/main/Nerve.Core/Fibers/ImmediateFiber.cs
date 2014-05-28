@@ -12,13 +12,11 @@ namespace Kostassoid.Nerve.Core.Fibers
     /// </summary>
     internal class ImmediateFiber : IFiber
     {
-		private readonly object _lock = new object();
-
 		private readonly List<IDisposable> _subscriptions = new List<IDisposable>();
-		private readonly Queue<Action> _pending = new Queue<Action>();
+		private readonly ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
         private readonly List<StubScheduledAction> _scheduled = new List<StubScheduledAction>();
 
-        private bool _root = true;
+        private int _root = 1;
 
         /// <summary>
         /// No Op
@@ -42,26 +40,21 @@ namespace Kostassoid.Nerve.Core.Fibers
         /// <param name="action"></param>
         public void Enqueue(Action action)
         {
-	        lock (_lock)
+	        if (Interlocked.CompareExchange(ref _root, 0, 1) == 0 || !ExecutePendingImmediately)
 	        {
-				if (_root && ExecutePendingImmediately)
-		        {
-			        _root = false;
-			        try
-			        {
-						action();
-						ExecuteAllPendingUntilEmpty();
-			        }
-			        finally
-			        {
-				        _root = true;
-			        }
-		        }
-		        else
-		        {
-			        _pending.Enqueue(action);
-		        }
+				_pending.Enqueue(action);
+				return;
 	        }
+
+			try
+			{
+				action();
+				ExecuteAllPendingUntilEmpty();
+			}
+			finally
+			{
+				Interlocked.Exchange(ref _root, 1);
+			}
         }
 
         ///<summary>
@@ -152,9 +145,10 @@ namespace Kostassoid.Nerve.Core.Fibers
         /// </summary>
         public void ExecuteAllPendingUntilEmpty()
         {
-            while (_pending.Count > 0)
+	        Action act;
+            while (_pending.TryDequeue(out act))
             {
-	            _pending.Dequeue()();
+	            act();
             }
         }
 

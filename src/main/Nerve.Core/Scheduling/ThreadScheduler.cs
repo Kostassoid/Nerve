@@ -14,22 +14,61 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
-
-	using Fibers;
+	using System.Collections.Concurrent;
+	using System.Threading;
 
 	/// <summary>
-	/// Dedicated thread based scheduler.
+	/// Thread pool scheduler.
 	/// </summary>
 	public class ThreadScheduler : AbstractScheduler
 	{
+		readonly BlockingCollection<Action> _pending = new BlockingCollection<Action>();
+		CancellationTokenSource _cancellation = new CancellationTokenSource();
+		Thread _thread;
+		readonly object _lock = new object();
+
 		/// <summary>
 		/// Scheduler factory.
 		/// </summary>
 		public static readonly Func<IScheduler> Factory = () => new ThreadScheduler();
 
-		internal override IFiber BuildFiber()
+		public ThreadScheduler()
 		{
-			return new ThreadFiber();
+			_thread = new Thread(Run)
+			{
+				IsBackground = true
+			};
+
+			_thread.Start();
+		}
+
+		public override void Dispose()
+		{
+			if (_thread != null)
+			{
+				_cancellation.Cancel();
+				_thread.Join();
+				_thread = null;
+			}
+
+			base.Dispose();
+		}
+
+		/// <summary>
+		/// Enqueue a single action.
+		/// </summary>
+		/// <param name="action"></param>
+		public override void Enqueue(Action action)
+		{
+			_pending.Add(action);
+		}
+
+		void Run()
+		{
+			foreach (var act in _pending.GetConsumingEnumerable(_cancellation.Token))
+			{
+				act();
+			}
 		}
 	}
 }

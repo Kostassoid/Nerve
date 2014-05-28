@@ -68,7 +68,7 @@ namespace Kostassoid.Nerve.Core.Processing.Operators
 
 			protected override void Process(ISignal signal)
 			{
-				_scheduler.Schedule(() => Next.OnSignal(signal));
+				_scheduler.Enqueue(() => Next.OnSignal(signal));
 			}
 
 			#endregion
