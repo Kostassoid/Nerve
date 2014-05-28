@@ -14,7 +14,7 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
-	using System.Collections.Concurrent;
+	using System.Collections.Generic;
 	using System.Threading;
 
 	/// <summary>
@@ -22,16 +22,20 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	/// </summary>
 	public class ThreadScheduler : AbstractScheduler
 	{
-		readonly BlockingCollection<Action> _pending = new BlockingCollection<Action>();
-		//readonly CancellationTokenSource _cancellation = new CancellationTokenSource();
+		Queue<Action> _pending = new Queue<Action>();
+		Queue<Action> _temp = new Queue<Action>();
 		Thread _thread;
-		//readonly object _lock = new object();
+		readonly object _lock = new object();
+		bool _running = true;
 
 		/// <summary>
 		/// Scheduler factory.
 		/// </summary>
 		public static readonly Func<IScheduler> Factory = () => new ThreadScheduler();
 
+		/// <summary>
+		/// Initializes scheduler.
+		/// </summary>
 		public ThreadScheduler()
 		{
 			_thread = new Thread(Run)
@@ -44,16 +48,17 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		public override void Dispose()
 		{
+			lock (_lock)
+			{
+				_running = false;
+				Monitor.PulseAll(_lock);
+			}
+
 			if (_thread != null)
 			{
-				_pending.CompleteAdding();
-				//_cancellation.Cancel();
 				_thread.Join();
 				_thread = null;
 			}
-
-			_pending.Dispose();
-			//_cancellation.Dispose();
 
 			base.Dispose();
 		}
@@ -64,14 +69,32 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		/// <param name="action"></param>
 		public override void Enqueue(Action action)
 		{
-			_pending.Add(action);
+			lock (_lock)
+			{
+				_pending.Enqueue(action);
+				if (_pending.Count == 1) Monitor.PulseAll(_lock);
+			}
 		}
 
 		void Run()
 		{
-			foreach (var act in _pending.GetConsumingEnumerable(/*_cancellation.Token*/))
+			lock (_lock)
 			{
-				act();
+				while (_running)
+				{
+					Monitor.Wait(_lock);
+					_temp = Interlocked.Exchange(ref _pending, _temp);
+
+					while (_temp.Count > 0)
+					{
+						try
+						{
+							_temp.Dequeue()();
+						}
+						catch
+						{ }
+					}
+				}
 			}
 		}
 	}
