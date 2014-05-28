@@ -53,6 +53,7 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
         public virtual void Dispose()
         {
             _cancelled = true;
+	        _timer.Dispose();
         }
     }
 }

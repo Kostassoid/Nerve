@@ -5,7 +5,8 @@ namespace Kostassoid.Nerve.Core.Fibers.Core
 	/// <summary>
     /// Thrown when a queue is full.
     /// </summary>
-    internal class QueueFullException : Exception
+    [Serializable]
+	internal class QueueFullException : Exception
     {
         private readonly int _depth;
 

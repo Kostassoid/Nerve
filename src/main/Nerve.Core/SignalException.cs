@@ -18,6 +18,7 @@ namespace Kostassoid.Nerve.Core
 	/// <summary>
 	/// Signal processing exception wrapper.
 	/// </summary>
+	[Serializable]
 	public class SignalException : Exception
 	{
 		internal SignalException(Exception innerException, ISignal signal)

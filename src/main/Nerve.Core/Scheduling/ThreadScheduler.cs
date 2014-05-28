@@ -23,9 +23,9 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	public class ThreadScheduler : AbstractScheduler
 	{
 		readonly BlockingCollection<Action> _pending = new BlockingCollection<Action>();
-		CancellationTokenSource _cancellation = new CancellationTokenSource();
+		//readonly CancellationTokenSource _cancellation = new CancellationTokenSource();
 		Thread _thread;
-		readonly object _lock = new object();
+		//readonly object _lock = new object();
 
 		/// <summary>
 		/// Scheduler factory.
@@ -46,10 +46,14 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		{
 			if (_thread != null)
 			{
-				_cancellation.Cancel();
+				_pending.CompleteAdding();
+				//_cancellation.Cancel();
 				_thread.Join();
 				_thread = null;
 			}
+
+			_pending.Dispose();
+			//_cancellation.Dispose();
 
 			base.Dispose();
 		}
@@ -65,7 +69,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		void Run()
 		{
-			foreach (var act in _pending.GetConsumingEnumerable(_cancellation.Token))
+			foreach (var act in _pending.GetConsumingEnumerable(/*_cancellation.Token*/))
 			{
 				act();
 			}

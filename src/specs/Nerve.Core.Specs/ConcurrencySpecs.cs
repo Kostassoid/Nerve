@@ -18,7 +18,6 @@ namespace Kostassoid.Nerve.Core.Specs
 	using System.Threading.Tasks;
 	using Machine.Specifications;
 	using Scheduling;
-	using Core.Tools;
 
 	// ReSharper disable InconsistentNaming
 	// ReSharper disable UnusedMember.Local
