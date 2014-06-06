@@ -12,7 +12,7 @@ To name a few:
 * [Reactive Extensions](https://rx.codeplex.com/)
 * [Apache Camel](https://camel.apache.org/)
 
-See [Quick start](https://github.com/Kostassoid/Nerve/wiki/Quick-start) page for more details.
+See [Wiki](https://github.com/Kostassoid/Nerve/wiki) pages for more details.
 
 ##Build Status
 [![Build status](https://ci.appveyor.com/api/projects/status/647029luk6l3q95j)](https://ci.appveyor.com/project/KonstantinAlexandroff/nerve)
