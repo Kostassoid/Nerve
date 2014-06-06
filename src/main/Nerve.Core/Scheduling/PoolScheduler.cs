@@ -22,14 +22,13 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	/// </summary>
 	public class PoolScheduler : AbstractScheduler
 	{
-		ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
-		ConcurrentQueue<Action> _temp = new ConcurrentQueue<Action>();
+		readonly ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
 		int _flushing;
 
-		/// <summary>
-		/// Scheduler factory.
-		/// </summary>
-		public static readonly Func<IScheduler> Factory = () => new PoolScheduler();
+		public override int QueueSize
+		{
+			get { return _pending.Count; }
+		}
 
 		/// <summary>
 		/// Enqueue a single action.
@@ -39,7 +38,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		{
 			_pending.Enqueue(action);
 
-			if (Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
+			if (!IsRunning || Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
 			{
 				return;
 			}
@@ -52,12 +51,10 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		/// </summary>
 		public void Flush()
 		{
-			_temp = _pending;// Interlocked.Exchange(ref _pending, _temp);
-
 			ThreadPool.QueueUserWorkItem(_ =>
 			{
 				Action act;
-				while (_temp.TryDequeue(out act))
+				while (_pending.TryDequeue(out act))
 				{
 					try
 					{

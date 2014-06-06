@@ -11,36 +11,18 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-namespace Kostassoid.Nerve.Core.Scheduling
+namespace Kostassoid.Nerve.Core.Tools.Collections
 {
 	using System;
+	using System.Collections.Generic;
 
-	/// <summary>
-	/// Signal processing scheduler.
-	/// </summary>
-	public interface IScheduler : IDisposable
+	public interface IQueue<T>
 	{
-		/// <summary>
-		/// Queue size.
-		/// </summary>
-		int QueueSize { get; }
+		int Count { get; }
 
-		bool IsRunning { get; }
-
-		/// <summary>
-		/// Schedules action.
-		/// </summary>
-		/// <param name="action"></param>
-		void Enqueue(Action action);
-
-		/// <summary>
-		/// Starts the scheduler.
-		/// </summary>
-		void Start();
-
-		/// <summary>
-		/// Stops the scheduler.
-		/// </summary>
-		void Stop();
+		void Enqueue(T item);
+		//bool TryDequeue(out T item);
+		IEnumerable<T> DequeueAll();
+		//void Close();
 	}
 }

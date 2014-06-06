@@ -35,6 +35,8 @@ namespace Kostassoid.Nerve.Core.Specs
 				{
 					var countdown = new CountdownEvent(SignalsCount);
 
+					Scheduler.Start();
+
 					var tasks = Enumerable
 						.Range(0, SignalsCount)
 						.Select(_ => Task.Factory.StartNew(() => Scheduler.Enqueue(() => countdown.Signal())))
@@ -43,6 +45,8 @@ namespace Kostassoid.Nerve.Core.Specs
 					Task.WaitAll(tasks, 10000).ShouldBeTrue();
 
 					countdown.Wait(10000).ShouldBeTrue();
+
+					Scheduler.Stop();
 				};
 		}
 
@@ -58,7 +62,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Cleanup after = () => Scheduler.Dispose();
 
-			Establish context = () => { Scheduler = ImmediateScheduler.Factory(); };
+			Establish context = () => { Scheduler = new ImmediateScheduler(); };
 		}
 
 		[Subject(typeof(IScheduler), "Concurrency")]
@@ -73,7 +77,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Cleanup after = () => Scheduler.Dispose();
 
-			Establish context = () => { Scheduler = PoolScheduler.Factory(); };
+			Establish context = () => { Scheduler = new PoolScheduler(); };
 		}
 
 		[Subject(typeof(IScheduler), "Concurrency")]
@@ -88,7 +92,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Cleanup after = () => Scheduler.Dispose();
 
-			Establish context = () => { Scheduler = ThreadScheduler.Factory(); };
+			Establish context = () => { Scheduler = new ThreadScheduler(); };
 		}
 	}
 

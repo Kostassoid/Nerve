@@ -75,7 +75,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () =>
 				{
-					_cell = new Cell(ThreadScheduler.Factory);
+					_cell = new Cell(new ThreadScheduler());
 
 					Action<ISignal<Num>> handler = s =>
 						{
@@ -108,7 +108,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Cleanup after = () => Cell.Dispose();
 
-			private Establish context = () => { Cell = new Cell(ImmediateScheduler.Factory); };
+			private Establish context = () => { Cell = new Cell(new ImmediateScheduler()); };
 		}
 
 		[Subject(typeof(ICell), "Scheduling")]
@@ -121,7 +121,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Cleanup after = () => Cell.Dispose();
 
-			private Establish context = () => { Cell = new Cell(PoolScheduler.Factory); };
+			private Establish context = () => { Cell = new Cell(new PoolScheduler()); };
 		}
 
 		[Subject(typeof(ICell), "Scheduling")]
@@ -134,7 +134,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Cleanup after = () => Cell.Dispose();
 
-			private Establish context = () => { Cell = new Cell(ThreadScheduler.Factory); };
+			private Establish context = () => { Cell = new Cell(new ThreadScheduler()); };
 		}
 
 		[Subject(typeof(ICell), "Scheduling")]
@@ -149,7 +149,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			private Establish context = () =>
 				{
-					_cell = new Cell(PoolScheduler.Factory);
+					_cell = new Cell(new PoolScheduler());
 					_cell.OnStream().Of<Ping>().ReactWith(
 						_ =>
 							{

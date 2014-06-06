@@ -25,10 +25,10 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		readonly ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
 		int _flushing;
 
-		/// <summary>
-		/// Scheduler factory.
-		/// </summary>
-		public static readonly Func<IScheduler> Factory = () => new ImmediateScheduler();
+		public override int QueueSize
+		{
+			get { return _pending.Count; }
+		}
 
 		/// <summary>
 		/// Enqueue a single action.
@@ -36,7 +36,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		/// <param name="action"></param>
 		public override void Enqueue(Action action)
 		{
-			if (Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
+			if (!IsRunning || Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
 			{
 				_pending.Enqueue(action);
 				return;

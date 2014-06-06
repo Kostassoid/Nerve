@@ -15,8 +15,6 @@ namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
 
-	using Fibers;
-
 	/// <summary>
 	/// Base abstract signal processing scheduler.
 	/// </summary>
@@ -29,12 +27,25 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		{
 		}
 
-		public int QueueSize { get; private set; }
+		public abstract int QueueSize { get; }
+
+		public bool IsRunning { get; protected set; }
 
 		/// <summary>
 		/// Schedules new action.
 		/// </summary>
 		/// <param name="action">Action to schedule.</param>
 		public abstract void Enqueue(Action action);
+
+		public virtual void Start()
+		{
+			IsRunning = true;
+		}
+
+		public virtual void Stop()
+		{
+			IsRunning = false;
+		}
+
 	}
 }

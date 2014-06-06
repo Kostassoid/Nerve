@@ -65,7 +65,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Cleanup after = () => Cell.Dispose();
 
-			Establish context = () => { Cell = new Cell(ImmediateScheduler.Factory); };
+			Establish context = () => { Cell = new Cell(new ImmediateScheduler()); };
 		}
 
 		[Subject(typeof(Cell), "Performance")]
@@ -78,7 +78,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Cleanup after = () => Cell.Dispose();
 
-			Establish context = () => { Cell = new Cell(PoolScheduler.Factory); };
+			Establish context = () => { Cell = new Cell(new PoolScheduler()); };
 		}
 
 		[Subject(typeof(Cell), "Performance")]
@@ -91,7 +91,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Cleanup after = () => Cell.Dispose();
 
-			Establish context = () => { Cell = new Cell(ThreadScheduler.Factory); };
+			Establish context = () => { Cell = new Cell(new ThreadScheduler()); };
 		}
 	}
 

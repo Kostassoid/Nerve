@@ -43,7 +43,7 @@
 
 		class Barber : Cell
 		{
-			public Barber() : base(PoolScheduler.Factory)
+			public Barber() : base(new PoolScheduler())
 			{
 				OnStream().Of<Client>()
 					.ReactWith(s =>
@@ -65,7 +65,7 @@
 
 			bool _seatIsTaken;
 
-			public Shop(Barber barber, int maxQueueSize) : base(ThreadScheduler.Factory)
+			public Shop(Barber barber, int maxQueueSize) : base(new ThreadScheduler())
 			{
 				_barber = barber;
 				_maxQueueSize = maxQueueSize;

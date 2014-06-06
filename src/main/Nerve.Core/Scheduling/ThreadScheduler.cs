@@ -22,35 +22,70 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	/// </summary>
 	public class ThreadScheduler : AbstractScheduler
 	{
+		static int _threadId = 1;
+
 		Queue<Action> _pending = new Queue<Action>();
 		Queue<Action> _temp = new Queue<Action>();
 		Thread _thread;
 		readonly object _lock = new object();
-		bool _running = true;
-
-		/// <summary>
-		/// Scheduler factory.
-		/// </summary>
-		public static readonly Func<IScheduler> Factory = () => new ThreadScheduler();
 
 		/// <summary>
 		/// Initializes scheduler.
 		/// </summary>
 		public ThreadScheduler()
 		{
-			_thread = new Thread(Run)
-			{
-				IsBackground = true
-			};
-
-			_thread.Start();
 		}
 
 		public override void Dispose()
 		{
+			Stop();
+
+			base.Dispose();
+		}
+
+		public override int QueueSize
+		{
+			get
+			{
+				lock (_lock)
+				{
+					return _pending.Count;
+				}
+			}
+		}
+
+		public override void Start()
+		{
 			lock (_lock)
 			{
-				_running = false;
+				if (IsRunning) return;
+				base.Start();
+
+				var id = Interlocked.Increment(ref _threadId);
+				_thread = new Thread(Run)
+				{
+					IsBackground = true,
+					Name = string.Format("ThreadScheduler-{0}", id),
+					Priority = ThreadPriority.Normal
+				};
+
+				_thread.Start();
+
+				Monitor.PulseAll(_lock);
+			}
+		}
+
+		public override void Stop()
+		{
+			lock (_lock)
+			{
+				if (!IsRunning)
+				{
+					return;
+				}
+
+				base.Stop();
+
 				Monitor.PulseAll(_lock);
 			}
 
@@ -59,8 +94,6 @@ namespace Kostassoid.Nerve.Core.Scheduling
 				_thread.Join();
 				_thread = null;
 			}
-
-			base.Dispose();
 		}
 
 		/// <summary>
@@ -80,9 +113,8 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		{
 			lock (_lock)
 			{
-				while (_running)
+				while (IsRunning)
 				{
-					Monitor.Wait(_lock);
 					_temp = Interlocked.Exchange(ref _pending, _temp);
 
 					while (_temp.Count > 0)
@@ -94,6 +126,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 						catch
 						{ }
 					}
+					Monitor.Wait(_lock);
 				}
 			}
 		}

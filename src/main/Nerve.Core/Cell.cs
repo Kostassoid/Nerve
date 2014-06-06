@@ -39,13 +39,14 @@ namespace Kostassoid.Nerve.Core
 		/// Constructs new cell.
 		/// </summary>
 		/// <param name="name">Cell name.</param>
-		/// <param name="schedulerFactory">Scheduler factory.</param>
-		public Cell(string name, Func<IScheduler> schedulerFactory)
+		/// <param name="scheduler">Scheduler.</param>
+		public Cell(string name, IScheduler scheduler)
 		{
-			Requires.NotNull(schedulerFactory, "schedulerFactory");
+			Requires.NotNull(scheduler, "scheduler");
 
 			Name = name;
-			_scheduler = schedulerFactory();
+			_scheduler = scheduler;
+			_scheduler.Start();
 		}
 
 		/// <summary>
@@ -53,16 +54,16 @@ namespace Kostassoid.Nerve.Core
 		/// </summary>
 		/// <param name="name">Cell name.</param>
 		public Cell(string name)
-			: this(name, () => new ImmediateScheduler())
+			: this(name, new ImmediateScheduler())
 		{
 		}
 
 		/// <summary>
 		/// Constructs new unnamed cell.
 		/// </summary>
-		/// <param name="schedulerFactory">Scheduler factory.</param>
-		public Cell(Func<IScheduler> schedulerFactory)
-			: this(null, schedulerFactory)
+		/// <param name="scheduler">Scheduler.</param>
+		public Cell(IScheduler scheduler)
+			: this(null, scheduler)
 		{
 		}
 
@@ -70,7 +71,7 @@ namespace Kostassoid.Nerve.Core
 		/// Constructs new unnamed cell using default immediate scheduler.
 		/// </summary>
 		public Cell()
-			: this(null, () => new ImmediateScheduler())
+			: this(null, new ImmediateScheduler())
 		{
 		}
 
@@ -244,7 +245,7 @@ namespace Kostassoid.Nerve.Core
 
 			if (_scheduler != null)
 			{
-				_scheduler.Dispose();
+				_scheduler.Stop();
 			}
 		}
 

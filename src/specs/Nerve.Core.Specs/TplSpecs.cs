@@ -170,7 +170,7 @@ namespace Kostassoid.Nerve.Core.Specs
 
 			Establish context = () =>
 			{
-				_cell = new Cell(PoolScheduler.Factory);
+				_cell = new Cell(new PoolScheduler());
 
 				_cell.OnStream().Of<Ping>().ReactWith(s => s.Return(new Pong()));
 			};

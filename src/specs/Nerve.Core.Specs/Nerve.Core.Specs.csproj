@@ -69,6 +69,7 @@
     <Compile Include="ConcurrencySpecs.cs" />
     <Compile Include="ProxySpecs.cs" />
     <Compile Include="ProxyPerformanceSpecs.cs" />
+    <Compile Include="Tools\QueueSpecs.cs" />
     <Compile Include="Tools\ImmutableLinkedListSpecs.cs" />
     <Compile Include="Tools\MemoizedFuncSpecs.cs" />
     <Compile Include="TplSpecs.cs" />
@@ -80,15 +81,7 @@
     <Compile Include="Operators\OperatorsSpecs.cs" />
     <Compile Include="SignalSpecs.cs" />
     <Compile Include="ErrorHandlingSpecs.cs" />
-    <Compile Include="Fibers\BoundedQueueSpecs.cs" />
     <Compile Include="Tools\CodeContractsSpecs.cs" />
-    <None Include="Fibers\PerfBug.cs" />
-    <Compile Include="Fibers\PerfSettings.cs" />
-    <Compile Include="Fibers\PerfTimer.cs" />
-    <Compile Include="Fibers\PoolFiberSpecs.cs" />
-    <Compile Include="Fibers\StubFiberSpecs.cs" />
-    <Compile Include="Fibers\ThreadFiberSpecs.cs" />
-    <None Include="Fibers\TimerActionTests.cs" />
     <Compile Include="Model\Num.cs" />
     <Compile Include="SchedulingSpecs.cs" />
     <Compile Include="PerformanceSpecs.cs" />
