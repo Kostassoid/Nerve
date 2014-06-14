@@ -13,7 +13,6 @@
 
 namespace Kostassoid.Nerve.Core.Tools.Collections
 {
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Threading;
 
@@ -21,26 +20,24 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 	{
 		Queue<T> _primary = new Queue<T>();
 		Queue<T> _secondary = new Queue<T>();
-		readonly object _sync = new object();
+		readonly object _sync1 = new object();
+		readonly object _sync2 = new object();
 		int _closed;
+		int _count;
 
 		public int Count
 		{
-			get
-			{
-				lock (_sync)
-				{
-					return _primary.Count;
-				}
-			}
+			get { return _count; }
 		}
 
 		public void Enqueue(T item)
 		{
-			lock (_sync)
+			lock (_sync1)
 			{
 				_primary.Enqueue(item);
 			}
+
+			Interlocked.Increment(ref _count);
 		}
 
 /*
@@ -62,11 +59,17 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 
 		public IEnumerable<T> DequeueAll()
 		{
-			_secondary = Interlocked.Exchange(ref _primary, _secondary);
-
-			while (_secondary.Count > 0)
+			lock (_sync2)
 			{
-				yield return _secondary.Dequeue();
+				_secondary = Interlocked.Exchange(ref _primary, _secondary);
+
+				var count = _secondary.Count;
+				while (_secondary.Count > 0)
+				{
+					yield return _secondary.Dequeue();
+				}
+
+				Interlocked.Add(ref _count, -count);
 			}
 		}
 	}

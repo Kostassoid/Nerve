@@ -70,6 +70,19 @@ namespace Kostassoid.Nerve.Core.Specs
 
 		[Subject(typeof(Cell), "Performance")]
 		[Tags("Unit", "Unstable")]
+		public class when_firing_many_signals_on_one_cell_using_immediate_scheduler2
+		{
+			protected static ICell Cell;
+
+			Behaves_like<fast_message_broker> _;
+
+			Cleanup after = () => Cell.Dispose();
+
+			Establish context = () => { Cell = new Cell(new ImmediateScheduler2()); };
+		}
+
+		[Subject(typeof(Cell), "Performance")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_pool_scheduler
 		{
 			protected static ICell Cell;
@@ -83,6 +96,19 @@ namespace Kostassoid.Nerve.Core.Specs
 
 		[Subject(typeof(Cell), "Performance")]
 		[Tags("Unit", "Unstable")]
+		public class when_firing_many_signals_on_one_cell_using_pool_scheduler2
+		{
+			protected static ICell Cell;
+
+			Behaves_like<fast_message_broker> _;
+
+			Cleanup after = () => Cell.Dispose();
+
+			Establish context = () => { Cell = new Cell(new PoolScheduler2()); };
+		}
+
+		[Subject(typeof(Cell), "Performance")]
+		[Tags("Unit", "Unstable")]
 		public class when_firing_many_signals_on_one_cell_using_thread_scheduler
 		{
 			protected static ICell Cell;
@@ -92,6 +118,19 @@ namespace Kostassoid.Nerve.Core.Specs
 			Cleanup after = () => Cell.Dispose();
 
 			Establish context = () => { Cell = new Cell(new ThreadScheduler()); };
+		}
+
+		[Subject(typeof(Cell), "Performance")]
+		[Tags("Unit", "Unstable")]
+		public class when_firing_many_signals_on_one_cell_using_thread_scheduler2
+		{
+			protected static ICell Cell;
+
+			Behaves_like<fast_message_broker> _;
+
+			Cleanup after = () => Cell.Dispose();
+
+			Establish context = () => { Cell = new Cell(new ThreadScheduler2()); };
 		}
 	}
 

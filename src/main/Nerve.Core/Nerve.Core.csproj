@@ -66,6 +66,9 @@
     <Compile Include="Proxy\IProxyBuilder.cs" />
     <Compile Include="Proxy\NProxy\NProxyBuilder.cs" />
     <Compile Include="Proxy\NProxy\NProxyInterceptor.cs" />
+    <Compile Include="Scheduling\ThreadScheduler2.cs" />
+    <Compile Include="Scheduling\PoolScheduler2.cs" />
+    <Compile Include="Scheduling\ImmediateScheduler2.cs" />
     <Compile Include="Scheduling\ThreadScheduler.cs" />
     <Compile Include="Scheduling\PoolScheduler.cs" />
     <Compile Include="Tools\Collections\IQueue.cs" />
