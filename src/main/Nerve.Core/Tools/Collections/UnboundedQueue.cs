@@ -22,7 +22,6 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 		Queue<T> _secondary = new Queue<T>();
 		readonly object _sync1 = new object();
 		readonly object _sync2 = new object();
-		int _closed;
 		int _count;
 
 		public int Count
@@ -35,33 +34,20 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 			lock (_sync1)
 			{
 				_primary.Enqueue(item);
+				Interlocked.Increment(ref _count);
 			}
 
-			Interlocked.Increment(ref _count);
+			//Interlocked.Increment(ref _count);
 		}
-
-/*
-		public bool TryDequeue(out T item)
-		{
-			lock (_sync)
-			{
-				if (_primary.Count == 0)
-				{
-					item = default(T);
-					return false;
-				}
-
-				item = _primary.Dequeue();
-				return true;
-			}
-		}
-*/
 
 		public IEnumerable<T> DequeueAll()
 		{
 			lock (_sync2)
 			{
-				_secondary = Interlocked.Exchange(ref _primary, _secondary);
+				lock (_sync1)
+				{
+					_secondary = Interlocked.Exchange(ref _primary, _secondary);
+				}
 
 				var count = _secondary.Count;
 				while (_secondary.Count > 0)

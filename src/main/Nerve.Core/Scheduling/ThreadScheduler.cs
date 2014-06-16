@@ -14,8 +14,9 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Threading;
+	using Tools;
+	using Tools.Collections;
 
 	/// <summary>
 	/// Thread pool scheduler.
@@ -24,15 +25,21 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	{
 		static int _threadId = 1;
 
-		Queue<Action> _pending = new Queue<Action>();
-		Queue<Action> _temp = new Queue<Action>();
 		Thread _thread;
 		readonly object _lock = new object();
+		int _dequeueing;
 
 		/// <summary>
 		/// Initializes scheduler.
 		/// </summary>
-		public ThreadScheduler()
+		public ThreadScheduler(IQueue<Action> queue) : base(queue)
+		{
+		}
+
+		/// <summary>
+		/// Initializes scheduler using UnboundedQueue.
+		/// </summary>
+		public ThreadScheduler() : this(new UnboundedQueue<Action>())
 		{
 		}
 
@@ -41,17 +48,6 @@ namespace Kostassoid.Nerve.Core.Scheduling
 			Stop();
 
 			base.Dispose();
-		}
-
-		public override int QueueSize
-		{
-			get
-			{
-				lock (_lock)
-				{
-					return _pending.Count;
-				}
-			}
 		}
 
 		public override void Start()
@@ -104,29 +100,27 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		{
 			lock (_lock)
 			{
-				_pending.Enqueue(action);
-				if (_pending.Count == 1) Monitor.PulseAll(_lock);
+				Pending.Enqueue(action);
+				if (Interlocked.CompareExchange(ref _dequeueing, 1, 0) == 0)
+				{
+					Monitor.PulseAll(_lock);
+				}
 			}
 		}
 
 		void Run()
 		{
-			lock (_lock)
+			while (IsRunning)
 			{
-				while (IsRunning)
-				{
-					_temp = Interlocked.Exchange(ref _pending, _temp);
+				Pending.DequeueAll().ForEach(a => a());
 
-					while (_temp.Count > 0)
+				if (Pending.Count == 0)
+				{
+					Interlocked.Exchange(ref _dequeueing, 0);
+					lock (_lock)
 					{
-						try
-						{
-							_temp.Dequeue()();
-						}
-						catch
-						{ }
+						Monitor.Wait(_lock);
 					}
-					Monitor.Wait(_lock);
 				}
 			}
 		}

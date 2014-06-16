@@ -13,16 +13,29 @@
 
 namespace Kostassoid.Nerve.Core.Tools.Collections
 {
-	using System;
 	using System.Collections.Generic;
 
+	/// <summary>
+	/// Base queue interface.
+	/// </summary>
+	/// <typeparam name="T">Collection item type</typeparam>
 	public interface IQueue<T>
 	{
+		/// <summary>
+		/// Queue length.
+		/// </summary>
 		int Count { get; }
 
+		/// <summary>
+		/// Adds item to the queue.
+		/// </summary>
+		/// <param name="item">Item to add.</param>
 		void Enqueue(T item);
-		//bool TryDequeue(out T item);
+
+		/// <summary>
+		/// Returns all currently queued items.
+		/// </summary>
+		/// <returns>Dequeued items enumerable.</returns>
 		IEnumerable<T> DequeueAll();
-		//void Close();
 	}
 }

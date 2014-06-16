@@ -14,20 +14,30 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
-	using System.Collections.Concurrent;
 	using System.Threading;
+	using Tools;
+	using Tools.Collections;
 
 	/// <summary>
 	/// Same thread scheduler without context switching.
 	/// </summary>
 	public class ImmediateScheduler : AbstractScheduler
 	{
-		readonly ConcurrentQueue<Action> _pending = new ConcurrentQueue<Action>();
 		int _flushing;
 
-		public override int QueueSize
+		/// <summary>
+		/// Initializes scheduler.
+		/// </summary>
+		public ImmediateScheduler(IQueue<Action> queue) : base(queue)
 		{
-			get { return _pending.Count; }
+		}
+
+		/// <summary>
+		/// Initializes scheduler using UnboundedQueue.
+		/// </summary>
+		public ImmediateScheduler()
+			: this(new UnboundedQueue<Action>())
+		{
 		}
 
 		/// <summary>
@@ -38,7 +48,7 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		{
 			if (!IsRunning || Interlocked.CompareExchange(ref _flushing, 1, 0) == 1)
 			{
-				_pending.Enqueue(action);
+				Pending.Enqueue(action);
 				return;
 			}
 
@@ -58,10 +68,9 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		/// </summary>
 		public void Flush()
 		{
-			Action act;
-			while (_pending.TryDequeue(out act))
+			while (Pending.Count > 0)
 			{
-				act();
+				Pending.DequeueAll().ForEach(a => a());
 			}
 		}
 	}

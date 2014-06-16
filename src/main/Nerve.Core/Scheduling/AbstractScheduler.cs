@@ -14,6 +14,7 @@
 namespace Kostassoid.Nerve.Core.Scheduling
 {
 	using System;
+	using Tools.Collections;
 
 	/// <summary>
 	/// Base abstract signal processing scheduler.
@@ -21,13 +22,33 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	public abstract class AbstractScheduler : IScheduler
 	{
 		/// <summary>
+		/// Pending queue.
+		/// </summary>
+		protected IQueue<Action> Pending { get; private set; }
+
+		/// <summary>
+		/// Initializes scheduler.
+		/// </summary>
+		protected AbstractScheduler(IQueue<Action> queue)
+		{
+			Pending = queue;
+		}
+
+		/// <summary>
+		/// Initializes scheduler using UnboundedQueue.
+		/// </summary>
+		protected AbstractScheduler() : this(new UnboundedQueue<Action>())
+		{
+		}
+
+		/// <summary>
 		/// Disposes the scheduler, with all underlying threads and resources.
 		/// </summary>
 		public virtual void Dispose()
 		{
 		}
 
-		public abstract int QueueSize { get; }
+		public int QueueSize { get { return Pending.Count; } }
 
 		public bool IsRunning { get; protected set; }
 
