@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{86D93403-BD8F-49EF-BC0B-66C0B82F4A37}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Core", "main\Nerve.Core\Nerve.Core.csproj", "{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Main", "Main", "{86D93403-BD8F-49EF-BC0B-66C0B82F4A37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Lab", "main\Nerve.Lab\Nerve.Lab.csproj", "{3411EABF-A295-4783-BABB-C64070EA8875}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Specs", "Specs", "{812C8697-C2E7-423E-AD57-20C008A63AFD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Core.Specs", "specs\Nerve.Core.Specs\Nerve.Core.Specs.csproj", "{EFA61018-1F3E-4F85-A2F4-76F5BB505042}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Lab.Specs", "specs\Nerve.Lab.Specs\Nerve.Lab.Specs.csproj", "{C94F88F5-81D9-47E2-9B28-DC19CCE46142}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4A4DD0B6-3942-4914-8F07-176CC59DDE31}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,17 +24,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{71
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PainSimulator", "examples\PainSimulator\PainSimulator.csproj", "{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SleepingBarber", "examples\SleepingBarber\SleepingBarber.csproj", "{6DAE9A30-32FD-4253-9F59-C7B729120446}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2F16D6AB-4E1F-4B03-95FB-44F792CD087D}"
 	ProjectSection(SolutionItems) = preProject
 		GlobalAssemblyInfo.cs = GlobalAssemblyInfo.cs
 		Nerve.snk = Nerve.snk
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SleepingBarber", "examples\SleepingBarber\SleepingBarber.csproj", "{6DAE9A30-32FD-4253-9F59-C7B729120446}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Lab", "main\Nerve.Lab\Nerve.Lab.csproj", "{3411EABF-A295-4783-BABB-C64070EA8875}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerve.Lab.Specs", "specs\Nerve.Lab.Specs\Nerve.Lab.Specs.csproj", "{C94F88F5-81D9-47E2-9B28-DC19CCE46142}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,14 +38,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3411EABF-A295-4783-BABB-C64070EA8875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3411EABF-A295-4783-BABB-C64070EA8875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3411EABF-A295-4783-BABB-C64070EA8875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3411EABF-A295-4783-BABB-C64070EA8875}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,17 +50,18 @@ Global
 		{6DAE9A30-32FD-4253-9F59-C7B729120446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DAE9A30-32FD-4253-9F59-C7B729120446}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DAE9A30-32FD-4253-9F59-C7B729120446}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3411EABF-A295-4783-BABB-C64070EA8875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3411EABF-A295-4783-BABB-C64070EA8875}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3411EABF-A295-4783-BABB-C64070EA8875}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3411EABF-A295-4783-BABB-C64070EA8875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C94F88F5-81D9-47E2-9B28-DC19CCE46142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C94F88F5-81D9-47E2-9B28-DC19CCE46142}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C94F88F5-81D9-47E2-9B28-DC19CCE46142}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C94F88F5-81D9-47E2-9B28-DC19CCE46142}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA61018-1F3E-4F85-A2F4-76F5BB505042}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{815F8B9D-0671-4E2B-B164-C86D1F3F52CC} = {86D93403-BD8F-49EF-BC0B-66C0B82F4A37}
@@ -73,5 +70,11 @@ Global
 		{C94F88F5-81D9-47E2-9B28-DC19CCE46142} = {812C8697-C2E7-423E-AD57-20C008A63AFD}
 		{53C9F89E-A7BC-428E-9065-2FFFB1DEBEFB} = {711CD250-C2EC-41A7-AC81-2C7EE016A457}
 		{6DAE9A30-32FD-4253-9F59-C7B729120446} = {711CD250-C2EC-41A7-AC81-2C7EE016A457}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = examples\SleepingBarber\SleepingBarber.csproj
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

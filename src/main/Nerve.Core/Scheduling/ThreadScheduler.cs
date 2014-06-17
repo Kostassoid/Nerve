@@ -23,11 +23,10 @@ namespace Kostassoid.Nerve.Core.Scheduling
 	/// </summary>
 	public class ThreadScheduler : AbstractScheduler
 	{
-		static int _threadId = 1;
+		static int _threadId = 0;
 
 		Thread _thread;
-		readonly object _lock = new object();
-		int _dequeueing;
+		AutoResetEvent _waitHandle = new AutoResetEvent(false);
 
 		/// <summary>
 		/// Initializes scheduler.
@@ -52,38 +51,32 @@ namespace Kostassoid.Nerve.Core.Scheduling
 
 		public override void Start()
 		{
-			lock (_lock)
+			if (IsRunning) return;
+			base.Start();
+
+			var id = Interlocked.Increment(ref _threadId);
+			_thread = new Thread(Run)
 			{
-				if (IsRunning) return;
-				base.Start();
+				IsBackground = true,
+				Name = string.Format("ThreadScheduler-{0}", id),
+				Priority = ThreadPriority.Normal
+			};
 
-				var id = Interlocked.Increment(ref _threadId);
-				_thread = new Thread(Run)
-				{
-					IsBackground = true,
-					Name = string.Format("ThreadScheduler-{0}", id),
-					Priority = ThreadPriority.Normal
-				};
+			_thread.Start();
 
-				_thread.Start();
-
-				Monitor.PulseAll(_lock);
-			}
+			_waitHandle.Set ();
 		}
 
 		public override void Stop()
 		{
-			lock (_lock)
+			if (!IsRunning)
 			{
-				if (!IsRunning)
-				{
-					return;
-				}
-
-				base.Stop();
-
-				Monitor.PulseAll(_lock);
+				return;
 			}
+
+			base.Stop();
+
+			_waitHandle.Set ();
 
 			if (_thread != null)
 			{
@@ -98,29 +91,19 @@ namespace Kostassoid.Nerve.Core.Scheduling
 		/// <param name="action"></param>
 		public override void Enqueue(Action action)
 		{
-			lock (_lock)
-			{
-				Pending.Enqueue(action);
-				if (Interlocked.CompareExchange(ref _dequeueing, 1, 0) == 0)
-				{
-					Monitor.PulseAll(_lock);
-				}
-			}
+			Pending.Enqueue(action);
+			_waitHandle.Set ();
 		}
 
 		void Run()
 		{
 			while (IsRunning)
 			{
-				Pending.DequeueAll().ForEach(a => a());
+				_waitHandle.WaitOne ();
 
-				if (Pending.Count == 0)
+				while (Pending.Count > 0)
 				{
-					Interlocked.Exchange(ref _dequeueing, 0);
-					lock (_lock)
-					{
-						Monitor.Wait(_lock);
-					}
+					Pending.DequeueAll ().ForEach (a => a ());
 				}
 			}
 		}

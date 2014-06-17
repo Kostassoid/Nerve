@@ -26,7 +26,7 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 
 		public int Count
 		{
-			get { return _count; }
+			get { lock(_sync1) return _primary.Count; }
 		}
 
 		public void Enqueue(T item)
@@ -34,7 +34,7 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 			lock (_sync1)
 			{
 				_primary.Enqueue(item);
-				Interlocked.Increment(ref _count);
+				//Interlocked.Increment(ref _count);
 			}
 
 			//Interlocked.Increment(ref _count);
@@ -49,13 +49,10 @@ namespace Kostassoid.Nerve.Core.Tools.Collections
 					_secondary = Interlocked.Exchange(ref _primary, _secondary);
 				}
 
-				var count = _secondary.Count;
 				while (_secondary.Count > 0)
 				{
 					yield return _secondary.Dequeue();
 				}
-
-				Interlocked.Add(ref _count, -count);
 			}
 		}
 	}

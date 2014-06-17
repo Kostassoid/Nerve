@@ -10,6 +10,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
+using System;
 
 namespace Kostassoid.Nerve.Core.Specs
 {
@@ -32,22 +33,22 @@ namespace Kostassoid.Nerve.Core.Specs
 			protected static IScheduler Scheduler;
 
             private It should_process_all_signals = () =>
-				{
-					var countdown = new CountdownEvent(SignalsCount);
+			{
+				var countdown = new CountdownEvent(SignalsCount);
 
-					Scheduler.Start();
+				Scheduler.Start();
 
-					var tasks = Enumerable
-						.Range(0, SignalsCount)
-						.Select(_ => Task.Factory.StartNew(() => Scheduler.Enqueue(() => countdown.Signal())))
-						.ToArray();
+				var tasks = Enumerable
+					.Range(0, SignalsCount)
+					.Select(_ => Task.Factory.StartNew(() => Scheduler.Enqueue(() => countdown.Signal())))
+					.ToArray();
 
-					Task.WaitAll(tasks, 10000).ShouldBeTrue();
+				Task.WaitAll(tasks, 10000).ShouldBeTrue();
 
-					countdown.Wait(10000).ShouldBeTrue();
+				countdown.Wait(10000).ShouldBeTrue();
 
-					Scheduler.Stop();
-				};
+				Scheduler.Stop();
+			};
 		}
 
 		[Subject(typeof(IScheduler), "Concurrency")]
